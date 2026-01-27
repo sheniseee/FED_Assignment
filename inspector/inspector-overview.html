@@ -95,24 +95,17 @@
 
 <body>
 
-    <!-- Standard Logged-In Navbar -->
-    <nav class="navbar">
-        <div class="nav-brand">
-            <span class="nav-logo-text">Digital <span class="text-gold">Hawker</span></span>
+    <!-- Navbar (back button)-->
+    <nav class="customer-nav"
+        style="padding: 20px 5%; background: white; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:20px;">
+            <a href="inspector-analytics.html" style="color:#666; font-size:1.5rem;"><ion-icon
+                    name="arrow-back"></ion-icon></a>
+            <h3 style="font-size:1.5rem;">Digital <span class="text-gold">Hawker</span></h3>
         </div>
-        <div class="nav-links">
-            <a href="inspector-dashboard.html" class="nav-link">Home</a>
-            <a href="browse.html" class="nav-link">Order</a>
-            <a href="order-history.html" class="nav-link">Order History</a>
-            <a href="#" class="nav-link">Contact Us</a>
-        </div>
-        <div class="nav-actions">
-            <ion-icon name="notifications" style="font-size:1.5rem;"></ion-icon>
-            <div class="nav-divider"></div>
-            <div class="user-profile-nav" onclick="window.location.href='../index.html'">
-                <img src="https://ui-avatars.com/api/?name=Inspector+Brown&background=ddd" class="user-avatar">
-                <span style="font-weight:600;">Inspector (Logout)</span>
-            </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <img src="https://ui-avatars.com/api/?name=Brown&background=FFC107&color=fff"
+                style="width:40px; height:40px; border-radius:50%;">
         </div>
     </nav>
 
@@ -120,7 +113,7 @@
         <h2 style="text-align:center; margin: 30px 0; font-size:1.5rem;">Stall<br>Overview</h2>
 
         <!-- Dropdowns (Mock) -->
-        <div style="width:100%; max-width:320px; margin-bottom:24px;">
+        <div style="width:100%; max-width:320px; margin-bottom:24px;  margin: 0 auto;">
             <select
                 style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom:12px; background:#fff;">
                 <option>Pasir Panjang Food Centre</option>
@@ -133,7 +126,7 @@
 
         <!-- Hygiene Grade Card -->
         <div
-            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; margin-bottom:24px; text-align:center;">
+            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; margin-bottom:24px; text-align:center; margin: 0 auto 24px auto;">
             <h3>Hygiene Grade<br>History</h3>
             <p style="margin:12px 0;">Hygiene grade : <strong>(C)</strong></p>
 
@@ -144,24 +137,34 @@
                 <div style="display:flex; justify-content:space-between; position:relative; padding-top:20px;">
                     <!-- Line -->
                     <div
-                        style="position:absolute; top:26px; left:10px; right:10px; height:2px; background:#333; z-index:0;">
+                        style="position:absolute; top:29px; left:10px; right:10px; height:2px; background:#333; z-index:0;">
                     </div>
 
                     <!-- Points -->
-                    <div class="t-point"><span>A</span>
-                        <div class="dot"></div><span>2021</span>
+                    <div class="t-point">
+                        <span class="grade">A</span>
+                        <div class="dot"></div>
+                        <span class="year">2021</span>
                     </div>
-                    <div class="t-point"><span>A</span>
-                        <div class="dot"></div><span>2022</span>
+                    <div class="t-point">
+                        <span class="grade">A</span>
+                        <div class="dot"></div>
+                        <span class="year">2022</span>
                     </div>
-                    <div class="t-point"><span>B</span>
-                        <div class="dot"></div><span>2023</span>
+                    <div class="t-point">
+                        <span class="grade">B</span>
+                        <div class="dot"></div>
+                        <span class="year">2023</span>
                     </div>
-                    <div class="t-point"><span>C</span>
-                        <div class="dot"></div><span>2024</span>
+                    <div class="t-point">
+                        <span class="grade">C</span>
+                        <div class="dot"></div>
+                        <span class="year">2024</span>
                     </div>
-                    <div class="t-point"><span>C</span>
-                        <div class="dot"></div><span>2025</span>
+                    <div class="t-point">
+                        <span class="grade">C</span>
+                        <div class="dot"></div>
+                        <span class="year">2025</span>
                     </div>
                 </div>
             </div>
@@ -169,7 +172,7 @@
 
         <!-- Inspection Trends Card -->
         <div
-            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; text-align:center;">
+            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; text-align:center;  margin: 0 auto;">
             <h3 style="margin-bottom:20px;">Inspection<br>Trends</h3>
             <div class="trends-list" style="text-align:left; font-size:0.9rem; color:#555;">
                 <p>Poor food handling</p>
@@ -201,12 +204,22 @@
 
     <style>
         .t-point {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 1;
-            font-size: 0.7rem;
             width: 30px;
+            font-size: 0.7rem;
+        }
+
+        .t-point .grade {
+            position: absolute;
+            top: -24px;   /* move grade UP */
+            font-weight: 700;
+        }
+
+        .t-point .year {
+            margin-top: 6px;
         }
 
         .dot {

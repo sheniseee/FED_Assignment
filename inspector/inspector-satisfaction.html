@@ -62,24 +62,17 @@
 
 <body>
 
-    <!-- Standard Logged-In Navbar -->
-    <nav class="navbar">
-        <div class="nav-brand">
-            <span class="nav-logo-text">Digital <span class="text-gold">Hawker</span></span>
+    <!-- Navbar (back button)-->
+    <nav class="customer-nav"
+        style="padding: 20px 5%; background: white; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:20px;">
+            <a href="inspector-analytics.html" style="color:#666; font-size:1.5rem;"><ion-icon
+                    name="arrow-back"></ion-icon></a>
+            <h3 style="font-size:1.5rem;">Digital <span class="text-gold">Hawker</span></h3>
         </div>
-        <div class="nav-links">
-            <a href="inspector-dashboard.html" class="nav-link">Home</a>
-            <a href="browse.html" class="nav-link">Order</a>
-            <a href="order-history.html" class="nav-link">Order History</a>
-            <a href="#" class="nav-link">Contact Us</a>
-        </div>
-        <div class="nav-actions">
-            <ion-icon name="notifications" style="font-size:1.5rem;"></ion-icon>
-            <div class="nav-divider"></div>
-            <div class="user-profile-nav" onclick="window.location.href='../index.html'">
-                <img src="https://ui-avatars.com/api/?name=Inspector+Brown&background=ddd" class="user-avatar">
-                <span style="font-weight:600;">Inspector (Logout)</span>
-            </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <img src="https://ui-avatars.com/api/?name=Brown&background=FFC107&color=fff"
+                style="width:40px; height:40px; border-radius:50%;">
         </div>
     </nav>
 
@@ -87,7 +80,7 @@
         <h2 style="text-align:center; margin: 30px 0; font-size:1.5rem;">Customer<br>Satisfaction</h2>
 
         <!-- Dropdowns (Mock) -->
-        <div style="width:100%; max-width:320px; margin-bottom:24px;">
+        <div style="width:100%; max-width:320px; margin-bottom:24px; margin: 0 auto;">
             <select
                 style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom:12px; background:#fff;">
                 <option>Pasir Panjang Food Centre</option>
@@ -100,7 +93,7 @@
 
         <!-- Feedback Card -->
         <div
-            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; margin-bottom:24px;">
+            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; margin-bottom:24px; margin: 0 auto 24px auto;">
             <h3 style="text-align:center; margin-bottom:20px;">Feedback</h3>
 
             <div class="feedback-list-styled">
@@ -114,7 +107,7 @@
         </div>
 
         <!-- Complaints Card -->
-        <div style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px;">
+        <div style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; margin: 0 auto;">
             <h3 style="text-align:center; margin-bottom:20px;">Complaints</h3>
 
             <div class="feedback-list-styled">

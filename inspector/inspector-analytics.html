@@ -79,25 +79,43 @@
         </div>
     </nav>
 
-    <div class="main-content text-center mobile-centered-container">
-        <!-- Figma Header Style -->
-        <h2 style="margin: 40px 0 32px 0; font-size:1.8rem; color:#333;">Analytics &<br>Reporting</h2>
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
 
-        <div class="analytics-menu-list">
-            <a href="inspector-sales.html" class="menu-pill-btn">
-                <ion-icon name="stats-chart"></ion-icon>
-                Sales Analytics
-            </a>
+        <h1 style="text-align:center; margin-top:60px;">Analytics & Reporting</h1>
 
-            <a href="inspector-satisfaction.html" class="menu-pill-btn">
-                <ion-icon name="person"></ion-icon>
-                Customer Satisfaction
-            </a>
+        <div class="analytics-grid">
 
-            <a href="inspector-overview.html" class="menu-pill-btn">
-                <ion-icon name="bar-chart"></ion-icon>
-                Other Data
-            </a>
+            <!-- Sales Analytics -->
+            <div class="analytics-card" onclick="location.href='inspector-sales.html'">
+                <h3>Sales<br>Analytics</h3>
+                <img src="../images/Sale Analytics.jpg" alt="Sales Analytics" style="width:220px; height:150px; ">
+                <p style="font-size:0.9rem;">
+                    Data on popular items and peak hours across Hawker Centres
+                </p>
+                <button class="card-btn">Enter</button>
+            </div>
+
+            <!-- Customer Satisfaction -->
+            <div class="analytics-card" onclick="location.href='inspector-satisfaction.html'">
+                <h3>Customer<br>Satisfaction</h3>
+                <img src="../images/Customer Satisfaction.jpg" alt="Customer Satisfaction" style="width:220px; height:150px; ">
+                <p style="font-size:0.9rem;">
+                    Dashboard compilation of customer feedback and complaints
+                </p>
+                <button class="card-btn">Enter</button>
+            </div>
+
+            <!-- Other Data -->
+            <div class="analytics-card" onclick="location.href='inspector-overview.html'">
+                <h3>Other<br>Data</h3>
+                <img src="../images/Other Data.jpg" alt="Other Data" style="width:220px; height:150px; ">
+                <p style="font-size:0.9rem;">
+                    Inspection trends and hygiene grade history of Hawker Centre stalls
+                </p>
+                <button class="card-btn">Enter</button>
+            </div>
+
         </div>
     </div>
 
