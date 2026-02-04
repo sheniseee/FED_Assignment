@@ -1,0 +1,515 @@
+/* ── tokens ── */
+:root {
+  --nav-bg:        #FFF8E1;
+  --primary-color: #FFC107;
+  --text-dark:     #333;
+  --font-primary:  'Outfit', sans-serif;
+}
+
+/* ── reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-primary);
+  color: var(--text-dark);
+  background: #fff;
+}
+
+/* ──────────────────────────────
+   LAYOUT
+   ────────────────────────────── */
+.page {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ──────────────────────────────
+   LEFT PANEL – form
+   ────────────────────────────── */
+.panel-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  background: #fff;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ── brand ── */
+.brand {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+.brand span { color: var(--primary-color); }
+
+.brand-sub {
+  font-size: 0.95rem;
+  color: #7a7a7a;
+  font-weight: 400;
+  margin-bottom: 36px;
+}
+.page-signup .brand-sub { margin-bottom: 32px; }
+.page-forgot .brand-sub { margin-bottom: 24px; }
+
+/* ── field labels (direct children of form-box only –
+       keeps .remember & .pill labels unaffected) ── */
+.form-box > label,
+#reset-form > label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+/* ── input wrappers ── */
+.input-wrap {
+  position: relative;
+  margin-bottom: 20px;
+}
+.page-signup .input-wrap { margin-bottom: 18px; }
+
+.input-wrap input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #e4e4e4;
+  border-radius: 10px;
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  background: #fafafa;
+  transition: border-color .25s, box-shadow .25s;
+  outline: none;
+}
+
+/* Add padding-right for password fields with toggle button */
+.input-wrap input[type="password"],
+.input-wrap input.password-visible {
+  padding-right: 48px;
+}
+
+.input-wrap input::placeholder { color: #aaa; }
+
+.input-wrap input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, .18);
+  background: #fff;
+}
+
+/* ── password toggle button ── */
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  transition: color 0.2s;
+}
+
+.toggle-password:hover {
+  color: #666;
+}
+
+.toggle-password:focus {
+  outline: none;
+  color: var(--primary-color);
+}
+
+.toggle-password svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Show/hide eye icons based on state */
+.toggle-password .eye-off-icon {
+  display: none;
+}
+
+.toggle-password.showing .eye-icon {
+  display: none;
+}
+
+.toggle-password.showing .eye-off-icon {
+  display: block;
+}
+
+/* ── validation error states (toggled by JS) ── */
+.input-wrap input.input-error {
+  border-color: #e53935;
+  box-shadow: none;
+}
+.input-wrap input.input-error:focus {
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, .15);
+}
+
+.error-msg {
+  display: none;
+  font-size: 0.76rem;
+  color: #e53935;
+  font-weight: 500;
+  margin-top: -10px;
+  margin-bottom: 14px;
+}
+.error-msg.visible { display: block; }
+
+/* ── remember me + forgot password (login only) ── */
+.row-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.remember input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+
+.forgot {
+  font-size: 0.85rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity .2s;
+}
+.forgot:hover { opacity: .75; }
+
+/* ── primary / submit button ── */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: var(--text-dark);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .25s, transform .1s, opacity .2s;
+  letter-spacing: 0.3px;
+}
+.btn-primary:hover  { background: #222; }
+.btn-primary:active { transform: scale(.985); }
+.btn-primary:disabled { cursor: not-allowed; }
+
+.page-signup .btn-primary { margin-top: 6px; }
+
+/* ── or divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  gap: 12px;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+.divider span {
+  font-size: 0.82rem;
+  color: #aaa;
+  font-weight: 500;
+}
+.page-signup .divider { margin: 22px 0; }
+
+/* ── Google button ── */
+.btn-google {
+  width: 100%;
+  padding: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1.5px solid #e4e4e4;
+  border-radius: 10px;
+  background: #f7f7f7;
+  font-family: var(--font-primary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.btn-google:hover {
+  background: #eee;
+  border-color: #d5d5d5;
+}
+.btn-google img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ── bottom nav link ── */
+.bottom-link {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 0.85rem;
+  color: #777;
+}
+.bottom-link a {
+  color: var(--text-dark);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s;
+}
+.bottom-link a:hover { color: var(--primary-color); }
+
+.page-signup .bottom-link { margin-top: 24px; }
+
+/* ──────────────────────────────
+   PILL SELECTOR (signup only)
+   ────────────────────────────── */
+.pill-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.pill {
+  flex: 1;
+  position: relative;
+}
+
+.pill input[type="radio"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.pill-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border: 1.5px solid #e4e4e4;
+  border-radius: 10px;
+  background: #fafafa;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #777;
+  text-align: center;
+  white-space: nowrap;
+  transition: border-color .2s, background .2s, color .2s, box-shadow .2s;
+  cursor: pointer;
+}
+
+.pill-label .pill-icon { font-size: 1rem; }
+
+/* checked */
+.pill input[type="radio"]:checked + .pill-label {
+  border-color: var(--primary-color);
+  background: rgba(255, 193, 7, .1);
+  color: var(--text-dark);
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, .18);
+}
+
+/* hover – only on unchecked pills so it doesn't override the selected ring */
+.pill input[type="radio"]:hover:not(:checked) + .pill-label {
+  border-color: #ccc;
+}
+
+/* ──────────────────────────────
+   FORGOT PASSWORD PAGE
+   ────────────────────────────── */
+
+/* ── back link ── */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #777;
+  text-decoration: none;
+  margin-bottom: 32px;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--text-dark);
+}
+
+.back-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── form description ── */
+.form-description {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 28px;
+}
+
+/* ── success state ── */
+.success-state {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon svg {
+  width: 32px;
+  height: 32px;
+  color: #4CAF50;
+}
+
+.success-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.success-message {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.success-message strong {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.success-note {
+  font-size: 0.82rem;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ── link button (for resend) ── */
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-primary);
+  font-size: inherit;
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.link-btn:hover {
+  opacity: 0.75;
+}
+
+/* ──────────────────────────────
+   RIGHT PANEL – hero image
+   ────────────────────────────── */
+.panel-right {
+  flex: 1.1;
+  background: var(--nav-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 48px 48px 24px;
+}
+
+.hero-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1 / 1;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .12);
+}
+
+.hero-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, .55)  0%,
+    rgba(0, 0, 0, .15) 45%,
+    transparent         70%
+  );
+}
+
+.hero-text {
+  position: absolute;
+  bottom: 40px;
+  left: 36px;
+  right: 36px;
+  color: #fff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+
+/* ──────────────────────────────
+   RESPONSIVE – hide hero panel
+   ────────────────────────────── */
+@media (max-width: 820px) {
+  .panel-right {
+    display: none;
+  }
+
+  .panel-left {
+    padding: 48px 24px 64px;
+  }
+}
