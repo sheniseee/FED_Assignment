@@ -5,7 +5,8 @@
     <title>Browsing Stalls</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="popup-open">
+
 
 <!-- NAVBAR -->
 <header class="navbar">
@@ -26,16 +27,16 @@
 
 <!-- BANNER -->
 <section id="section">
-        <h1>Golden Grain Chicken Rice</h1>
-        <h4>Fragrant chicken rice served with tender steamed and roasted chicken, flavourful chilli, and comforting homemade broth — a simple, satisfying local classic.</h4>
-        </div>
-        <div class="categories">
-    <button class="active">Popular</button>
-    <button>Rice</button>
-    <button>Noodles</button>
-    <button>Soup</button>
-    <button>Others</button>
-</div>
+    <h1>Golden Grain Chicken Rice</h1>
+    <h4>Fragrant chicken rice served with tender steamed and roasted chicken, flavourful chilli, and comforting homemade broth — a simple, satisfying local classic.</h4>
+
+    <div class="categories">
+        <button class="active">Popular</button>
+        <button>Rice</button>
+        <button>Noodles</button>
+        <button>Soup</button>
+        <button>Others</button>
+    </div>
 </section>
 
 
@@ -103,13 +104,52 @@
     </div>
 </div>
 
+<!-- OVERLAY -->
+<div class="overlay active"></div>
 
-    
+<!-- POPUP MODAL -->
+<div class="popup active">
+    <div class="popup-card large">
+        <img src="https://images.lifestyleasia.com/wp-content/uploads/sites/6/2022/10/14161244/best-hainanese-chicken-rice-in-singapore-boon-tong-kee-kim-eng-wee-nam-kee-rating-1350x900.jpg" alt="Hainanese Chicken Rice">
+        <div class="popup-info">
+            <h4>Hainanese Chicken Rice</h4>
+            <p>Tender, juicy chicken served with fragrant rice and house chilli & ginger sauce.</p>
 
-    
+            <!-- SCROLL AREA -->
+            <div class="popup-scroll">
+                <!-- PREPARATION -->
+                <div class="option-group">
+                    <h5>Choice of Preparation</h5>
+                    <p class="sub">Choose 1 option</p>
+                    <label><input type="radio" name="prep"> Steamed</label>
+                    <label><input type="radio" name="prep"> Roasted</label>
+                </div>
 
-        
-</main>
+                <!-- EXTRAS -->
+                <div class="option-group">
+                    <h5>Choice of Extras</h5>
+                    <p class="sub">Optional</p>
+                    <label><input type="checkbox"> Extra Chicken Wing (+$2.50)</label>
+                    <label><input type="checkbox"> Additional Drumsticks (+$5.50)</label>
+                    <label><input type="checkbox"> Additional Rice (+$1.50)</label>
+                </div>
 
-</body>
-</html>
+                <!-- SPECIAL REQUEST -->
+                <div class="option-group">
+                    <h5>Special Requests</h5>
+                    <textarea placeholder="Type any special requests here..."></textarea>
+                </div>
+            </div>
+
+            <!-- BOTTOM BAR -->
+            <div class="popup-bottom">
+                <div class="quantity">
+                    <button class="qty-btn">-</button>
+                    <span>1</span>
+                    <button class="qty-btn">+</button>
+                </div>
+                <button class="add-cart">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+</div>
