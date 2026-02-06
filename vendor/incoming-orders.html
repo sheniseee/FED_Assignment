@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incoming Orders - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css?v=2">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <!-- jQuery (required for DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/auth-check.js"></script>
+    <!-- Firebase Config -->
+
+    <style>
+        .tag {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+
+            <!-- Logo -->
+            <a href="dashboard.html" class="nav-logo">
+                <span class="logo-icon">🍜</span>
+                <span class="logo-text">Digital<br />Hawker</span>
+            </a>
+
+            <!-- Nav Links -->
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="incoming-orders.html" class="active">Incoming Orders</a></li>
+                <li><a href="orders.html">All Orders</a></li>
+                <li><a href="menu-management.html">Menu</a></li>
+                <li><a href="earnings-overview.html">Earnings</a></li>
+            </ul>
+
+            <!-- User Section (Logged In State) -->
+            <div class="nav-user">
+                <!-- Notifications -->
+                <button class="btn-notification" aria-label="Notifications"
+                    onclick="location.href='notifications.html'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown">
+                    <button class="user-toggle" aria-label="User menu">
+                        <div class="user-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <span class="user-name">Vendor</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu">
+                        <a href="settings.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                            Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="../login.html" class="dropdown-item dropdown-logout">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Log Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+        <!-- Full Layout -->
+        <div class="split-layout">
+            <!-- Sidebar -->
+            <div class="nav-stack">
+                <button class="mobile-nav-toggle" onclick="toggleMobileNav()">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <ion-icon name="menu"></ion-icon> Menu
+                    </div>
+                    <ion-icon name="chevron-down-outline"></ion-icon>
+                </button>
+                <div id="navLinksContainer" class="nav-links-container">
+                    <a href="dashboard.html" class="menu-pill-btn">
+                        <ion-icon name="grid"></ion-icon> Dashboard
+                    </a>
+                    <a href="menu.html" class="menu-pill-btn">
+                        <ion-icon name="restaurant"></ion-icon> Menu
+                    </a>
+                    <a href="orders.html" class="menu-pill-btn active">
+                        <ion-icon name="cart"></ion-icon> Order
+                    </a>
+                    <a href="earnings-overview.html" class="menu-pill-btn">
+                        <ion-icon name="cash"></ion-icon> Earnings
+                    </a>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <header style="margin-bottom:24px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <div style="display:flex; align-items:center; gap:16px;">
+                            <a href="dashboard.html"
+                                style="text-decoration:none; color:#333; font-size:1.5rem; display:flex; align-items:center;">
+                                <ion-icon name="arrow-back-outline"></ion-icon>
+                            </a>
+                            <h2 style="font-family:'Outfit', sans-serif; font-size:2.5rem; margin:0;">Incoming Orders
+                            </h2>
+                        </div>
+                        <div style="display:flex; gap:12px; align-items:center;">
+                            <button class="btn" onclick="openAddModal()"
+                                style="background:#FFC107; color:black; font-weight:600; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">+
+                                Add Order</button>
+                            <button class="btn" onclick="deleteSelectedOrders()"
+                                style="background:#F44336; color:white; font-weight:600; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">
+                                <ion-icon name="trash" style="vertical-align:middle;"></ion-icon> Delete
+                                Selected</button>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:end;">
+                        <!-- Tabs -->
+                        <div style="display:flex; gap:32px; border-bottom:1px solid #eee; width: fit-content;">
+                            <button class="tab-btn" onclick="switchTab('pending', this)"
+                                style="background:none; border:none; border-bottom:3px solid var(--primary-color); padding:8px 16px; font-weight:600; font-size:1rem; cursor:pointer; color:black;">
+                                Active Orders
+                            </button>
+                            <button class="tab-btn" onclick="switchTab('completed', this)"
+                                style="background:none; border:none; border-bottom:3px solid transparent; padding:8px 16px; font-weight:400; font-size:1rem; cursor:pointer; color:#999;">
+                                Completed Orders
+                            </button>
+                        </div>
+
+                        <div style="display:flex; gap:12px;">
+                            <div style="width:300px; position:relative;">
+                                <ion-icon name="search"
+                                    style="position:absolute; left:12px; top:12px; color:#999;"></ion-icon>
+                                <input type="text" id="searchInput" onkeyup="filterOrders()"
+                                    placeholder="Search Order ID, Table, or Item"
+                                    style="width:100%; padding:10px 10px 10px 40px; border:1px solid #ddd; border-radius:8px;">
+                            </div>
+                            <button
+                                style="padding:10px 16px; border:1px solid #ddd; border-radius:8px; background:white; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                                <ion-icon name="filter-outline"></ion-icon> Filter
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="card" style="background:white; border:1px solid #eee; border-radius:12px; padding:20px;">
+                    <div class="table-container">
+                        <table id="ordersTable" style="width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr style="background:#FFF8E1; text-align:left;">
+                                    <th style="padding:12px; width:40px;"><input type="checkbox"></th>
+                                    <th style="padding:12px;">Order ID</th>
+                                    <th style="padding:12px;">Table No</th> <!-- New Column -->
+                                    <th style="padding:12px;">Status</th>
+                                    <th style="padding:12px;">Items Ordered</th>
+                                    <th style="padding:12px;">Quantity</th>
+                                    <th style="padding:12px;">Time Ordered</th>
+                                    <th style="padding:12px;">Additional Notes</th>
+                                    <th style="padding:12px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingOrdersBody">
+                                <!-- Data will be populated by Firebase -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top:24px; display:flex; justify-content:flex-end;">
+                        <button class="btn btn-primary" onclick="confirmCompletion()"
+                            style="background:#2E7D32; color:white; padding:12px 24px; border-radius:8px; border:none; font-weight:600; cursor:pointer; font-size:1rem; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                            Mark selected as Complete
+                        </button>
+                        <!-- Confirmation Dialog Scirpt Replacement -->
+                        <script>
+                            function confirmCompletion() {
+                                showModal('confirmModal');
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Completion Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('confirmModal')">&times;</span>
+            <div class="modal-header">Mark Items as Ready?</div>
+            <div class="modal-body">
+                Are you sure you want to mark these items as <strong>Ready for Collection</strong>? This will notify the
+                customer.
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal('confirmModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmAction()">Yes, Mark Ready</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Modal -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('cancelModal')">&times;</span>
+            <div class="modal-header text-gold" style="color:#F44336;">Cancel Items?</div>
+            <div class="modal-body">
+                Are you sure you want to cancel these items? This action cannot be undone.
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal('cancelModal')">Back</button>
+                <button class="btn btn-primary" style="background:#F44336; border-color:#F44336; color:white;"
+                    onclick="closeModal('cancelModal')">Confirm Cancellation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Order Modal -->
+    <div id="addOrderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('addOrderModal')">&times;</span>
+            <div class="modal-header">New Order</div>
+            <div class="modal-body">
+                <label style="display:block; margin-bottom:8px;">Table No</label>
+                <input type="text" id="newTableNo" placeholder="e.g. 12"
+                    style="width:100%; padding:8px; margin-bottom:16px; border:1px solid #ddd; border-radius:4px;">
+
+                <label style="display:block; margin-bottom:8px;">Customer Name</label>
+                <input type="text" id="newCustomerName" placeholder="e.g. John Doe"
+                    style="width:100%; padding:8px; margin-bottom:16px; border:1px solid #ddd; border-radius:4px;">
+
+                <label style="display:block; margin-bottom:8px;">Items</label>
+                <div id="newOrderItemsList"
+                    style="margin-bottom:12px; border:1px solid #eee; border-radius:4px; padding:8px; display:none;">
+                    <!-- Added items will appear here -->
+                </div>
+
+                <div style="display:flex; gap:8px; margin-bottom:16px;">
+                    <select id="newItemName" style="flex:2; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                        <option value="">Select Item...</option>
+                    </select>
+                    <input type="number" id="newItemQty" placeholder="Qty" value="1" min="1"
+                        style="flex:1; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                    <button type="button" onclick="addItemToOrder()"
+                        style="padding:8px 12px; background:#eee; border:none; border-radius:4px; cursor:pointer;">Add</button>
+                </div>
+
+                <label style="display:block; margin-bottom:8px;">Additional Notes</label>
+                <textarea id="newNotes" placeholder="e.g. Less spicy, Allergy info"
+                    style="width:100%; padding:8px; margin-bottom:16px; border:1px solid #ddd; border-radius:4px; height:60px;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal('addOrderModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveNewOrder()">Create Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content" style="text-align:center; max-width:400px;">
+            <div
+                style="background:#e8f5e9; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+                <ion-icon name="checkmark-circle" style="font-size:32px; color:#2e7d32;"></ion-icon>
+            </div>
+            <h3 id="successTitle" style="margin:0 0 8px; font-family:'Outfit',sans-serif;">Success</h3>
+            <p id="successMessage" style="color:#666; margin:0 0 24px;">Action completed successfully</p>
+            <button class="btn btn-primary" onclick="closeModal('successModal')" style="width:100%;">OK</button>
+        </div>
+    </div>
+
+    <!-- Firebase Order Logic -->
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import { collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc, getDocs, Timestamp, orderBy } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+        // DOM Elements
+        const pendingTableBody = document.getElementById('pendingOrdersBody');
+
+        // Global State
+        let currentTab = 'pending'; // 'pending' (active) or 'completed' (history)
+        let allOrders = [];
+        let unsubscribe = null; // To stop listeners when switching
+
+        // --- NOTIFICATION HELPER ---
+        window.showSuccessModal = (title, message) => {
+            document.getElementById('successTitle').innerText = title;
+            document.getElementById('successMessage').innerText = message;
+            const modal = document.getElementById('successModal');
+            modal.classList.add('active');
+
+            // Auto close after 2s
+            setTimeout(() => {
+                modal.classList.remove('active');
+            }, 2000);
+        };
+
+        // --- 1. SETUP LISTENER BASED ON TAB ---
+        function setupListener() {
+            if (unsubscribe) {
+                unsubscribe();
+                unsubscribe = null;
+            }
+
+            allOrders = []; // Clear local data
+
+            // IMMEDIATE UI RESET
+            if ($.fn.DataTable.isDataTable('#ordersTable')) {
+                $('#ordersTable').DataTable().destroy();
+            }
+            if (pendingTableBody) pendingTableBody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:20px;">Loading...</td></tr>';
+
+            // Determine Collection
+            const collectionName = currentTab === 'pending' ? 'orders' : 'completed_orders';
+
+            const q = query(collection(db, collectionName));
+
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                allOrders = [];
+                snapshot.forEach(doc => {
+                    allOrders.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sort by timestamp descending
+                allOrders.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+                renderOrders();
+            }, (error) => {
+                console.error("Listener error:", error);
+            });
+        }
+
+        // Initialize at start
+        setupListener();
+
+        // --- 2. SWITCH TAB LOGIC ---
+        window.switchTab = (tab, btnElement) => {
+            if (currentTab === tab) return; // No change
+
+            currentTab = tab;
+
+            // Update UI
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.style.borderBottom = 'none';
+                btn.style.fontWeight = 'normal';
+                btn.style.color = '#999';
+            });
+
+            if (btnElement) {
+                btnElement.style.borderBottom = '3px solid var(--primary-color)';
+                btnElement.style.fontWeight = '600';
+                btnElement.style.color = 'black';
+            }
+
+            // Switch Data Source
+            setupListener();
+        };
+
+        window.filterOrders = () => {
+            renderOrders();
+        };
+
+        function renderOrders() {
+            const tbody = document.getElementById('pendingOrdersBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+            // Filter by Tab and Search
+            const filtered = allOrders.filter(order => {
+                const status = (order.status || '').toLowerCase();
+                let statusMatch = true;
+
+                // STRICT FILTERING for Active Tab
+                if (currentTab === 'pending') {
+                    if (['completed', 'served', 'cancelled'].includes(status)) {
+                        return false;
+                    }
+                }
+
+                const term = searchTerm;
+                if (!term) return true;
+
+                const idMatch = (order.orderId || order.id || '').toLowerCase().includes(term);
+                const tableMatch = (order.tableNo || '').toString().toLowerCase().includes(term);
+                const searchStatusMatch = status.includes(term);
+
+                const itemsMatch = (order.items || []).some(i =>
+                    (i.name || '').toLowerCase().includes(term) ||
+                    (i.notes || '').toLowerCase().includes(term)
+                );
+                const notesMatch = (order.notes || '').toLowerCase().includes(term);
+
+                return idMatch || tableMatch || searchStatusMatch || itemsMatch || notesMatch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:20px;">No orders found in ' + (currentTab === 'pending' ? 'Active' : 'History') + '.</td></tr>';
+                // Destroy if exists to keep headers clean
+                if ($.fn.DataTable.isDataTable('#ordersTable')) {
+                    $('#ordersTable').DataTable().destroy();
+                }
+                return;
+            }
+
+            filtered.forEach(order => {
+                let timeString = '-';
+                if (order.timestamp) {
+                    const date = order.timestamp.toDate();
+                    timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+
+                let itemsList = (order.items || []).map(i => `<div style="font-weight:600;">${i.name}</div>`).join('');
+                let qtyList = (order.items || []).map(i => `<div>${i.qty}</div>`).join('');
+                let notesDisplay = order.notes || (order.items || []).map(i => `<div>${i.notes || '-'}</div>`).join('');
+
+                let statusColor = '#E65100';
+                let statusBg = '#FFF3E0';
+                if (order.status === 'cooking') { statusColor = '#1976D2'; statusBg = '#E3F2FD'; }
+                if (order.status === 'ready') { statusColor = '#2E7D32'; statusBg = '#E8F5E9'; }
+                if (order.status === 'completed') { statusColor = '#666'; statusBg = '#eee'; }
+                if (order.status === 'served') { statusColor = '#666'; statusBg = '#eee'; }
+                if (order.status === 'cancelled') { statusColor = '#fff'; statusBg = '#ffcdd2'; }
+
+                const row = `
+                    <tr style="border-bottom:1px solid #eee;">
+                        <td style="padding:12px;"><input type="checkbox" class="order-checkbox" data-id="${order.id}"></td>
+                        <td style="padding:12px;">
+                            ${order.orderId || '-'}
+                            ${order.customerName ? `<div style="font-size:0.85rem; color:#666; margin-top:4px;">${order.customerName}</div>` : ''}
+                        </td>
+                        <td style="padding:12px; font-weight:bold; font-size:1.1rem;">${order.tableNo}</td>
+                        <td style="padding:12px;">
+                             <span class="tag" style="background:${statusBg}; color:${statusColor}; padding:4px 8px; border-radius:4px; font-size:0.8rem; text-transform:capitalize;">${order.status}</span>
+                        </td>
+                        <td style="padding:12px;">${itemsList}</td>
+                        <td style="padding:12px;">${qtyList}</td>
+                        <td style="padding:12px;">${timeString}</td>
+                        <td style="padding:12px;">${notesDisplay}</td>
+                        <td style="padding:12px;">
+                            ${getActionButtons(order)}
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            // Re-init DataTable
+            if ($.fn.DataTable.isDataTable('#ordersTable')) {
+                $('#ordersTable').DataTable().destroy();
+            }
+            $('#ordersTable').DataTable({
+                pageLength: 10,
+                order: [[6, 'desc']],
+                columnDefs: [{ orderable: false, targets: [0, -1] }],
+                language: { search: "Filter results:" }
+            });
+        }
+
+        function getActionButtons(order) {
+            if (currentTab === 'completed') {
+                return `<button onclick="window.deleteThisOrder('${order.id}')" style="background:#ddd; color:#333; padding:4px 8px; font-size:0.8rem; border-radius:4px; border:none; cursor:pointer;">Delete Log</button>`;
+            }
+            if (order.status === 'pending') {
+                return `
+                    <button onclick="window.acceptOrder('${order.id}')" style="background:#4CAF50; color:white; padding:4px 12px; font-size:0.8rem; border-radius:4px; margin-right:4px; border:none; cursor:pointer;">Accept</button>
+                    <button onclick="window.declineOrder('${order.id}')" style="background:#F44336; color:white; padding:4px 12px; font-size:0.8rem; border-radius:4px; border:none; cursor:pointer;">Cancel</button>
+                `;
+            }
+            if (order.status === 'cooking') {
+                return `<button onclick="window.updateStatus('${order.id}', 'ready')" style="background:#2196F3; color:white; padding:4px 12px; font-size:0.8rem; border-radius:4px; border:none; cursor:pointer;">Mark Ready</button>`;
+            }
+            if (order.status === 'ready') {
+                return `<button onclick="window.updateStatus('${order.id}', 'completed')" style="background:#666; color:white; padding:4px 12px; font-size:0.8rem; border-radius:4px; border:none; cursor:pointer;">Complete</button>`;
+            }
+            return '';
+        }
+
+        // --- 3. MIGRATION LOGIC (Move to History) ---
+        async function moveOrderToHistory(orderId, newStatus) {
+            try {
+                const orderRef = doc(db, "orders", orderId);
+                const snapshot = await getDoc(orderRef);
+
+                if (!snapshot.exists()) {
+                    throw new Error("Order not found!");
+                }
+
+                const data = snapshot.data();
+                data.status = newStatus;
+                data.completedAt = Timestamp.now();
+
+                await setDoc(doc(db, "completed_orders", orderId), data);
+                await deleteDoc(orderRef);
+
+                window.showSuccessModal("Move Successful", `Order moved to ${newStatus}`);
+
+            } catch (e) {
+                console.error("Error moving order:", e);
+                alert("Failed to move order: " + e.message);
+            }
+        }
+
+        window.updateStatus = async (id, status) => {
+            if (status === 'completed' || status === 'cancelled' || status === 'served') {
+                await moveOrderToHistory(id, status);
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, "orders", id), { status: status });
+                window.showSuccessModal("Status Updated", `Order marked as ${status}`);
+            } catch (e) {
+                console.error("Error updating status:", e);
+                alert("Error: " + e.message);
+            }
+        };
+
+        window.acceptOrder = (id) => window.updateStatus(id, 'cooking');
+
+        window.declineOrder = async (id) => {
+            if (!confirm("Cancel and remove this order?")) return;
+            await moveOrderToHistory(id, 'cancelled');
+        };
+
+        window.deleteThisOrder = async (id) => {
+            if (!confirm("Delete this log permanently?")) return;
+            try {
+                const col = currentTab === 'pending' ? 'orders' : 'completed_orders';
+                await deleteDoc(doc(db, col, id));
+                window.showSuccessModal("Deleted", "Order log deleted permanently.");
+            } catch (e) {
+                alert(e.message);
+            }
+        }
+
+        // --- 4. BULK ACTIONS ---
+        window.confirmAction = async () => {
+            const checked = document.querySelectorAll('.order-checkbox:checked');
+            if (checked.length === 0) {
+                window.closeModal('confirmModal');
+                return;
+            }
+
+            const promises = Array.from(checked).map(cb => {
+                return updateDoc(doc(db, "orders", cb.dataset.id), { status: 'ready' });
+            });
+
+            try {
+                await Promise.all(promises);
+                window.closeModal('confirmModal');
+                window.showSuccessModal("Bulk Update", "Selected orders marked as Ready.");
+            } catch (e) {
+                alert("Failed: " + e.message);
+                window.closeModal('confirmModal');
+            }
+        };
+
+        window.deleteSelectedOrders = async () => {
+            const checked = document.querySelectorAll('.order-checkbox:checked');
+            if (checked.length === 0) {
+                alert("Please select orders to delete.");
+                return;
+            }
+
+            if (!confirm(`Permanently delete ${checked.length} orders?`)) return;
+
+            const col = currentTab === 'pending' ? 'orders' : 'completed_orders';
+
+            try {
+                const promises = Array.from(checked).map(cb => deleteDoc(doc(db, col, cb.dataset.id)));
+                await Promise.all(promises);
+                window.showSuccessModal("Deleted", `${checked.length} orders deleted.`);
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        // --- 5. ADD ORDER MODAL ---
+        // --- 5. ADD ORDER MODAL ---
+        let currentOrderItems = [];
+
+        window.openAddModal = async () => {
+            currentOrderItems = [];
+            updateOrderItemsList();
+            document.getElementById('newTableNo').value = '';
+            document.getElementById('newCustomerName').value = '';
+            document.getElementById('newItemQty').value = '1';
+            document.getElementById('newNotes').value = '';
+
+            const modal = document.getElementById('addOrderModal');
+            modal.classList.add('active');
+
+            const select = document.getElementById('newItemName');
+            // Always refresh content to ensure price data is fresh
+            try {
+                const snapshot = await getDocs(collection(db, "menu_items"));
+                select.innerHTML = '<option value="">Select Item...</option>';
+                if (snapshot.empty) {
+                    const opt = document.createElement('option');
+                    opt.text = "No menu items found";
+                    select.add(opt);
+                }
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const opt = document.createElement('option');
+                    opt.value = data.name;
+                    opt.textContent = `${data.name} ($${data.price})`;
+                    opt.dataset.price = data.price;
+                    select.appendChild(opt);
+                });
+            } catch (e) {
+                console.error("Menu Fetch Error:", e);
+                alert("Failed to load menu items: " + e.message);
+            }
+        }
+
+        window.addItemToOrder = () => {
+            try {
+                const select = document.getElementById('newItemName');
+                const itemName = select.value;
+                const priceStr = select.options[select.selectedIndex]?.dataset.price;
+                const price = priceStr ? parseFloat(priceStr) : 0;
+                const qtyInput = document.getElementById('newItemQty');
+                const qty = parseInt(qtyInput.value) || 1;
+
+                if (!itemName) {
+                    alert("Please select an item.");
+                    return;
+                }
+
+                currentOrderItems.push({
+                    name: itemName,
+                    price: price,
+                    qty: qty,
+                    notes: ''
+                });
+
+                updateOrderItemsList();
+
+                // Reset item selection
+                select.value = "";
+                qtyInput.value = 1;
+            } catch (e) {
+                console.error(e);
+                alert("Error adding item: " + e.message);
+            }
+        };
+
+        function updateOrderItemsList() {
+            const container = document.getElementById('newOrderItemsList');
+            if (currentOrderItems.length === 0) {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+            container.style.display = 'block';
+            container.innerHTML = currentOrderItems.map((item, index) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:4px 8px; margin-bottom:4px; border-radius:4px;">
+                    <div>
+                        <span style="font-weight:600;">${item.name}</span>
+                        <span style="color:#666; font-size:0.9rem;">x${item.qty} ($${(item.price * item.qty).toFixed(2)})</span>
+                    </div>
+                    <button onclick="window.removeItemFromOrder(${index})" style="background:none; border:none; color:red; cursor:pointer; font-size:1.2rem;">&times;</button>
+                </div>
+            `).join('');
+        }
+
+        window.removeItemFromOrder = (index) => {
+            currentOrderItems.splice(index, 1);
+            updateOrderItemsList();
+        };
+
+        window.saveNewOrder = async () => {
+            const tableNo = document.getElementById('newTableNo').value;
+            const nameEl = document.getElementById('newCustomerName');
+            let customerName = nameEl ? nameEl.value.trim() : "";
+            const globalNotes = document.getElementById('newNotes').value;
+
+            // Debugging Alert
+            if (!customerName) {
+                // Double check if it's just not captured
+                console.warn("Customer Name input is empty or element not found", nameEl);
+            }
+
+            // Check if user has a pending item selected but not added
+            const pendingItemVal = document.getElementById('newItemName').value;
+            if (currentOrderItems.length === 0 && pendingItemVal) {
+                window.addItemToOrder();
+            }
+
+            if (!tableNo || currentOrderItems.length === 0) {
+                alert("Table Number and at least one Item are required.");
+                return;
+            }
+
+            // Default to Walk In ONLY if completely empty
+            if (!customerName) customerName = "Walk In";
+
+            try {
+                await addDoc(collection(db, "orders"), {
+                    orderId: "ORD-" + Math.floor(Math.random() * 100000),
+                    tableNo: tableNo,
+                    customerName: customerName,
+                    items: currentOrderItems,
+                    notes: globalNotes,
+                    status: 'pending',
+                    timestamp: Timestamp.now(),
+                    createdAt: Timestamp.now()
+                });
+
+                closeModal('addOrderModal');
+                window.showSuccessModal("Order Created", "New order sent to kitchen.");
+            } catch (e) {
+                console.error(e);
+                alert(e.message);
+            }
+        }
+
+    </script>
+    <script src="../js/navbar.js"></script>
+    <script>
+        function showModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
+        }
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('active');
+        }
+
+    </script>
+</body>
+
+</html>
