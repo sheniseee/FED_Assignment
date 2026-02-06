@@ -1,0 +1,73 @@
+/* vendorSidebar.css */
+.settings-layout{
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 78px); /* navbar height */
+}
+
+/* left column */
+.settings-sidebar{
+  background: #F2E6D2;
+  border-right: 1px solid rgba(0,0,0,0.08);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* each row */
+.side-item{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px 18px;
+  border-radius: 16px;
+
+  text-decoration: none;
+  color: #111;
+  font-weight: 600;
+  font-size: 14px;
+
+  transition: background 0.15s ease, transform 0.06s ease;
+}
+
+.side-item i{
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.side-item:hover{
+  background: rgba(0,0,0,0.04);
+}
+
+.side-item:active{
+  transform: translateY(1px);
+}
+
+.side-item.active{
+  background: var(--accent);
+  box-shadow: var(--shadow-soft);
+  font-weight: 800;
+}
+
+/* right column */
+.settings-content{
+  background: #F9F6EA;
+  padding: 28px 34px;
+}
+
+/* mobile */
+@media (max-width: 980px){
+  .settings-layout{
+    grid-template-columns: 1fr;
+  }
+  .settings-sidebar{
+    display: none; 
+  }
+  .settings-content{
+    padding: 22px;
+  }
+}
