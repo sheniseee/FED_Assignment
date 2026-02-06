@@ -1,0 +1,121 @@
+body{
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+.card-wrap{
+  background: #FBF8EF;
+  min-height: 100vh;
+  padding: 24px 24px 48px;
+  position: relative;
+}
+
+/* BACK BUTTON (supports image) */
+.card-back{
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  text-decoration: none;
+  color: #111;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+/* if you use <img class="back-icon" ...> inside .card-back */
+.back-icon{
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* TOP TITLE */
+.card-top{
+  text-align: center;
+  margin-top: 4px;
+}
+
+.card-top-title{
+  font-size: 24px;        /* was 12px — too tiny */
+  font-weight: 800;
+  letter-spacing: normal;
+}
+
+/* FORM BLOCK */
+.card-form{
+  width: min(640px, 92%); /* slightly wider like your screenshot */
+  margin: 70px auto 0;    /* push down so it sits like reference */
+}
+
+/* LABELS */
+.f-label{
+  display: block;
+  font-size: 13px;        /* was 10px */
+  color: #333;
+  margin: 18px 0 10px;
+  font-weight: 700;
+}
+
+/* UNDERLINE INPUT STYLE */
+.f-line{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 6px;   /* more breathing room */
+}
+
+.f-input{
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  font-size: 14px;        /* was 11px */
+  padding: 6px 0;
+  
+
+  border-bottom: 1px solid rgba(0,0,0,0.35);
+}
+
+.f-input::placeholder{
+  color: #9a9a9a;
+  font-weight: 600;
+}
+
+/* BRAND ICONS */
+.brand{
+  width: 100%;
+  display: flex;
+  gap: 4px;
+  margin-top: 0.5px;
+}
+
+.brand img{
+  width: 32;            /* slightly bigger */
+  height: 22px;
+  object-fit: contain;
+}
+
+/* GRID FOR EXPIRY + CVC */
+.f-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px;              /* more like your screenshot spacing */
+  margin-top: 26px;
+}
+
+/* SAVE BUTTON */
+.card-save{
+  display: block;
+  width: min(520px, 92%);
+  margin: 60px auto 0;    /* lower like reference */
+  height: 52px;           /* was 36px */
+  border-radius: 12px;    /* smoother */
+  border: 1px solid rgba(0,0,0,0.18);
+  background: #F6EFD9;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
