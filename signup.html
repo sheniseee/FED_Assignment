@@ -18,6 +18,11 @@
       <h1 class="brand">Digital <span>Hawker</span></h1>
       <p class="brand-sub">Create an account</p>
 
+      <label for="name">Name</label>
+      <div class="input-wrap">
+        <input type="text" id="name" placeholder="Enter your name" autocomplete="name" />
+      </div>
+
       <label for="email">Email Address</label>
       <div class="input-wrap">
         <input type="email" id="email" placeholder="Enter your email" autocomplete="email" />
@@ -26,7 +31,7 @@
       <label for="password">Password</label>
       <div class="input-wrap">
         <input type="password" id="password" placeholder="••••••••••••" autocomplete="new-password" />
-        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+        <button type="button" class="toggle-password">
           <img src="img/eye.svg" class="eye-icon">
           <img src="img/eye-off.svg" display="none" class="eye-off-icon" />
         </button>
@@ -35,7 +40,7 @@
       <label for="confirm-password">Confirm Password</label>
       <div class="input-wrap">
         <input type="password" id="confirm-password" placeholder="••••••••••••" autocomplete="new-password" />
-        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+        <button type="button" class="toggle-password">
           <img src="img/eye.svg" class="eye-icon">
           <img src="img/eye-off.svg" display="none" class="eye-off-icon" />
         </button>
@@ -68,13 +73,13 @@
 
       </div>
 
-      <button class="btn-primary" type="button">Sign Up</button>
+      <button class="btn-primary" type="button" id="signup-btn">Sign Up</button>
 
       <div class="divider"><span>Or</span></div>
 
-      <button class="btn-google" type="button">
+      <button class="btn-google" type="button" id="google-signup-btn">
         <img src="img/gmail.svg" alt="Google logo" />
-        Sign up with Google
+        Sign in with Google
       </button>
 
       <p class="bottom-link">Already have an account? <a href="login.html">Log In</a></p>
@@ -97,6 +102,16 @@
 
 </div>
 
+
+
+<!-- Firebase SDK (compat version to match your firebase-config.js) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- Your scripts -->
+<script src="js/firebase-config.js"></script>
 <script src="js/main.js"></script>
+
 </body>
 </html>
