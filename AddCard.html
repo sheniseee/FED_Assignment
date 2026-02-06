@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credit Card</title>
+
+  <link rel="stylesheet" href="vendorBase.css">
+  <link rel="stylesheet" href="AddCard.css">
+</head>
+
+<body>
+  <div class="page">
+    <main class="card-wrap">
+
+      <!-- Back arrow (image) -->
+      <a class="card-back" href="SettingsPayment.html" aria-label="Back">
+        <img src="images/arrow (1).png" alt="Back" class="back-icon">
+      </a>
+
+      <!-- Page title -->
+      <div class="card-top">
+        <div class="card-top-title">Credit Card</div>
+      </div>
+
+      <!-- Credit card form -->
+      <form class="card-form">
+
+        <!-- Card number -->
+        <label class="f-label" for="cardNumber">Card number</label>
+        <div class="f-line">
+          <input
+            id="cardNumber"
+            class="f-input"
+            type="text"
+            placeholder="1234 5678 9012 3456"
+            inputmode="numeric"
+            autocomplete="cc-number"
+          >
+          <div class="brand">
+            <img src="images/card (1).png" alt="Visa">
+            <img src="images/card.png" alt="Mastercard">
+            <img src="images/american-express.png" alt="">
+          </div>
+        </div>
+
+        <!-- Expiry + CVC -->
+        <div class="f-grid">
+
+          <div>
+            <label class="f-label" for="expiry">Expiry Date</label>
+            <div class="f-line">
+              <input
+                id="expiry"
+                class="f-input"
+                type="text"
+                placeholder="MM/YY"
+                inputmode="numeric"
+                autocomplete="cc-exp"
+              >
+            </div>
+          </div>
+
+          <div>
+            <label class="f-label" for="cvc">CVC / CVV</label>
+            <div class="f-line">
+              <input
+                id="cvc"
+                class="f-input"
+                type="text"
+                placeholder="3 digits"
+                inputmode="numeric"
+                autocomplete="cc-csc"
+              >
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Save -->
+        <button class="card-save" type="submit">Save</button>
+      </form>
+
+    </main>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="AddCard.js"></script>
+</body>
+</html>
