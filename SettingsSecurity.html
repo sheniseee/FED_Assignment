@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password & Security</title>
+
+  <!-- shared -->
+  <link rel="stylesheet" href="vendorBase.css">
+  <link rel="stylesheet" href="VendorNav.css">
+  <link rel="stylesheet" href="SettingsSideBar.css">
+
+  <!-- page -->
+  <link rel="stylesheet" href="SettingsSecurity.css">
+
+  <!-- FONT (required by navbar.css) -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+
+<body>
+<div class="page">
+
+  <!-- NEW NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+
+      <!-- Logo -->
+      <a href="VendorHome.html" class="nav-logo">
+        <span class="logo-icon">🍜</span>
+        <span class="logo-text">Digital<br/>Hawker</span>
+      </a>
+
+      <!-- Nav Links -->
+      <ul class="nav-links">
+        <li><a href="VendorHome.html">Home</a></li>
+        <li><a href="VendorOrders.html">Order</a></li>
+        <li><a href="VendorOrderHistory.html">Order History</a></li>
+        <li><a href="VendorContact.html">Contact Us</a></li>
+      </ul>
+
+      <!-- User Section -->
+      <div class="nav-user">
+
+        <!-- Notifications -->
+        <button class="btn-notification" aria-label="Notifications" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+
+        <!-- User Dropdown -->
+        <div class="user-dropdown">
+          <button class="user-toggle" type="button" aria-label="User menu">
+            <div class="user-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span class="user-name">Username101</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu">
+            <a href="SettingsAccount.html" class="dropdown-item">My Profile</a>
+            <a href="VendorOrderHistory.html" class="dropdown-item">Order History</a>
+            <a href="SettingsAccount.html" class="dropdown-item">Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="VendorHome.html" class="dropdown-item dropdown-logout">Log Out</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <div class="settings-layout">
+    <!-- SIDEBAR -->
+    <aside class="settings-sidebar">
+      <a class="side-item" href="SettingsAccount.html">
+        <img class="side-icon" src="assets/icons/user.png" alt="">
+        <span>My Account</span>
+      </a>
+
+      <a class="side-item" href="SettingsNotifications.html">
+        <img class="side-icon" src="assets/icons/bell.png" alt="">
+        <span>Notifications</span>
+      </a>
+
+      <a class="side-item" href="SettingsDietary.html">
+        <img class="side-icon" src="assets/icons/dietary.png" alt="">
+        <span>Dietary<br>Restrictions</span>
+      </a>
+
+      <a class="side-item" href="SettingsPayment.html">
+        <img class="side-icon" src="assets/icons/payment.png" alt="">
+        <span>Payment</span>
+      </a>
+
+      <a class="side-item" href="SettingsLanguage.html">
+        <img class="side-icon" src="assets/icons/language.png" alt="">
+        <span>Language</span>
+      </a>
+
+      <!-- ACTIVE -->
+      <a class="side-item active" href="SettingsSecurity.html">
+        <img class="side-icon" src="assets/icons/lock.png" alt="">
+        <span>Password<br>&amp; Security</span>
+      </a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="settings-content">
+      <div class="sec-card">
+        <div class="sec-header">
+          <div class="sec-shield">
+            <img src="images/private-key.png" alt="" class="shield-icon">
+          </div>
+          <h1 class="sec-title">Password &amp; Security</h1>
+        </div>
+
+        <div class="sec-row">
+          <span class="dot"></span>
+          <span class="sec-strong">Two-factor authentication is on.</span>
+        </div>
+
+        <p class="sec-p">
+          Two-factor authentication adds an extra layer of security to ensure that
+          you're the only person who can access your account, even if someone knows your password.
+        </p>
+
+        <p class="sec-p">
+          When logging in, a verification code will be sent to your email. This code then needs to be
+          entered in the app in order to complete the login.
+        </p>
+
+        <a class="sec-btn" href="ChangePassword.html">Change password</a>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- dropdown JS -->
+<script>
+  const dd = document.querySelector('.user-dropdown');
+  const toggle = document.querySelector('.user-toggle');
+
+  toggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dd.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
+    dd?.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>
