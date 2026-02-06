@@ -4,45 +4,6 @@ body {
     font-family:Arial, Helvetica, sans-serif
 }
 
-/* NAVBAR */
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #FFEFC2;
-    padding: 1px 30px;
-}
-
-.logo img {
-    width: 80px;
-    height:auto;
-}
-
-.navbar nav a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #333;
-    font-family:Arial, Helvetica, sans-serif
-}
-
-.auth-buttons button {
-    padding: 8px 15px;
-    border-radius: 5px;
-    border: 1px solid #FFC84D;
-    margin-left: 10px;
-    font-size: 10px;
-    cursor: pointer;
-}
-
-.login {
-    background: #f2c94c;
-    border: none;
-}
-
-.signup {
-    background: white;
-}
-
 
 #section {
     background:#FFEFC2;
@@ -111,6 +72,7 @@ body {
 /* CONTENT */
 .content {
     display: flex;
+    padding: 20px;
 }
 
 /* FILTERS */
@@ -156,7 +118,7 @@ body {
 
 .stall-info {
     padding: 1px 20px;
-    line-height: 0.5;
+    line-height: 1.5;
 }
 
 .stall-info h4 {
