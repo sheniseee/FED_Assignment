@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Detail - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body {
+            background-color: #FFF8E1;
+            /* Cream background matching reference */
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            color: #333;
+        }
+
+        /* Custom Header for this view to match reference */
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: #FFF8E1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* DESKTOP FIRST (Default Forced Split) */
+        .main-container {
+            width: 100vw;
+            height: calc(100vh - 90px);
+            display: grid !important;
+            grid-template-columns: 50vw 50vw !important;
+            /* Force exact 50% split */
+            overflow: hidden;
+            background: #FFF8E1;
+            box-sizing: border-box;
+        }
+
+        /* LEFT COLUMN: Centers the Card */
+        .item-image-container {
+            width: 100%;
+            height: 100%;
+            background: #FFF8E1;
+            /* Same as background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            /* Breathing room */
+            box-sizing: border-box;
+        }
+
+        /* THE CARD: Contains the Image */
+        .image-card {
+            width: 100%;
+            max-width: 550px;
+            /* Prevent massive images on huge screens */
+            aspect-ratio: 1 / 1;
+            /* Square or 4/3 */
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            /* Nice shadow depth */
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ensures image fills card without distortion */
+            display: block;
+        }
+
+        .item-details {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            background: #FFF8E1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Center details vertically too */
+        }
+
+        .item-title {
+            font-size: 3.5rem;
+            margin-top: 0;
+            line-height: 1.2;
+        }
+
+        /* MOBILE OVERRIDE (Stacked) - Only below 768px */
+        @media (max-width: 768px) {
+            .main-container {
+                display: flex !important;
+                flex-direction: column !important;
+                height: auto;
+                min-height: calc(100vh - 90px);
+                overflow-y: auto;
+                grid-template-columns: none !important;
+            }
+
+            .item-image-container {
+                width: 100%;
+                height: auto;
+                padding: 24px;
+                background: #FFF8E1;
+            }
+
+            .image-card {
+                max-width: 100%;
+                aspect-ratio: 4/3;
+                /* Slightly shorter on mobile */
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .item-details {
+                width: 100%;
+                height: auto;
+                padding: 24px;
+                overflow-y: visible;
+                justify-content: flex-start;
+            }
+
+            .item-title {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Consumer Style Header -->
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+
+            <!-- Logo -->
+            <a href="dashboard.html" class="nav-logo">
+                <span class="logo-icon">🍜</span>
+                <span class="logo-text">Digital<br />Hawker</span>
+            </a>
+
+            <!-- Nav Links -->
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="incoming-orders.html">Incoming Orders</a></li>
+                <li><a href="orders.html">All Orders</a></li>
+                <li><a href="menu-management.html">Menu</a></li>
+                <li><a href="earnings-overview.html">Earnings</a></li>
+            </ul>
+
+            <!-- User Section (Logged In State) -->
+            <div class="nav-user">
+                <!-- Notifications -->
+                <button class="btn-notification" aria-label="Notifications"
+                    onclick="location.href='notifications.html'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown">
+                    <button class="user-toggle" aria-label="User menu">
+                        <div class="user-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <span class="user-name">Vendor</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu">
+                        <a href="settings.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                            Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="../login.html" class="dropdown-item dropdown-logout">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Log Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script src="../js/navbar.js"></script>
+
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+        async function loadItemDetail() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (!id) {
+                alert("No Item ID provided!");
+                window.location.href = 'menu-visual.html';
+                return;
+            }
+
+            try {
+                const docRef = doc(db, "menu_items", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const item = docSnap.data();
+
+                    document.getElementById('detailName').textContent = item.name;
+                    document.getElementById('detailDesc').textContent = item.description;
+                    document.getElementById('detailCategory').textContent = item.category;
+                    document.title = `${item.name} - Detail`;
+
+                    const basePrice = Number(item.price);
+                    let currentPrice = basePrice;
+
+                    // Handle Variants
+                    const variantContainer = document.querySelector('.form-group .form-select').parentElement;
+                    const variantSelect = variantContainer.querySelector('select');
+
+                    if (item.variants && item.variants.length > 0) {
+                        variantContainer.style.display = 'block';
+                        variantSelect.innerHTML = `<option value="base|${basePrice}">Standard ($${basePrice.toFixed(2)})</option>`;
+
+                        item.variants.forEach(v => {
+                            const vPrice = Number(v.price);
+                            variantSelect.innerHTML += `<option value="${v.name}|${vPrice}">${v.name} ($${vPrice.toFixed(2)})</option>`;
+                        });
+
+                        // On Change Listener
+                        variantSelect.onchange = function () {
+                            const [name, price] = this.value.split('|');
+                            updatePriceDisplay(Number(price), item.promotion);
+                        };
+
+                    } else {
+                        // Hide serving size selector if no variants
+                        variantContainer.style.display = 'none';
+                    }
+
+                    // Initial Price Display
+                    updatePriceDisplay(basePrice, item.promotion);
+
+                    document.getElementById('detailImage').src = item.imageUrl || '../images/main_logo.png';
+                    document.getElementById('detailImage').onerror = function () { this.src = '../images/main_logo.png'; };
+
+                } else {
+                    document.getElementById('detailName').textContent = "Item Not Found";
+                    document.getElementById('detailDesc').textContent = "The requested item does not exist or has been removed.";
+                }
+            } catch (error) {
+                console.error("Error fetching item:", error);
+                alert("Error loading item details.");
+            }
+        }
+
+        function updatePriceDisplay(price, promotion) {
+            const priceEl = document.getElementById('detailPrice');
+            if (promotion) {
+                const discount = Number(promotion.discount);
+                const discountedPrice = price * (1 - discount / 100);
+
+                priceEl.innerHTML = `
+                    <span style="display:block; font-size:1.2rem; text-decoration:line-through; color:#999; margin-bottom:4px;">$ ${price.toFixed(2)}</span>
+                    <span style="color:#d32f2f;">$ ${discountedPrice.toFixed(2)}</span>
+                    <span style="font-size:1rem; background:#FFEBEE; color:#d32f2f; padding:4px 8px; border-radius:4px; margin-left:8px;">${promotion.name} (-${discount}%)</span>
+                `;
+            } else {
+                priceEl.textContent = `$ ${price.toFixed(2)}`;
+            }
+        }
+
+        loadItemDetail();
+    </script>
+
+</body>
+
+</html>
