@@ -97,13 +97,7 @@
 <section id="section">
         <h1 id="stallName">Loading...</h1>
         <h4 id="stallDesc"></h4>
-        <div class="categories">
-    <button class="active">Popular</button>
-    <button>Rice</button>
-    <button>Noodles</button>
-    <button>Soup</button>
-    <button>Others</button>
-</div>
+        <div class="categories" id="categoryButtons"></div>
 </section>
 
 
@@ -131,6 +125,29 @@
             <button class="checkout-btn">Checkout</button>
         </div>
             </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" aria-hidden="true"></div>
+
+<!-- POPUP MODAL (item customisation; content filled by stall-menu.js) -->
+<div class="popup" aria-hidden="true">
+    <div class="popup-card large">
+        <img src="" alt="">
+        <div class="popup-info">
+            <h4></h4>
+            <p></p>
+            <div class="popup-scroll"></div>
+            <div class="popup-bottom">
+                <div class="quantity">
+                    <button class="qty-btn" type="button">-</button>
+                    <span>1</span>
+                    <button class="qty-btn" type="button">+</button>
+                </div>
+                <button class="add-cart" type="button">Add to Cart</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Firebase SDKs (v8) -->
