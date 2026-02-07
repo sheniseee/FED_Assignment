@@ -1,0 +1,102 @@
+/* SettingsPayment.css */
+.pay{
+  padding-top: 22px;
+}
+
+.pay-section{
+  width: min(720px, 92%);
+  margin: 0 auto;
+}
+
+.pay-title{
+  text-align: center;
+  font-size: 32px;
+  font-weight: 900;
+  margin: 10px 0 24px;
+}
+
+.pay-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin: 0 0 14px;
+}
+
+.pay-subtitle{
+  font-size: 20px;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 18px;
+}
+
+.pay-link{
+  font-size: 16px;
+  font-weight: 700;
+  color:#111;
+  text-decoration:none;
+}
+.pay-link:hover{ text-decoration: underline; }
+
+.pay-list{
+  display:flex;
+  flex-direction:column;
+  gap: 16px;
+}
+
+.pay-row,
+.pay-add{
+  background:#fff;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 14px;
+}
+
+.pay-left{
+  display:flex;
+  align-items:center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.pay-ico{
+  width: 34px;
+  height: 24px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.pay-name{
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.pay-meta{
+  font-size: 13px;
+  color:#888;
+  margin-top: 4px;
+}
+
+.pay-divider{
+  height: 2px;
+  background: rgba(255, 196, 74, 0.55);
+  margin: 26px 0;
+  border-radius: 999px;
+}
+
+.pay-add{
+  text-decoration:none;
+  color: inherit;
+}
+.pay-add:hover{ filter: brightness(0.99); }
+
+.pay-plus{
+  font-size: 26px;
+  font-weight: 900;
+  opacity: 0.85;
+  line-height: 1;
+}

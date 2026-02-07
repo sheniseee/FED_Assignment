@@ -1,0 +1,52 @@
+.lang-title{
+  margin: 6px 0 24px;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.lang-panel{
+  width: min(620px, 92%);
+  margin: 0 auto;
+}
+
+.lang-h{
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.lang-sub{
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 14px;
+}
+
+.lang-select{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  height: 54px;
+  padding: 0 16px;
+
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-soft);
+}
+
+.flag{
+  width: 28px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.lang-value{
+  font-weight: 700;
+}
+
+.chevron{
+  margin-left: auto;
+  opacity: 0.65;
+}
