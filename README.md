@@ -77,7 +77,6 @@ We are creating a Singapore Hawker Centre Management System with HTML as a Group
 Add images or links to your wireframes.
 
 ```
-images/home.png
 assets/wireframes/Customer Satisfaction.jpn
 assets/wireframes/Other Data.jpn
 assets/wireframes/Sale Analytics.jpn
@@ -576,5 +575,5 @@ For questions or feedback about this project:
 ---
 
 **Last Updated:** February 7, 2026  
-**Version:** 1.0.1  
+**Version:** 1.0.2  
 **Status:** ✅ Inspector Features Complete | 🚧 Customer/Vendor Features In Progress
