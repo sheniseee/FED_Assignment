@@ -478,10 +478,14 @@ FED_Assignment/
 │   └── logging-form.html            # Inspection logging
 │
 ├── customer/
-│   ├── index.html            # Customer homepage
-│   ├── browse.html           # Browse stalls
-│   ├── cart.html             # Shopping cart
-│   └── order-history.html    # Order tracking
+│   ├── index.html                  # Customer homepage
+│   ├── browse-stalls.html          # Browse stalls
+│   ├── stall-menu.html             # View menu items in stall
+│   ├── order-confirmation.html     # Confirms order and payment success
+│   ├── order-summary.html          # View customer's orders from all stores
+|   ├── order-preparation.html      # Progress of order
+|   ├── order-completion.html       # Feedback and Rating
+│   └── order-history.html          # Order tracking
 │
 ├── vendor/
 │   └── vendor-css
