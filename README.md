@@ -484,20 +484,10 @@ FED_Assignment/
 │   └── order-history.html    # Order tracking
 │
 ├── vendor/
-│   └── earnings-overview.html
-│   └── incoming-orders.html
-│   └── menu-item.html
-│   └── menu-management.html
-│   └── menu-visual.html
-│   └── menu.html
-│   └── order-tracking.html
-│   └── orders.html
-│   └── seed-data.html
-│   └── track-table.html
-│   └── firebase-config.js
-│   └── index.js
-│   └── responsive.js
-│   └── seed-menu.js
+│   └── vendor-css
+│   └── vendor-html
+│   └── vendor-images
+│   └── vendor-js
 │
 ├── assets/
 │   ├── images/               # Product images, icons
