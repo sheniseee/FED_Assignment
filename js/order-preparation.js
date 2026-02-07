@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var collectedBtn = document.querySelector('.collected-btn');
   if (collectedBtn) {
     collectedBtn.addEventListener('click', function () {
-      window.location.href = 'order-completion.html';
+      window.location.href = '../customer/order-completion.html';
     });
   }
 });

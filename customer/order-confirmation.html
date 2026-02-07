@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Order Summary</title>
-    <link rel="stylesheet" href="navbar.css">
-    <link rel="stylesheet" href="order-summary.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order Confirmation</title>
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/order-confirmation.css">
 </head>
 <body>
 
@@ -25,9 +24,9 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="order.html">Order</a></li>
+      <li><a href="browse-stalls.html">Order</a></li>
       <li><a href="order-history.html">Order History</a></li>
-      <li><a href="contact.html">Contact Us</a></li>
+      <li><a href="contact-us.html">Contact Us</a></li>
     </ul>
 
     <!-- User Section (Logged In State) -->
@@ -96,12 +95,15 @@
     </div>
   </div>
 </nav>
-<section class="page">
+
+<!-- CONFIRMATION -->
+ <section class="page">
 
   <div class="center-box">
-
     <div class="icon success">✔</div>
+
     <h2>Order Confirmed</h2>
+    <p>Your order has been sent to the stall(s)</p>
 
     <div class="details">
       <p>Order ID: 123456789</p>
@@ -109,48 +111,14 @@
       <p>Payment Status: Successful</p>
     </div>
 
-    <div class="summary-card">
-
-      <h3>Order Summary</h3>
-
-      <div class="summary-item">
-        <div class="img-box">
-          <img src="https://images.lifestyleasia.com/wp-content/uploads/sites/6/2022/10/14161244/best-hainanese-chicken-rice-in-singapore-boon-tong-kee-kim-eng-wee-nam-kee-rating-1350x900.jpg" alt="Golden Grain Chicken Rice">
-        </div>
-        <div>
-          <strong>Golden Grain Chicken Rice</strong>
-          <p>x1 Hainanese Chicken Rice</p>
-          <p>x1 Roasted Pork Belly</p>
-        </div>
-        <span>$5</span>
-      </div>
-
-      <div class="summary-item">
-        <div class="img-box">
-          <img src="https://www.emborg.com/app/uploads/2025/03/1200x900px_Nasi-Lemak.jpg" alt="Nasi Lemak Express">
-        </div>
-        <div>
-          <strong>Nasi Lemak Express</strong>
-          <p>x1 Nasi Lemak</p>
-          <p>x2 Additional Chicken Wing</p>
-        </div>
-        <span>$4</span>
-      </div>
-
-      <div class="total">
-        <strong>Total</strong>
-        <strong>$19</strong>
-      </div>
-
-    </div>
-
+    <a href="order-summary.html" class="link">View Order Summary</a>
     <a href="order-preparation.html" class="link">Track order preparation</a>
-
   </div>
 
 </section>
 
-<script src="navbar.js"></script>
-<script src="order-summary.js"></script>
+<script src="../js/navbar.js"></script>
+<script src="../js/order-confirmation.js"></script>
+
 </body>
 </html>

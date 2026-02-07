@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Browse Stalls</title>
-    <link rel="stylesheet" href="browse-stalls.css">
-    <link rel="stylesheet" href="navbar.css">
+    <title>Stall Menu</title>
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/stall-menu.css">
 </head>
 <body>
-
-
 
 <!-- NAVBAR -->
     <nav class="navbar">
@@ -25,10 +23,10 @@
       </button>
       <!-- Nav Links -->
       <ul class="nav-links">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="order.html">Order</a></li>
+        <li><a href="index.html" class="active">Home</a></li> 
+        <li><a href="browse-stalls.html">Browse Stalls</a></li>
         <li><a href="order-history.html">Order History</a></li>
-        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="contact-us.html">Contact Us</a></li>
       </ul>
 
       <!-- User Section (Logged In State) -->
@@ -98,59 +96,74 @@
 </div>
 </nav>
 
+<!-- BANNER (stall name and description filled from StallsDB in stall-menu.js) -->
+<section id="section">
+        <h1 id="stallName">Loading...</h1>
+        <h4 id="stallDesc"></h4>
+        <div class="categories" id="categoryButtons"></div>
+</section>
+
+
+
 <!-- MAIN CONTENT -->
-<main class="container">
+<div class="main-content">
+    <!-- STALLS GRID (menu cards rendered from Firestore in stall-menu.js) -->
+    <div class="stalls"></div>
 
-    <!-- SEARCH -->
-    <section id="section">
-        <h1>Browse Stalls</h1>
-        <div class="search-bar">
-            <input type="text" placeholder="Search stalls...">
+    <!-- CART SIDEBAR -->
+    <div class="cart">
+        <div class="cart-toggle">
+            <button class="active">Delivery</button>
+            <button>Pickup</button>
+        </div>
+        <div class="cart-items"></div>
+
+        <div class="cart-empty">
+            <img src="../images/146-1464860_png-file-black-shopping-cart-icon-transparent-png-removebg-preview.png" alt="Cart">
+            <p>Hungry?<br>You haven't added anything in your cart!</p>
         </div>
 
-        <!-- ICON BUTTONS -->
-        <div class="icon-buttons">
-            <button class="favourites">
-                <img src="images\6-62455_instagram-heart-emoji-free-download-transparent-heart-symbol-removebg-preview.png" alt="Favourites">
-            </button>
-            <button class="cart">
-                <img src="images\146-1464860_png-file-black-shopping-cart-icon-transparent-png-removebg-preview.png" alt="Cart">
-            </button>
+        <div class="cart-total">
+            <p>Total: $<span id="totalPrice">0.00</span></p>
+            <button class="checkout-btn">Checkout</button>
         </div>
-    </section>
+            </div>
+</div>
 
-    <!-- CONTENT -->
-    <div class="content">
+<!-- OVERLAY -->
+<div class="overlay" aria-hidden="true"></div>
 
-        <!-- FILTERS -->
-        <aside class="filters">
-            <h3>Filters</h3>
-
-            <p><strong>Sort By</strong></p>
-            <label><input type="radio" name="sort"> Relevance</label>
-            <label><input type="radio" name="sort"> Distance</label>
-            <label><input type="radio" name="sort"> Top Rated</label>
-            <label><input type="radio" name="sort"> Least Crowded</label>
-
-            <p><strong>Promotions</strong></p>
-            <label><input type="checkbox"> Free Delivery</label>
-            <label><input type="checkbox"> 10% OFF</label>
-            <label><input type="checkbox"> Buy 1 Get 1 Free</label>
-        </aside>
-
-        <!-- STALLS (cards rendered from Firestore in browse-stalls.js) -->
-        <section class="stalls"></section>
-
+<!-- POPUP MODAL (item customisation; content filled by stall-menu.js) -->
+<div class="popup" aria-hidden="true">
+    <div class="popup-card large">
+        <img src="" alt="">
+        <div class="popup-info">
+            <h4></h4>
+            <p></p>
+            <div class="popup-scroll"></div>
+            <div class="popup-bottom">
+                <div class="quantity">
+                    <button class="qty-btn" type="button">-</button>
+                    <span>1</span>
+                    <button class="qty-btn" type="button">+</button>
+                </div>
+                <button class="add-cart" type="button">Add to Cart</button>
+            </div>
+        </div>
     </div>
-</main>
+</div>
 
 <!-- Firebase SDKs (v8) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="firebase.js"></script>
 
-<script src="navbar.js"></script>
-<script src="browse-stalls.js"></script>
+<!-- Project Firebase config and helpers (includes MenuDB) -->
+<script src="../js/firebase.js"></script>
+
+<!-- Page scripts -->
+<script src="../js/stall-menu.js"></script>
+<script src="../js/navbar.js"></script>
+
 </body>
 </html>

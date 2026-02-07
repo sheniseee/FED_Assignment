@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (checkoutBtn) {
     checkoutBtn.addEventListener('click', function () {
       if (cart.length > 0) {
-        window.location.href = 'order-confirmation.html';
+        window.location.href = '../customer/order-confirmation.html';
       } else {
         alert('Your cart is empty. Add some items first!');
       }

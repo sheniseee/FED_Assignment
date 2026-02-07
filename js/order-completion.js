@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       var feedback = textarea ? textarea.value.trim() : '';
       alert('Thank you for your ' + rating + '-star rating!' + (feedback ? '\nWe received your feedback.' : ''));
-      window.location.href = 'order-summary.html';
+      window.location.href = '../customer/order-summary.html';
     });
   }
 
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (reportLink) {
     reportLink.style.cursor = 'pointer';
     reportLink.addEventListener('click', function () {
-      window.location.href = 'contact.html';
+      window.location.href = '../customer/contact.html';
     });
   }
 });

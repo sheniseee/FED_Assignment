@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       var card = document.createElement('div');
       card.className = 'stall-card';
-      card.setAttribute('data-stall-url', stallID ? 'stall-menu.html?stall=' + encodeURIComponent(stallID) : '');
+      card.setAttribute('data-stall-url', stallID ? '../customer/stall-menu.html?stall=' + encodeURIComponent(stallID) : '');
       card.setAttribute('data-stall-id', stallID);
       card.style.cursor = stallID ? 'pointer' : '';
 
