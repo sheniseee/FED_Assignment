@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order History</title>
+  <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="order-history.css">
+</head>
+<body>
+
+<!-- NAVBAR (same as order-summary) -->
+<nav class="navbar">
+  <div class="nav-container">
+
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">🍜</span>
+      <span class="logo-text">Digital<br/>Hawker</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="order.html">Order</a></li>
+      <li><a href="order-history.html" class="active">Order History</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+
+    <div class="nav-user">
+      <button class="btn-notification" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="notification-badge">3</span>
+      </button>
+
+      <div class="user-dropdown">
+        <button class="user-toggle" aria-label="User menu">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <span class="user-name">Username101</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <div class="dropdown-menu">
+          <a href="profile.html" class="dropdown-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            My Profile
+          </a>
+          <a href="order-history.html" class="dropdown-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            Order History
+          </a>
+          <a href="settings.html" class="dropdown-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Settings
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="index.html" class="dropdown-item dropdown-logout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Log Out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="order-history-page">
+  <h1 class="page-title">Order History</h1>
+
+  <div class="order-cards">
+    <!-- Order card 1 -->
+    <article class="order-card">
+      <div class="order-card-header">
+        <h2 class="order-stall-name">Golden Wok Express</h2>
+        <p class="order-total">$5.50</p>
+      </div>
+      <p class="order-meta">Delivered on Wed, 10 Dec, 1:36 pm</p>
+      <p class="order-id">Order #123456789</p>
+      <ul class="order-items">
+        <li>x1 Egg Fried Rice</li>
+      </ul>
+      <div class="order-card-actions">
+        <button type="button" class="btn-reorder">Select items to reorder</button>
+      </div>
+    </article>
+
+    <!-- Order card 2 -->
+    <article class="order-card">
+      <div class="order-card-header">
+        <h2 class="order-stall-name">Sakura Kitchen</h2>
+        <p class="order-total">$7.80</p>
+      </div>
+      <p class="order-meta">Picked up on Wed, 11 Dec, 1:36 pm</p>
+      <p class="order-id">Order #123456789</p>
+      <ul class="order-items">
+        <li>x2 Dumpling Noodle (Soup)</li>
+      </ul>
+      <div class="order-card-actions">
+        <button type="button" class="btn-reorder">Select items to reorder</button>
+      </div>
+    </article>
+
+    <!-- Order card 3 -->
+    <article class="order-card">
+      <div class="order-card-header">
+        <h2 class="order-stall-name">Noodle House</h2>
+        <p class="order-total">$22.00</p>
+      </div>
+      <p class="order-meta">Delivered on Wed, 11 Dec, 2:15 pm</p>
+      <p class="order-id">Order #123456789</p>
+      <ul class="order-items">
+        <li>x1 Meatball Soup</li>
+      </ul>
+      <div class="order-card-actions">
+        <button type="button" class="btn-reorder">Select items to reorder</button>
+      </div>
+    </article>
+  </div>
+</main>
+
+<script src="navbar.js"></script>
+<script src="order-history.js"></script>
+</body>
+</html>
