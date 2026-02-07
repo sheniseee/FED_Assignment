@@ -306,8 +306,30 @@ document.addEventListener('DOMContentLoaded', () => {
     closePopup();
   });
 
+  // Checkout: go to order confirmation only if cart has items
+  var checkoutBtn = document.querySelector('.checkout-btn');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', function () {
+      if (cart.length > 0) {
+        window.location.href = 'order-confirmation.html';
+      } else {
+        alert('Your cart is empty. Add some items first!');
+      }
+    });
+  }
+
   // Initial state
   closePopup();
   renderCart();
+
+  // If we came from stall-menu (add button): open popup with that item and overlay
+  try {
+    var stored = sessionStorage.getItem('pendingCustomisationItem');
+    if (stored) {
+      var item = JSON.parse(stored);
+      sessionStorage.removeItem('pendingCustomisationItem');
+      if (item && item.name) openPopup(item);
+    }
+  } catch (e) {}
 });
 
