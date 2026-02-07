@@ -111,53 +111,8 @@
 
 <!-- MAIN CONTENT -->
 <div class="main-content">
-    <!-- STALLS GRID -->
-    <div class="stalls">
-        <div class="stall-card">
-            <img src="https://images.lifestyleasia.com/wp-content/uploads/sites/6/2022/10/14161244/best-hainanese-chicken-rice-in-singapore-boon-tong-kee-kim-eng-wee-nam-kee-rating-1350x900.jpg" alt="Hainanese Chicken Rice">
-            <div class="stall-info">
-                <h4>Hainanese Chicken Rice</h4>
-                <p>Tender, juicy chicken served with fragrant rice and house chilli & ginger sauce.</p>
-                <div class="stall-price">
-                <p>$5</p>
-                </div>
-                <button class="add">+</button>
-            </div>
-        </div>
-        <div class="stall-card">
-            <img src="https://asianinspirations.com.au/wp-content/uploads/2018/10/R00465_Char-Siu-Pork-Belly.jpg" alt="Char Siew">
-            <div class="stall-info">
-                <h4>Char Siew</h4>
-                <p>Sweet and smoky roasted pork with caramelised edges. Definitely a fan favourite!</p>
-                <div class="stall-price">
-                <p>$4.50</p>
-                </div>
-                <button class="add">+</button>
-            </div>
-        </div>
-        <div class="stall-card">
-            <img src="https://i.ytimg.com/vi/zjzzi96RZ7s/maxresdefault.jpg" alt="Chicken Hor Fun">
-            <div class="stall-info">
-                <h4>Chicken Hor Fun</h4>
-                <p>Silky smooth flat rice noodles served with tender chicken slices coated in a rich, savoury gravy.</p>
-                <div class="stall-price">
-                <p>$4</p>
-                </div>
-                <button class="add">+</button>
-            </div>
-        </div>
-        <div class="stall-card">
-            <img src="https://kwokspots.com/wp-content/uploads/2024/08/crispy-pork-bellyl-2.png" alt="Roasted Pork Belly">
-            <div class="stall-info">
-                <h4>Roasted Pork Belly</h4>
-                <p>Crispy crackling, tender meat, and rich pork flavour in every bite — a hawker favourite.</p>
-                <div class="stall-price">
-                <p>$5</p>
-                </div>
-                <button class="add">+</button>
-            </div>
-        </div>
-    </div>
+    <!-- STALLS GRID (menu cards rendered from Firestore in stall-menu.js) -->
+    <div class="stalls"></div>
 
     <!-- CART SIDEBAR -->
     <div class="cart">
@@ -179,6 +134,15 @@
             </div>
 </div>
 
+<!-- Firebase SDKs (v8) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<!-- Project Firebase config and helpers (includes MenuDB) -->
+<script src="firebase.js"></script>
+
+<!-- Page scripts -->
 <script src="stall-menu.js"></script>
 <script src="navbar.js"></script>
 
