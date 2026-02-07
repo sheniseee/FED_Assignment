@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Language</title>
 
-  <!-- shared css -->
+  <!-- shared css across all pages -->
   <link rel="stylesheet" href="vendorBase.css">
   <link rel="stylesheet" href="VendorNav.css">
   <link rel="stylesheet" href="SettingsSideBar.css">
@@ -20,7 +20,7 @@
     <nav class="navbar">
       <div class="nav-container">
 
-        <!-- nav bar logo-->
+        <!-- nav bar logo -->
         <a href="VendorHome.html" class="nav-logo">
           <span class="logo-icon">🍜</span>
           <span class="logo-text">Digital<br/>Hawker</span>
@@ -121,11 +121,41 @@
             Choose the language you want the website to display
           </div>
 
-          <div class="lang-select">
-            <img src="assets/flags/us.png" class="flag" alt="English (US)">
-            <span class="lang-value">English, US</span>
-            <img src="assets/icons/chevron-down.png" class="chevron-icon" alt="">
-          </div>
+          <div class="lang-dropdown" id="langDropdown">
+              <button class="lang-select" type="button" id="langToggle" aria-haspopup="listbox" aria-expanded="false">
+                <img src="images/united-states.png" class="flag" alt="" id="langFlag">
+                <span class="lang-value" id="langValue">English, US</span>
+                <img src="images/arrowDown.png" class="chevron-icon" alt="">
+              </button>
+
+              <div class="lang-menu" id="langMenu" role="listbox" aria-label="Language options">
+                <button class="lang-option" type="button" data-lang="English, US" data-flag="assets/flags/us.png">
+                  <img src="images/united-states.png" class="flag" alt="">
+                  <span>English, US</span>
+                </button>
+
+                <button class="lang-option" type="button" data-lang="English, UK" data-flag="assets/flags/uk.png">
+                  <img src="images/united-kingdom.png" class="flag" alt="">
+                  <span>English, UK</span>
+                </button>
+
+                <button class="lang-option" type="button" data-lang="中文 (简体)" data-flag="assets/flags/cn.png">
+                  <img src="images/china.png" class="flag" alt="">
+                  <span>中文 (简体)</span>
+                </button>
+
+                <button class="lang-option" type="button" data-lang="Bahasa Melayu" data-flag="assets/flags/my.png">
+                  <img src="images/malaysia.png" class="flag" alt="">
+                  <span>Bahasa Melayu</span>
+                </button>
+
+                <button class="lang-option" type="button" data-lang="தமிழ்" data-flag="assets/flags/in.png">
+                  <img src="images/india.png" class="flag" alt="">
+                  <span>தமிழ்</span>
+                </button>
+              </div>
+            </div>
+
         </div>
       </main>
 
@@ -145,5 +175,7 @@
       dd?.classList.remove('open');
     });
   </script>
+  <script src="SettingsLanguage.js" defer></script>
+
 </body>
 </html>
