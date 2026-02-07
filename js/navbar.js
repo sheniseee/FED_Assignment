@@ -90,6 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (badge) {
         badge.style.display = 'none';
       }
+      // In a real app, this would open a notifications panel
+      alert('Notifications panel coming soon!');
     });
   }
 
