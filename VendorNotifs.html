@@ -40,7 +40,7 @@
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-            <span class="notification-badge">3</span>
+            <span class="notification-badge">0</span>
           </button>
 
           <!-- user dropdown -->
@@ -119,11 +119,11 @@
       </section>
 
       <!-- urgent banner -->
-      <section class="urgent">
+      <section class="urgent" id="urgentSection" style="display:none;">
         <div class="urgent-inner">
           <div class="urgent-text">
-            <div class="urgent-title">Stall inspection in 2 days: May 1</div>
-            <div class="urgent-sub">Ensure hygiene and safety standards are met.</div>
+            <div class="urgent-title"></div>
+            <div class="urgent-sub"></div>
           </div>
         </div>
       </section>
@@ -133,44 +133,16 @@
         <div class="recent-head">Recent Notifications</div>
 
         <div class="recent-list">
-          <a class="ncard" href="#">
-            <div class="ncard-body">
-              <div class="ncard-title">Stall rent due in 3 days</div>
-              <div class="ncard-sub">Rent Payment of SGD $1200 is due on 2 May 2025</div>
 
-              <div class="badge-row">
-                <span class="badge danger">Expiring soon</span>
-              </div>
+          <div class="recent-empty" style="padding:12px; color:#444; font-size:13px;">
+            Loading...
+          </div>
 
-              <div class="ncard-time">Updated 20 minutes ago</div>
-            </div>
-          </a>
-
-          <a class="ncard" href="#">
-            <div class="ncard-body">
-              <div class="ncard-title">New order received</div>
-              <div class="ncard-sub">Order #123445 has been placed by John Tan</div>
-              <div class="ncard-time">Updated 1 hour ago</div>
-            </div>
-          </a>
-
-          <a class="ncard" href="#">
-            <div class="ncard-body">
-              <div class="ncard-title">Low stock alert</div>
-              <div class="ncard-sub">Inventory alert: Chicken Wings are running low</div>
-
-              <div class="badge-row">
-                <span class="badge warn">Running low</span>
-              </div>
-
-              <div class="ncard-time">Updated 20 minutes ago</div>
-            </div>
-          </a>
-
-          <a class="viewall" href="#">View all</a>
+          <a class="viewall" href="#" id="viewAllBtn" style="display:none;">View all</a>
         </div>
       </section>
     </main>
+
   </div>
 
   <!-- dropdown JS -->
@@ -187,5 +159,17 @@
       dd?.classList.remove('open');
     });
   </script>
+
+  <!-- Firebase v8 SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <!-- Your Firebase connection -->
+  <script src="firebase.js"></script>
+
+  <!-- Page logic -->
+  <script src="SettingsNotifs.js"></script>
+
 </body>
 </html>
