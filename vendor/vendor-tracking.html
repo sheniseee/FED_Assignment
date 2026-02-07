@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Tracking - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Digital <span class="text-gold">Hawker</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>Dashboard</span>
+                </a>
+                <a href="orders.html" class="nav-item active">
+                    <ion-icon name="receipt-outline"></ion-icon>
+                    <span>Orders</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Tracking Order</h1>
+            </header>
+
+            <!-- Filter Section -->
+            <div class="card" style="margin-bottom:24px; display:flex; gap:16px; align-items:center;">
+                <div style="flex:1;">
+                    <label style="display:block; margin-bottom:8px; font-weight:500;">Table No.</label>
+                    <input type="text" value="T04"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+                <div style="flex:1;">
+                    <label style="display:block; margin-bottom:8px; font-weight:500;">Date</label>
+                    <input type="text" value="31/01/2026"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+                <div style="flex:1;">
+                    <label style="display:block; margin-bottom:8px; font-weight:500;">Time</label>
+                    <input type="text" value="11 : 30 am - 12 : 30 pm"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+                <div style="margin-top:28px;">
+                    <button class="btn btn-primary" onclick="showTableInfo()">Apply</button>
+                </div>
+            </div>
+
+            <!-- Table Info Modal / Card -->
+            <div id="tableInfo" class="card" style="display:none; animation:fadeIn 0.3s ease;">
+                <h2 style="font-size:2.5rem; text-align:center; margin-bottom:24px;">Table 04</h2>
+
+                <div style="background:#FFF8E1; padding:24px; border-radius:12px; margin-bottom:24px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                        <strong>Customer Name:</strong> John Doe
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>Order Number:</strong> #12345
+                    </div>
+                </div>
+
+                <div class="order-item" style="border-bottom:1px solid #eee; padding-bottom:16px; margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <div>
+                            <h4>Spicy Hokkien Mee</h4>
+                            <p class="text-light">Large • Less Spicy</p>
+                        </div>
+                        <div style="text-align:right;">
+                            <p>Order ID: #12344</p>
+                            <span class="tag"
+                                style="background:#E8F5E9; color:green; padding:2px 6px; border-radius:4px; font-size:0.8rem;">Completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-item">
+                    <div style="display:flex; justify-content:space-between;">
+                        <div>
+                            <h4>Orange Juice</h4>
+                            <p class="text-light">Cold • Less Ice</p>
+                        </div>
+                        <div style="text-align:right;">
+                            <p>Order ID: #12344</p>
+                            <span class="tag"
+                                style="background:#E8F5E9; color:green; padding:2px 6px; border-radius:4px; font-size:0.8rem;">Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function showTableInfo() {
+            document.getElementById('tableInfo').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

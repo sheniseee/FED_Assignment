@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Digital <span class="text-gold">Hawker</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>Dashboard</span>
+                </a>
+                <a href="orders.html" class="nav-item">
+                    <ion-icon name="receipt-outline"></ion-icon>
+                    <span>Orders</span>
+                </a>
+                <a href="menu.html" class="nav-item active">
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    <span>Menu</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span>Analytics</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Menu Item Management</h1>
+                <p class="text-light">Manage your menu by adding new items, editing existing ones, or removing outdated
+                    dishes.</p>
+            </header>
+
+            <!-- Search & Filter Controls -->
+            <section class="filter-bar"
+                style="display:flex; justify-content:space-between; align-items:center; background:transparent; box-shadow:none; padding:0; margin-bottom:24px;">
+                <div class="search-box" style="position:relative; width: 300px;">
+                    <ion-icon name="search-outline"
+                        style="position:absolute; left:12px; top:12px; color:#999;"></ion-icon>
+                    <input type="text" placeholder="Enter Item ID..."
+                        style="width:100%; padding:10px 10px 10px 36px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+
+                <div class="action-group" style="display:flex; gap:12px;">
+                    <button class="btn btn-outline" style="background:white;">
+                        <ion-icon name="filter-outline"></ion-icon> Filter
+                    </button>
+                    <button class="btn btn-primary" onclick="toggleAddModal()">
+                        <ion-icon name="add-circle-outline"></ion-icon> Add Item
+                    </button>
+                    <button class="btn btn-outline" style="background:white;" onclick="printIngredients()">
+                        <ion-icon name="print-outline"></ion-icon> Print
+                    </button>
+                </div>
+            </section>
+
+            <!-- Data Table -->
+            <div class="card" style="padding:0; overflow:hidden;">
+                <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead style="background: #FFF8E1; border-bottom: 2px solid #eee;">
+                        <tr>
+                            <th style="padding:16px; text-align:left; width:40px;"><input type="checkbox"></th>
+                            <th style="padding:16px; text-align:left;">Item ID</th>
+                            <th style="padding:16px; text-align:left;">Name</th>
+                            <th style="padding:16px; text-align:left;">Price</th>
+                            <th style="padding:16px; text-align:left;">Group</th>
+                            <th style="padding:16px; text-align:left;">Ingredients</th>
+                            <th style="padding:16px; text-align:left;">Description</th>
+                            <th style="padding:16px; text-align:left;">Dietary Notes</th>
+                            <th style="padding:16px; text-align:center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1 -->
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:16px;"><input type="checkbox"></td>
+                            <td style="padding:16px; color:#666;">2021</td>
+                            <td style="padding:16px; font-weight:600;">Regular Hokkien Mee (S)</td>
+                            <td style="padding:16px;">$4.50</td>
+                            <td style="padding:16px;">Noodles</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Yellow noodles, prawns, squid, egg...</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Traditional stir-fried noodles...</td>
+                            <td style="padding:16px;">-</td>
+                            <td style="padding:16px; text-align:center;">
+                                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem;"
+                                    onclick="openEditModal('Regular Hokkien Mee (S)')">Edit</button>
+                            </td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:16px;"><input type="checkbox"></td>
+                            <td style="padding:16px; color:#666;">2022</td>
+                            <td style="padding:16px; font-weight:600;">Regular Hokkien Mee (M)</td>
+                            <td style="padding:16px;">$5.50</td>
+                            <td style="padding:16px;">Noodles</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Yellow noodles, prawns, squid, egg...</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Medium portion for hungrier..</td>
+                            <td style="padding:16px;">-</td>
+                            <td style="padding:16px; text-align:center;">
+                                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem;"
+                                    onclick="openEditModal('Regular Hokkien Mee (M)')">Edit</button>
+                            </td>
+                        </tr>
+                        <!-- Row 3 -->
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:16px;"><input type="checkbox"></td>
+                            <td style="padding:16px; color:#666;">2023</td>
+                            <td style="padding:16px; font-weight:600;">Spicy Hokkien Mee (S)</td>
+                            <td style="padding:16px;">$4.70</td>
+                            <td style="padding:16px;">Noodles</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Yellow noodles, sambal belacan...</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Spicy version with extra kick...</td>
+                            <td style="padding:16px;">Spicy</td>
+                            <td style="padding:16px; text-align:center;">
+                                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem;"
+                                    onclick="openEditModal('Spicy Hokkien Mee (S)')">Edit</button>
+                            </td>
+                        </tr>
+                        <!-- Row 4 -->
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:16px;"><input type="checkbox"></td>
+                            <td style="padding:16px; color:#666;">2024</td>
+                            <td style="padding:16px; font-weight:600;">Fried Spring Rolls</td>
+                            <td style="padding:16px;">$3.00</td>
+                            <td style="padding:16px;">Snacks</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Turnip, carrot, minced meat wrapper</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Crispy deep fried goodness</td>
+                            <td style="padding:16px;">Contains Pork</td>
+                            <td style="padding:16px; text-align:center;">
+                                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem;"
+                                    onclick="openEditModal('Fried Spring Rolls')">Edit</button>
+                            </td>
+                        </tr>
+                        <!-- Row 5 -->
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:16px;"><input type="checkbox"></td>
+                            <td style="padding:16px; color:#666;">2025</td>
+                            <td style="padding:16px; font-weight:600;">Oyster Omelet</td>
+                            <td style="padding:16px;">$6.00</td>
+                            <td style="padding:16px;">Snacks</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Fresh oysters, egg, starch, cilantro</td>
+                            <td
+                                style="padding:16px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                                Teochew style orh luak</td>
+                            <td style="padding:16px;">Shellfish</td>
+                            <td style="padding:16px; text-align:center;">
+                                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem;"
+                                    onclick="openEditModal('Oyster Omelet')">Edit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="padding:16px; text-align:center; color:#999; font-size:0.9rem;">
+                    Showing 5 of 24 items
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div id="itemModal" class="modal hidden">
+        <div class="modal-content" style="max-width:600px;">
+            <span class="close-modal" onclick="toggleAddModal()">&times;</span>
+            <h2 id="modalTitle">Edit Item</h2>
+            <form style="margin-top:16px; display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                <div style="grid-column: span 1;">
+                    <label style="display:block; margin-bottom:4px; font-size:0.9rem;">Item ID</label>
+                    <input type="text" value="2051" readonly
+                        style="width:100%; padding:10px; border:1px solid #eee; border-radius:8px; background:#f9f9f9;">
+                </div>
+                <div style="grid-column: span 1;">
+                    <label style="display:block; margin-bottom:4px; font-size:0.9rem;">Item Name</label>
+                    <input type="text" placeholder="e.g. Char Kway Teow"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+                <div style="grid-column: span 1;">
+                    <label style="display:block; margin-bottom:4px; font-size:0.9rem;">Price ($)</label>
+                    <input type="number" step="0.10" placeholder="0.00"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+                <div style="grid-column: span 1;">
+                    <label style="display:block; margin-bottom:4px; font-size:0.9rem;">Item Group</label>
+                    <select style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        <option>Noodles</option>
+                        <option>Snacks</option>
+                        <option>Beverages</option>
+                    </select>
+                </div>
+
+                <div style="grid-column: span 2;">
+                    <label style="display:block; margin-bottom:4px; font-size:0.9rem;">Ingredients</label>
+                    <textarea rows="2"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;"></textarea>
+                </div>
+
+                <div style="grid-column: span 2;">
+                    <label style="display:block; margin-bottom:4px; font-size:0.9rem;">Description</label>
+                    <textarea rows="2"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;"></textarea>
+                </div>
+
+                <div style="grid-column: span 2;">
+                    <label style="display:block; margin-bottom:4px; font-size:0.9rem;">Dietary Notes</label>
+                    <input type="text" placeholder="e.g. Spicy, Halal, Contains Nuts"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+
+                <div style="grid-column: span 2; display:flex; gap:12px; margin-top:12px;">
+                    <button type="button" class="btn btn-primary w-100">Save Changes</button>
+                    <button type="button" class="btn btn-outline" style="border-color:#F44336; color:#F44336;"
+                        onclick="toggleAddModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleAddModal() {
+            document.getElementById('itemModal').classList.toggle('hidden');
+        }
+        function openEditModal(name) {
+            document.getElementById('modalTitle').innerText = 'Edit ' + name;
+            toggleAddModal();
+        }
+        function printIngredients() {
+            alert("Sending ingredient list to printer...");
+        }
+    </script>
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 1;
+            visibility: visible;
+            transition: all 0.3s;
+        }
+
+        .modal.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</body>
+
+</html>

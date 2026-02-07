@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            /* 2 parts left, 1 part right */
+            gap: 24px;
+        }
+
+        .welcome-section {
+            background: #FFF8E1;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .dashboard-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            border-radius: 12px;
+            background: var(--primary-color);
+            color: var(--text-dark);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            justify-content: center;
+            /* Centered as per screenshot */
+        }
+
+        .dashboard-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Right sidebar widgets */
+        .widget-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .widget-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .widget-card h4 {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .widget-card h2 {
+            font-size: 2rem;
+            color: var(--text-dark);
+        }
+
+        .notif-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Digital <span class="text-gold">Hawker</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item active">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>Dashboard</span>
+                </a>
+                <a href="orders.html" class="nav-item">
+                    <ion-icon name="receipt-outline"></ion-icon>
+                    <span>Orders</span>
+                </a>
+                <a href="menu.html" class="nav-item">
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    <span>Menu</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span>Analytics</span>
+                </a>
+            </nav>
+            <div class="user-profile" style="cursor:pointer;" onclick="window.location.href='../index.html'">
+                <div class="avatar"><img
+                        src="https://ui-avatars.com/api/?name=Golden+Grain&background=FFC107&color=fff"></div>
+                <div class="user-info">
+                    <h4>Golden Grain</h4>
+                    <p>Vendor (Logout)</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div></div> <!-- Spacer -->
+                <div class="actions">
+                    <button class="icon-btn"><ion-icon name="notifications-outline"></ion-icon></button>
+                    <button class="icon-btn"><ion-icon name="person-circle-outline"></ion-icon></button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div class="main-column">
+                    <div class="welcome-section fade-in">
+                        <h1 style="font-size:2.5rem; margin-bottom:16px;">Welcome back, <br>Golden Grain!</h1>
+                    </div>
+
+                    <div class="action-grid">
+                        <a href="orders.html" class="dashboard-btn">
+                            <ion-icon name="receipt-outline" style="font-size:1.5rem;"></ion-icon>
+                            Orders
+                        </a>
+                        <a href="analytics.html" class="dashboard-btn"
+                            style="background:white; border:2px solid var(--primary-color);">
+                            <ion-icon name="bar-chart-outline" style="font-size:1.5rem;"></ion-icon>
+                            Earnings
+                        </a>
+                        <a href="menu.html" class="dashboard-btn">
+                            <ion-icon name="restaurant-outline" style="font-size:1.5rem;"></ion-icon>
+                            Menu
+                        </a>
+                        <a href="notifications.html" class="dashboard-btn">
+                            <ion-icon name="notifications-outline" style="font-size:1.5rem;"></ion-icon>
+                            Notifications
+                        </a>
+                        <a href="rental-agreement.html" class="dashboard-btn"
+                            style="background:#ddd; grid-column: span 2;">
+                            <ion-icon name="document-text-outline" style="font-size:1.5rem;"></ion-icon>
+                            Rental Agreement
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Column (Widgets) -->
+                <div class="widget-column">
+                    <div class="widget-card">
+                        <h4>Earnings</h4>
+                        <h2>$ 2,345.00</h2>
+                        <span class="tag"
+                            style="background:#E8F5E9; color:green; padding:4px 8px; border-radius:4px; font-size:0.8rem;">View
+                            Report</span>
+                    </div>
+
+                    <div class="widget-card">
+                        <h4>Orders</h4>
+                        <h2>112</h2>
+                        <p class="text-light" style="font-size:0.9rem;">new orders this week</p>
+                    </div>
+
+                    <div class="widget-card">
+                        <h4>Notifications</h4>
+                        <div class="notif-item">
+                            <strong>Stall rent due in 3 days</strong>
+                            <p style="color:#666; font-size:0.8rem;">Auto-payment scheduled on 25 May</p>
+                        </div>
+                        <div class="notif-item">
+                            <strong>New order received</strong>
+                            <p style="color:#666; font-size:0.8rem;">Order #12345 from John Tan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>

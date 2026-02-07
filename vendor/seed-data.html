@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Data Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Firebase -->
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import { collection, addDoc, doc, setDoc, Timestamp, writeBatch, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+        // --- Helpers ---
+        function randomDate(start, end) {
+            return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+        }
+
+        const sampleItems = [
+            { name: "Hokkien Mee", price: 5.50, cost: 2.00, category: "Mains" },
+            { name: "Char Kway Teow", price: 6.00, cost: 2.20, category: "Mains" },
+            { name: "Chicken Rice", price: 4.50, cost: 1.80, category: "Mains" },
+            { name: "Laksa", price: 5.00, cost: 2.10, category: "Mains" },
+            { name: "Nasi Lemak", price: 4.00, cost: 1.50, category: "Mains" },
+            { name: "Kopi O", price: 1.20, cost: 0.30, category: "Beverages" },
+            { name: "Teh C", price: 1.40, cost: 0.40, category: "Beverages" },
+            { name: "Lemon Tea", price: 1.80, cost: 0.50, category: "Beverages" }
+        ];
+
+        const customers = ["Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Helen"];
+        const tables = ["T01", "T02", "T03", "T04", "T05", "T06", "T10", "T12", "T15"];
+
+        // --- Seeding Functions ---
+
+        // 1. Seed Menu Items (if needed, or update existing with cost)
+        window.seedMenuItems = async () => {
+            log("Seeding menu items...");
+            const batch = writeBatch(db);
+
+            // We'll just add new ones or overwrite simplisticly for demo
+            // In real app, we might check existence.
+            // For now, let's just create a set of robust items.
+
+            for (const item of sampleItems) {
+                // Use name as ID for simplicity in this seed tool or random
+                const ref = doc(collection(db, "menu_items"));
+                batch.set(ref, {
+                    name: item.name,
+                    price: item.price,
+                    cost: item.cost, // Critical for profit calc
+                    category: item.category,
+                    available: true,
+                    description: "Delicious local favorite.",
+                    image: "https://placehold.co/200x200?text=" + item.name.replace(" ", "+"),
+                    variants: [],
+                    createdAt: Timestamp.now()
+                });
+            }
+
+            try {
+                await batch.commit();
+                log("✅ Menu items seeded!", "success");
+            } catch (e) {
+                log("❌ Error seeding menu: " + e.message, "error");
+            }
+        };
+
+        // 2. Seed Past Orders (For Earnings)
+        window.seedPastOrders = async () => {
+            log("Generating past orders (Last 30 days)...");
+            const batch = writeBatch(db);
+            const today = new Date();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+
+            // Generate 100 random completed orders
+            for (let i = 0; i < 100; i++) {
+                const ref = doc(collection(db, "orders"));
+
+                const orderDate = randomDate(thirtyDaysAgo, today);
+                // Random items
+                const numItems = Math.floor(Math.random() * 3) + 1;
+                const orderItems = [];
+                for (let j = 0; j < numItems; j++) {
+                    const item = sampleItems[Math.floor(Math.random() * sampleItems.length)];
+                    orderItems.push({
+                        name: item.name,
+                        price: item.price,
+                        cost: item.cost || (item.price * 0.4), // Fallback cost
+                        qty: Math.floor(Math.random() * 2) + 1,
+                        notes: ""
+                    });
+                }
+
+                batch.set(ref, {
+                    orderId: "ORD-" + Math.floor(10000 + Math.random() * 90000),
+                    tableNo: tables[Math.floor(Math.random() * tables.length)],
+                    customerName: customers[Math.floor(Math.random() * customers.length)],
+                    status: 'completed', // Important for earnings
+                    timestamp: Timestamp.fromDate(orderDate),
+                    createdAt: Timestamp.fromDate(orderDate), // Duplicate for query convenience
+                    items: orderItems,
+                    total: orderItems.reduce((sum, i) => sum + (i.price * i.qty), 0)
+                });
+
+                // Firestore batch limit is 500, we are safe with 100
+            }
+
+            try {
+                await batch.commit();
+                log("✅ Seeding complete: 100 past orders.", "success");
+            } catch (e) {
+                log("❌ Error seeding past orders: " + e.message, "error");
+            }
+        };
+
+        // 3. Seed Active Orders (For Tracking)
+        window.seedActiveOrders = async () => {
+            log("Generating active orders...");
+
+            // Create a few pending, cooking, ready
+            const statuses = ['pending', 'cooking', 'ready'];
+            const batch = writeBatch(db);
+            const now = new Date();
+
+            for (let i = 0; i < 10; i++) {
+                const ref = doc(collection(db, "orders"));
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+
+                // Recent time (last 30 mins)
+                const orderTime = new Date(now.getTime() - Math.random() * 30 * 60000);
+
+                const item = sampleItems[Math.floor(Math.random() * sampleItems.length)];
+
+                batch.set(ref, {
+                    orderId: "ORD-" + Math.floor(10000 + Math.random() * 90000),
+                    tableNo: tables[i % tables.length], // Distribute tables
+                    customerName: customers[i % customers.length],
+                    status: status,
+                    timestamp: Timestamp.fromDate(orderTime),
+                    createdAt: Timestamp.fromDate(orderTime),
+                    items: [{
+                        name: item.name,
+                        price: item.price,
+                        qty: 1,
+                        variant: Math.random() > 0.5 ? "Large" : "Standard",
+                        notes: Math.random() > 0.7 ? "No spicy" : ""
+                    }]
+                });
+            }
+
+            try {
+                await batch.commit();
+                log("✅ Seeding complete: 10 Active orders.", "success");
+            } catch (e) {
+                log("❌ Error seeding active orders: " + e.message, "error");
+            }
+        };
+
+        // 4. Seed Settings (Overheads)
+        window.seedSettings = async () => {
+            log("Data seeding for financial settings...");
+            try {
+                await setDoc(doc(db, "settings", "financials"), {
+                    rent: 1200,
+                    payroll: 3500,
+                    utilities: 450,
+                    other: 200,
+                    updatedAt: Timestamp.now()
+                });
+                log("✅ Financial settings seeded.", "success");
+            } catch (e) {
+                log("❌ Error settings: " + e.message, "error");
+            }
+        };
+
+        function log(msg, type = 'info') {
+            const el = document.getElementById('console');
+            const item = document.createElement('div');
+            item.textContent = `> ${msg}`;
+            item.className = type;
+            el.appendChild(item);
+            el.scrollTop = el.scrollHeight;
+        }
+    </script>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .btn-green {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-blue {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-orange {
+            background: #FF9800;
+            color: white;
+        }
+
+        .btn-purple {
+            background: #9C27B0;
+            color: white;
+        }
+
+        #console {
+            background: #222;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 8px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            margin-top: 20px;
+        }
+
+        .error {
+            color: #f44336 !important;
+        }
+
+        .success {
+            color: #4CAF50 !important;
+        }
+    </style>
+</head>
+
+<body style="background:#f5f5f5;">
+    <div class="container">
+        <h1>🌱 Database Seeder</h1>
+        <p>Use these buttons to populate your Firestore with test data.</p>
+
+        <div style="background:white; padding:20px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+            <h3>1. Setup Defaults</h3>
+            <button class="btn btn-purple" onclick="seedMenuItems()">Seed Menu Items</button>
+            <button class="btn btn-purple" onclick="seedSettings()">Seed Financial Settings</button>
+
+            <h3>2. Generate Transactions</h3>
+            <button class="btn btn-blue" onclick="seedPastOrders()">Seed Past Orders (Earnings)</button>
+            <button class="btn btn-orange" onclick="seedActiveOrders()">Seed Active Orders (Tracking)</button>
+        </div>
+
+        <div id="console"></div>
+    </div>
+</body>
+
+</html>

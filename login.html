@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Hawker - Login</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <main class="login-container">
+        <!-- Login Form Section -->
+        <section class="auth-section">
+            <div class="auth-card fade-in">
+                <div class="logo-area">
+                    <h1>Digital <span class="text-gold">Hawker</span></h1>
+                    <p>Manage your stall with ease.</p>
+                </div>
+
+                <form id="loginForm">
+
+                    <!-- Account Type (Hidden by default, shown for Sign Up) -->
+                    <div class="form-group" id="accountTypeGroup" style="display:none;">
+                        <label for="accountType">Account Type</label>
+                        <div class="custom-select-wrapper">
+                            <select id="accountType">
+                                <option value="customer">Customer</option>
+                                <option value="vendor">Hawker Stall Owner</option>
+                                <option value="inspector">NEA Officer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="*************" required>
+                        <p class="error-text" style="color:red; font-size:0.8rem; display:none; margin-top:4px;">At
+                            least 8 characters long</p>
+                    </div>
+
+                    <!-- Remember Me / Forgot Password (Login Only) -->
+                    <div class="form-actions" id="loginActions">
+                        <label class="checkbox-container">
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="#" class="forgot-pass">Forget Password?</a>
+                    </div>
+
+                    <!-- Main Button -->
+                    <button type="submit" class="btn btn-dark w-100" id="submitBtn">Log In</button>
+
+                    <!-- Divider -->
+                    <div class="divider">
+                        <span>Or</span>
+                    </div>
+
+                    <!-- Google Button -->
+                    <button type="button" class="btn btn-light w-100 google-btn">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width="20">
+                        Sign up with Google
+                    </button>
+
+                    <!-- Toggle Link -->
+                    <p class="auth-footer">
+                        Don't have an account? <a href="#" id="toggleAuth">Sign Up</a>
+                    </p>
+                </form>
+            </div>
+        </section>
+
+        <!-- Visual Side (Desktop only usually, but good for aesthetic) -->
+        <section class="visual-side">
+            <!-- Placeholder for tasty food image -->
+            <div class="image-overlay">
+                <h2>Bringing the best of local cuisine online.</h2>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

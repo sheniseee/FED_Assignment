@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/auth-check.js"></script>
+    <style>
+        .contact-card {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-submit {
+            background: #FFC107;
+            color: black;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: #FFF8E1;
+            border-radius: 12px;
+            border: 1px solid #FFECB3;
+        }
+
+        .info-icon {
+            font-size: 2rem;
+            color: #FFC107;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- Logo -->
+            <a href="dashboard.html" class="nav-logo">
+                <span class="logo-icon">🍜</span>
+                <span class="logo-text">Digital<br />Hawker</span>
+            </a>
+
+            <!-- Nav Links -->
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="incoming-orders.html">Incoming Orders</a></li>
+                <li><a href="orders.html">All Orders</a></li>
+                <li><a href="menu-management.html">Menu</a></li>
+                <li><a href="earnings-overview.html">Earnings</a></li>
+            </ul>
+
+            <!-- User Section (Logged In State) -->
+            <div class="nav-user">
+                <!-- Notifications -->
+                <button class="btn-notification" aria-label="Notifications"
+                    onclick="location.href='notifications.html'">
+                    <ion-icon name="notifications-outline" style="font-size: 1.5rem;"></ion-icon>
+                    <span class="notification-badge">3</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown">
+                    <button class="user-toggle" aria-label="User menu">
+                        <div class="user-avatar">
+                            <ion-icon name="person-circle-outline" style="font-size: 2rem;"></ion-icon>
+                        </div>
+                        <span class="user-name">Vendor</span>
+                        <ion-icon name="chevron-down-outline"></ion-icon>
+                    </button>
+
+                    <div class="dropdown-menu">
+                        <a href="settings.html" class="dropdown-item">
+                            <ion-icon name="settings-outline"></ion-icon> Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="../login.html" class="dropdown-item dropdown-logout">
+                            <ion-icon name="log-out-outline"></ion-icon> Log Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" onclick="toggleMobileNav()"></div>
+
+    <div style="width: 100%; padding: 40px 40px; box-sizing: border-box;">
+        <div class="split-layout">
+            <!-- Sidebar -->
+            <div class="nav-stack">
+                <button class="mobile-nav-toggle" onclick="toggleMobileNav()">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <ion-icon name="menu"></ion-icon> Menu
+                    </div>
+                    <ion-icon name="chevron-down-outline"></ion-icon>
+                </button>
+                <div id="navLinksContainer" class="nav-links-container">
+                    <a href="dashboard.html" class="menu-pill-btn">
+                        <ion-icon name="grid"></ion-icon> Dashboard
+                    </a>
+                    <a href="menu.html" class="menu-pill-btn">
+                        <ion-icon name="restaurant"></ion-icon> Menu
+                    </a>
+                    <a href="orders.html" class="menu-pill-btn">
+                        <ion-icon name="cart"></ion-icon> Order
+                    </a>
+                    <a href="earnings-overview.html" class="menu-pill-btn">
+                        <ion-icon name="cash"></ion-icon> Earnings
+                    </a>
+                    <a href="contact-us.html" class="menu-pill-btn active">
+                        <ion-icon name="mail"></ion-icon> Contact Us
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+                <div class="contact-card">
+                    <h2 style="margin-bottom: 32px; text-align: center;">Contact Support</h2>
+
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <ion-icon name="call" class="info-icon"></ion-icon>
+                            <div>
+                                <h4 style="margin:0 0 4px 0;">Phone</h4>
+                                <p style="margin:0; color:#666;">+65 6789 0123</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <ion-icon name="mail" class="info-icon"></ion-icon>
+                            <div>
+                                <h4 style="margin:0 0 4px 0;">Email</h4>
+                                <p style="margin:0; color:#666;">support@digitalhawker.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); alert('Message sent! We will contact you shortly.');">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                            <div class="input-group">
+                                <label>First Name</label>
+                                <input type="text" placeholder="Enter your first name" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Last Name</label>
+                                <input type="text" placeholder="Enter your last name" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Email Address</label>
+                            <input type="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Topic</label>
+                            <select>
+                                <option>General Inquiry</option>
+                                <option>Technical Support</option>
+                                <option>Billing Issue</option>
+                                <option>Feature Request</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Message</label>
+                            <textarea rows="5" placeholder="How can we help you?" required></textarea>
+                        </div>
+
+                        <div style="text-align: right;">
+                            <button type="submit" class="btn-submit">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/navbar.js"></script>
+    <script src="../js/responsive.js"></script>
+</body>
+
+</html>

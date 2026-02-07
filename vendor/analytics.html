@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .analytics-nav .btn {
+            justify-content: flex-start;
+            text-align: left;
+            border: none;
+            background: transparent;
+            color: var(--text-medium);
+            font-weight: 500;
+        }
+
+        .analytics-nav .btn.active {
+            background: var(--bg-body);
+            /* Or a light highlight */
+            color: var(--primary-color);
+            font-weight: 700;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .profit-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            background: white;
+        }
+
+        .profit-table th {
+            text-align: left;
+            padding: 12px;
+            background: #eee;
+            font-weight: 600;
+        }
+
+        .profit-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .total-box {
+            background: white;
+            padding: 16px;
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Digital <span class="text-gold">Hawker</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>Dashboard</span>
+                </a>
+                <a href="orders.html" class="nav-item">
+                    <ion-icon name="receipt-outline"></ion-icon>
+                    <span>Orders</span>
+                </a>
+                <a href="menu.html" class="nav-item">
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    <span>Menu</span>
+                </a>
+                <a href="analytics.html" class="nav-item active">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span>Analytics</span>
+                </a>
+            </nav>
+            <div class="user-profile" style="cursor:pointer;" onclick="window.location.href='../index.html'">
+                <div class="avatar"><img
+                        src="https://ui-avatars.com/api/?name=Golden+Grain&background=FFC107&color=fff"></div>
+                <div class="user-info">
+                    <h4>Golden Grain</h4>
+                    <p>Vendor (Logout)</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content" style="display: flex; gap: 24px;">
+            <!-- Analytics Sidebar -->
+            <div class="analytics-nav card" style="width: 240px; flex-shrink:0; height: fit-content; padding: 16px;">
+                <h2
+                    style="font-size:1rem; margin-bottom:16px; color:#999; text-transform:uppercase; letter-spacing:1px;">
+                    Reports</h2>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <button class="btn active" onclick="switchView('overview', this)">Earnings Overview</button>
+                    <button class="btn" onclick="switchView('revenue', this)">Revenue Per Item</button>
+                    <button class="btn" onclick="switchView('profit', this)">Profit Margin Tracking</button>
+                </div>
+            </div>
+
+            <div class="analytics-body" style="flex:1;">
+
+                <!-- VIEW 1: Earnings Overview -->
+                <div id="overview" class="view-section active">
+                    <div class="card" style="margin-bottom:24px; background:#FFF8E1;">
+                        <h3>Earnings Overview</h3>
+                        <p class="text-light">Quick view summary of your earnings with daily, weekly breakdown.</p>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <h4>Weekly Earnings</h4>
+                        <select style="padding:8px; border-radius:8px; border:1px solid #ddd;">
+                            <option>Daily</option>
+                            <option selected>Weekly</option>
+                            <option>Monthly</option>
+                        </select>
+                    </div>
+
+                    <div class="chart-container"
+                        style="height:400px; padding:16px; border:1px solid #eee; background:white; border-radius:12px;">
+                        <canvas id="earningsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: Revenue Per Item -->
+                <div id="revenue" class="view-section">
+                    <div class="card" style="margin-bottom:24px; background:#FFF8E1;">
+                        <h3>Revenue Per Item</h3>
+                        <p class="text-light">Check detailed earnings generated from each product.</p>
+                    </div>
+
+                    <div class="chart-container"
+                        style="height:450px; padding:16px; border:1px solid #eee; background:white; border-radius:12px;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: Profit Margin Tracking -->
+                <div id="profit" class="view-section">
+                    <div class="card" style="margin-bottom:24px; background:#FFF8E1;">
+                        <h3>Profit Margin Tracking</h3>
+                        <p class="text-light">Monitor profit margins by factoring in costs like ingredients, rent, and
+                            other expenses.</p>
+                    </div>
+
+                    <!-- Table 1: Ingredients -->
+                    <h4 style="margin-bottom:8px;">Ingredients</h4>
+                    <table class="profit-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price / Quantity</th>
+                                <th>Total Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Noodles</td>
+                                <td>$ 1.20 / kg</td>
+                                <td>$ 450.00</td>
+                            </tr>
+                            <tr>
+                                <td>Prawns</td>
+                                <td>$ 12.00 / kg</td>
+                                <td>$ 1,200.00</td>
+                            </tr>
+                            <tr>
+                                <td>Eggs</td>
+                                <td>$ 3.50 / Tray (30)</td>
+                                <td>$ 350.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Table 2: Rent -->
+                    <h4 style="margin-bottom:8px;">Rent</h4>
+                    <table class="profit-table">
+                        <thead>
+                            <tr>
+                                <th>Stall Type</th>
+                                <th>Date Incurred</th>
+                                <th>Price / Mth</th>
+                                <th>Total (Yearly est)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Cooked Food</td>
+                                <td>1 January 2026</td>
+                                <td>$ 2,400.00</td>
+                                <td>$ 28,800.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Table 3: Bills -->
+                    <h4 style="margin-bottom:8px;">Bills</h4>
+                    <table class="profit-table">
+                        <thead>
+                            <tr>
+                                <th>Bill Type</th>
+                                <th>Date</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Electricity</td>
+                                <td>31 Jan 2026</td>
+                                <td>$ 450.00</td>
+                            </tr>
+                            <tr>
+                                <td>Water</td>
+                                <td>31 Jan 2026</td>
+                                <td>$ 120.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Table 4: Payroll -->
+                    <h4 style="margin-bottom:8px;">Payroll</h4>
+                    <table class="profit-table">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Wage Type</th>
+                                <th>Per Month</th>
+                                <th>Total Hours</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>EMP001</td>
+                                <td>Monthly</td>
+                                <td>$ 2,200.00</td>
+                                <td>-</td>
+                                <td>$ 2,200.00</td>
+                            </tr>
+                            <tr>
+                                <td>EMP002</td>
+                                <td>Hourly</td>
+                                <td>-</td>
+                                <td>120</td>
+                                <td>$ 1,200.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="total-box">
+                        Total Expenses: $ 12,009.92
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // View Switching Logic
+        function switchView(viewId, btn) {
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            // Show target
+            document.getElementById(viewId).classList.add('active');
+
+            // Update sidebar buttons
+            document.querySelectorAll('.analytics-nav .btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // --- Chart 1: Earnings Overview (Single Blue Line) ---
+        const ctx1 = document.getElementById('earningsChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Feb 1', 'Feb 2', 'Feb 3', 'Feb 4', 'Feb 5', 'Feb 6', 'Feb 7'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [420, 380, 550, 490, 620, 540, 590],
+                    borderColor: '#2962FF',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#2962FF',
+                    tension: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // --- Chart 2: Revenue Per Item (Multi-Line) ---
+        const ctx2 = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                datasets: [
+                    {
+                        label: 'Chicken Rice',
+                        data: [1200, 1350, 1250, 1400],
+                        borderColor: '#FFC107',
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Hokkien Mee',
+                        data: [900, 1100, 1050, 1150],
+                        borderColor: '#F44336',
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Oyster Omelet',
+                        data: [600, 650, 700, 750],
+                        borderColor: '#4CAF50',
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Drinks',
+                        data: [400, 450, 420, 500],
+                        borderColor: '#9C27B0',
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    </script>
+</body>
+
+</html>

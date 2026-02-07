@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        .order-actions {
+            display: flex;
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .action-card {
+            flex: 1;
+            background: #FFF8E1;
+            padding: 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .graph-line {
+            height: 40px;
+            width: 100%;
+            border-bottom: 2px solid #ccc;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Digital <span class="text-gold">Hawker</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>Dashboard</span>
+                </a>
+                <a href="orders.html" class="nav-item active">
+                    <ion-icon name="receipt-outline"></ion-icon>
+                    <span>Orders</span>
+                </a>
+                <a href="menu.html" class="nav-item">
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    <span>Menu</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span>Analytics</span>
+                </a>
+            </nav>
+            <div class="user-profile" style="cursor:pointer;" onclick="window.location.href='../index.html'">
+                <div class="avatar"><img
+                        src="https://ui-avatars.com/api/?name=Golden+Grain&background=FFC107&color=fff"></div>
+                <div class="user-info">
+                    <h4>Golden Grain</h4>
+                    <p>Vendor (Logout)</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Order Management</h1>
+                <p class="text-light">Manage your incoming orders, update status in real-time, and view details.</p>
+            </header>
+
+            <div class="order-actions">
+                <!-- Card 1: Incoming Orders -->
+                <a href="incoming-orders.html" class="action-card">
+                    <div class="card-header">
+                        <ion-icon name="reader-outline" style="font-size:2.5rem;"></ion-icon>
+                        <h3>Incoming Orders</h3>
+                    </div>
+                    <p class="text-light">Manage new orders, see item lists, and track preparation status.</p>
+                    <div style="margin-top:24px;">
+                        <span class="btn btn-primary" style="padding: 8px 16px; font-size:0.9rem;">View List</span>
+                    </div>
+                </a>
+
+                <!-- Card 2: Order Tracking -->
+                <a href="vendor-tracking.html" class="action-card">
+                    <div class="card-header">
+                        <ion-icon name="search-outline" style="font-size:2.5rem;"></ion-icon>
+                        <h3>Order Tracking</h3>
+                    </div>
+                    <p class="text-light">Track specific orders by ID or Table Number to ensure smooth service.</p>
+                    <div style="margin-top:24px;">
+                        <span class="btn btn-primary" style="padding: 8px 16px; font-size:0.9rem;">Track Now</span>
+                    </div>
+                </a>
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>

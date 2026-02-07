@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track by Table - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/auth-check.js"></script>
+    <script src="../js/responsive.js"></script>
+    <!-- Firebase -->
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import { collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+        // Global State
+        let activeOrders = [];
+        let viewMode = 'card'; // 'card' or 'map'
+
+        // Real-time listener
+        const ordersRef = collection(db, 'orders');
+        // We fetch all and filter client side for active orders
+        onSnapshot(ordersRef, (snapshot) => {
+            activeOrders = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                // Filter for active status
+                if (['pending', 'cooking', 'ready'].includes(data.status)) {
+                    activeOrders.push({ id: doc.id, ...data });
+                }
+            });
+            renderView();
+        });
+
+        window.toggleView = () => {
+            viewMode = viewMode === 'card' ? 'map' : 'card';
+            renderView();
+            // Update button text
+            const btn = document.getElementById('viewToggleBtn');
+            if (btn) btn.innerHTML = viewMode === 'card' ? '<ion-icon name="map"></ion-icon> Map View' : '<ion-icon name="grid"></ion-icon> Card View';
+        };
+
+        window.renderView = () => {
+            const cardContainer = document.getElementById('cardContainer');
+            const mapContainer = document.getElementById('mapContainer');
+
+            if (viewMode === 'card') {
+                cardContainer.style.display = 'flex';
+                mapContainer.style.display = 'none';
+                renderCards();
+            } else {
+                cardContainer.style.display = 'none';
+                mapContainer.style.display = 'block';
+                updateTableMap();
+            }
+        };
+
+        function renderCards() {
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = '';
+
+            // Group by Table
+            const tableGroups = {};
+            activeOrders.forEach(order => {
+                const t = order.tableNo || 'Unknown';
+                if (!tableGroups[t]) tableGroups[t] = [];
+                tableGroups[t].push(order);
+            });
+
+            if (Object.keys(tableGroups).length === 0) {
+                container.innerHTML = '<div style="width:100%; text-align:center; padding:40px; color:#999;">No active table orders.</div>';
+                return;
+            }
+
+            Object.keys(tableGroups).sort().forEach(tableNo => {
+                const orders = tableGroups[tableNo];
+                // Determine status color for card (Priority: Ready > Cooking > Pending)
+                let bg = '#FFF8E1'; // Default
+                if (orders.some(o => o.status === 'ready')) bg = '#E8F5E9';      // Greenish
+                else if (orders.some(o => o.status === 'cooking')) bg = '#E3F2FD'; // Blueish
+
+                const card = document.createElement('div');
+                card.className = 'table-card';
+                card.style.background = bg;
+                card.innerHTML = `<div style="font-size:2rem; font-weight:bold; color:#333;">T${tableNo.replace(/^T/, '')}</div>`; // Ensure T prefix formatting
+                card.onclick = () => openDetailModal(tableNo, orders);
+                container.appendChild(card);
+            });
+        }
+
+        // Map Logic (Re-used)
+        function updateTableMap() {
+            // Reset all tables
+            document.querySelectorAll('.table-node').forEach(node => {
+                node.className = 'table-node'; // Reset classes
+            });
+
+            // Group orders by table
+            const tableMap = {};
+            activeOrders.forEach(order => {
+                const tableNo = order.tableNo;
+                if (tableNo) {
+                    if (!tableMap[tableNo]) tableMap[tableNo] = [];
+                    tableMap[tableNo].push(order);
+                }
+            });
+
+            Object.keys(tableMap).forEach(tableNo => {
+                // Try both formats: with and without 'T' prefix
+                let node = document.querySelector(`[data-table="${tableNo}"]`);
+                if (!node && !tableNo.startsWith('T')) {
+                    node = document.querySelector(`[data-table="T${tableNo}"]`);
+                }
+                if (!node && tableNo.startsWith('T')) {
+                    node = document.querySelector(`[data-table="${tableNo.substring(1)}"]`);
+                }
+
+                if (node) {
+                    const orders = tableMap[tableNo];
+                    if (orders.some(o => o.status === 'ready')) {
+                        node.classList.add('ready');
+                    } else if (orders.some(o => o.status === 'cooking')) {
+                        node.classList.add('cooking');
+                    } else {
+                        node.classList.add('pending');
+                    }
+                    // Add click to map nodes too
+                    node.onclick = () => openDetailModal(tableNo, orders);
+                }
+            });
+        }
+
+        // Modal Logic
+        window.openDetailModal = (tableNo, orders) => {
+            const modal = document.getElementById('detailModal');
+            const title = document.getElementById('modalTableTitle');
+            const content = document.getElementById('modalContent');
+
+            title.textContent = `Table ${tableNo.replace(/^T/, '')}`; // Display as 04, 12, etc
+
+            // Populate Content
+            content.innerHTML = '';
+
+            // Add Table Information Header (Mock Data for Customer as per reference, or real if available)
+            // Since we group by table, we might have multiple orders/customers. We'll show the first one or list them.
+            // Reference image shows single customer. We will iterate.
+
+            orders.forEach(order => {
+                // Determine Status Step for Timeline
+                let step = 1; // Order Confirmed
+                if (order.status === 'cooking') step = 2; // Food Made (In progress/done)
+                if (order.status === 'ready') step = 2; // Food Made is completed
+                if (order.status === 'completed') step = 3; // Collection Completed
+
+                // For detailed timeline visual
+                const timelineHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; position:relative; padding:0 20px;">
+                        <!-- Line -->
+                        <div style="position:absolute; left:20px; right:20px; top:12px; height:2px; background:#e0e0e0; z-index:0;"></div>
+                        <!-- Line Progress -->
+                        <div style="position:absolute; left:20px; width:${(step - 1) * 33}%; top:12px; height:2px; background:#4CAF50; z-index:0; transition:width 0.3s;"></div>
+
+                        <div style="z-index:1; text-align:center;">
+                            <div style="width:24px; height:24px; border-radius:50%; background:${step >= 1 ? '#4CAF50' : '#ddd'}; margin:0 auto 4px;"></div>
+                            <div style="font-size:0.7rem; color:${step >= 1 ? '#333' : '#999'};">Confirmed</div>
+                        </div>
+                        <div style="z-index:1; text-align:center;">
+                            <div style="width:24px; height:24px; border-radius:50%; background:${step >= 2 ? '#4CAF50' : '#ddd'}; margin:0 auto 4px;"></div>
+                            <div style="font-size:0.7rem; color:${step >= 2 ? '#333' : '#999'};">Made</div>
+                        </div>
+                        <div style="z-index:1; text-align:center;">
+                            <div style="width:24px; height:24px; border-radius:50%; background:${step >= 3 ? '#4CAF50' : '#ddd'}; margin:0 auto 4px;"></div>
+                            <div style="font-size:0.7rem; color:${step >= 3 ? '#333' : '#999'};">Collection</div>
+                        </div>
+                         <div style="z-index:1; text-align:center;">
+                            <div style="width:24px; height:24px; border-radius:50%; background:${step >= 4 ? '#4CAF50' : '#ddd'}; margin:0 auto 4px;"></div>
+                            <div style="font-size:0.7rem; color:${step >= 4 ? '#333' : '#999'};">Payment</div>
+                        </div>
+                    </div>
+                `;
+
+                const itemHTML = `
+                    <div style="background:#FFF8E1; border:1px solid #eee; border-radius:12px; padding:20px; margin-bottom:20px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+                             <h3 style="margin:0; font-size:1.1rem;">Order ID: ${order.orderId || order.id}</h3>
+                             <span style="font-size:0.9rem; color:#666;">${activeOrders.find(o => o.id === order.id)?.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || ''}</span>
+                        </div>
+                        
+                        ${timelineHTML}
+
+                        <div style="background:white; padding:16px; border-radius:8px;">
+                             ${(order.items || []).map(i => `
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                    <div style="font-weight:600;">${i.name}</div>
+                                    <div>x${i.qty || 1}</div>
+                                </div>
+                                <div style="font-size:0.85rem; color:#666; margin-bottom:8px;">${i.variant || 'Standard'} | ${i.notes || ''}</div>
+                             `).join('')}
+                             
+                             <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #eee; font-weight:600;">
+                                Customer: ${order.customerName || 'Walk-in'}
+                             </div>
+                        </div>
+                    </div>
+                `;
+                content.innerHTML += itemHTML;
+            });
+
+            modal.classList.add('active');
+        };
+
+        window.closeModal = (id) => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('active');
+        };
+    </script>
+
+    <style>
+        body {
+            background-color: #FFF8E1;
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            color: #333;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: #FFF3E0;
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .filter-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .btn-apply {
+            background: #FFC107;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: auto;
+            margin-bottom: 2px;
+        }
+
+        /* Card Grid */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .table-card {
+            width: 160px;
+            height: 100px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Map Styles (Original) */
+        .map-container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: none;
+            /* Hidden by default */
+        }
+
+        .table-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .map-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .map-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .facility {
+            background: #FFF8E1;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 2px solid #E0E0E0;
+        }
+
+        .table-node {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #F5F5F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #E0E0E0;
+        }
+
+        .table-node.cooking {
+            background: #D4EDDA;
+            border-color: #28A745;
+            color: #155724;
+        }
+
+        .table-node.ready {
+            background: #CCE5FF;
+            border-color: #007BFF;
+            color: #004085;
+        }
+
+        .table-node.pending {
+            background: #FFF3CD;
+            border-color: #FFC107;
+            color: #856404;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Helper for Mobile Nav -->
+    <!-- Helper script removed, using navbar.js -->
+
+    <!-- Header -->
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+
+            <!-- Logo -->
+            <a href="dashboard.html" class="nav-logo">
+                <span class="logo-icon">🍜</span>
+                <span class="logo-text">Digital<br />Hawker</span>
+            </a>
+
+            <!-- Nav Links -->
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="incoming-orders.html">Incoming Orders</a></li>
+                <li><a href="orders.html">All Orders</a></li>
+                <li><a href="menu-management.html">Menu</a></li>
+                <li><a href="earnings-overview.html">Earnings</a></li>
+            </ul>
+
+            <!-- User Section (Logged In State) -->
+            <div class="nav-user">
+                <!-- Notifications -->
+                <button class="btn-notification" aria-label="Notifications"
+                    onclick="location.href='notifications.html'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown">
+                    <button class="user-toggle" aria-label="User menu">
+                        <div class="user-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <span class="user-name">Vendor</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu">
+                        <a href="settings.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                            Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="../login.html" class="dropdown-item dropdown-logout">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Log Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-content" style="padding:40px;">
+        <!-- Page Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <a href="dashboard.html"
+                    style="text-decoration:none; color:#333; font-size:1.5rem; display:flex; align-items:center;">
+                    <ion-icon name="arrow-back-outline"></ion-icon>
+                </a>
+                <h1 style="font-family:'Outfit', sans-serif; font-size:2.5rem; margin:0;">Tracking Order</h1>
+            </div>
+
+            <!-- Map/Card Toggle -->
+            <button id="viewToggleBtn" onclick="toggleView()"
+                style="background:white; border:2px solid #333; border-radius:50px; padding:10px 24px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.3s;">
+                <ion-icon name="map"></ion-icon> Map View
+            </button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <span class="filter-label">Table No.</span>
+                <select class="filter-input" style="min-width:100px;">
+                    <option>All</option>
+                    <option>T01</option>
+                    <option>T02</option>
+                    <option>T03</option>
+                    <option>T04</option>
+                    <!-- Ideally populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Date</span>
+                <input type="date" class="filter-input" placeholder="Select Date">
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Time</span>
+                <select class="filter-input">
+                    <option>11:00 am - 12:00 pm</option>
+                    <option>12:00 pm - 01:00 pm</option>
+                </select>
+            </div>
+            <button class="btn-apply">Apply</button>
+        </div>
+
+        <!-- Card View Container (Default) -->
+        <div id="cardContainer" class="card-container">
+            <div style="width:100%; text-align:center; padding:40px;">Loading tables...</div>
+        </div>
+
+        <!-- Map View Container (Hidden) -->
+        <div id="mapContainer" class="map-container">
+            <div class="map-layout">
+                <div class="map-row">
+                    <div class="facility" style="grid-column: 1 / 2;">Male<br>Toilet</div>
+                    <div class="facility" style="grid-column: 3 / 4;">Entrance</div>
+                    <div class="facility" style="grid-column: 5 / 6;">Female<br>Toilet</div>
+                </div>
+                <!-- Rows -->
+                <div class="map-row">
+                    <div class="table-node" data-table="T01">T01</div>
+                    <div class="table-node" data-table="T02">T02</div>
+                    <div class="table-node" data-table="T03">T03</div>
+                    <div class="table-node" data-table="T04">T04</div>
+                    <div class="table-node" data-table="T05">T05</div>
+                </div>
+                <div class="map-row">
+                    <div class="table-node" data-table="T06">T06</div>
+                    <div class="table-node" data-table="T07">T07</div>
+                    <div class="table-node" data-table="T08">T08</div>
+                    <div class="table-node" data-table="T09">T09</div>
+                    <div class="table-node" data-table="T10">T10</div>
+                </div>
+                <div class="map-row">
+                    <div class="table-node" data-table="T11">T11</div>
+                    <div class="table-node" data-table="T12">T12</div>
+                    <div class="table-node" data-table="T13">T13</div>
+                    <div class="table-node" data-table="T14">T14</div>
+                    <div class="table-node" data-table="T15">T15</div>
+                </div>
+                <div class="map-row">
+                    <div class="table-node" data-table="T16">T16</div>
+                    <div class="table-node" data-table="T17">T17</div>
+                    <div class="table-node" data-table="T18">T18</div>
+                    <div class="table-node" data-table="T19">T19</div>
+                    <div class="table-node" data-table="T20">T20</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTableTitle" style="margin:0; font-size:2rem;">Table 04</h2>
+                <span class="close-modal" onclick="closeModal('detailModal')">&times;</span>
+            </div>
+            <div id="modalContent" style="padding:24px;">
+                <!-- Filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/navbar.js"></script>
+</body>
+
+</html>

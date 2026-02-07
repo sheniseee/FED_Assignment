@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Agreement - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Digital <span class="text-gold">Hawker</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>Dashboard</span>
+                </a>
+                <a href="orders.html" class="nav-item">
+                    <ion-icon name="receipt-outline"></ion-icon>
+                    <span>Orders</span>
+                </a>
+                <a href="menu.html" class="nav-item">
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    <span>Menu</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Rental Agreement</h1>
+                <button class="btn btn-primary"><ion-icon name="download-outline"></ion-icon> Download PDF</button>
+            </header>
+
+            <div class="card"
+                style="max-width:800px; margin:0 auto; padding:60px; min-height:800px; font-family:'Times New Roman', serif;">
+                <h2 style="text-align:center; text-decoration:underline; margin-bottom:40px;">Hawker Stall<br>Rental
+                    Agreement</h2>
+
+                <p><strong>Landlord / Operator:</strong> [Operator Name]<br>
+                    <strong>Tenant:</strong> [Vendor Name]
+                </p>
+
+                <br>
+
+                <p><strong>Stall:</strong> [Stall No. & Hawker Centre Name]<br>
+                    <strong>Trade Type:</strong> [Food Type]
+                </p>
+
+                <br>
+
+                <p><strong>Rental Period:</strong> [Start Date] – [End Date]<br>
+                    <strong>Monthly Rent:</strong> SGD $[Amount]<br>
+                    <strong>Deposit:</strong> SGD $[Amount]
+                </p>
+
+                <br>
+                <h3>Tenant Responsibilities:</h3>
+                <ul style="list-style:disc; margin-left:20px;">
+                    <li>Follow NEA hygiene and safety regulations.</li>
+                    <li>Keep stall clean and well-maintained.</li>
+                    <li>Pay rent on schedule (by 25th of month).</li>
+                    <li>Operate during agreed hours.</li>
+                </ul>
+
+                <br><br><br>
+
+                <div style="display:flex; justify-content:space-between;">
+                    <div>
+                        <p><strong>Signature:</strong> _________________</p>
+                        <p>Date: _________</p>
+                    </div>
+                    <div>
+                        <p><strong>Tenant:</strong> _________________</p>
+                        <p>Date: _________</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>

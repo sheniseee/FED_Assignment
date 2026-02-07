@@ -1,0 +1,52 @@
+:root {
+    /* Color Palette - Warm & Gold */
+    --primary-color: #FFC107; /* Golden Yellow */
+    --primary-hover: #FFB300; /* Darker Gold */
+    --secondary-color: #FFF8E1; /* Cream/Beige Background */
+    --accent-color: #FF9800; /* Orange/Mustard */
+    
+    --text-dark: #1F1F1F;
+    --text-medium: #4A4A4A;
+    --text-light: #757575;
+    --text-white: #FFFFFF;
+
+    --bg-body: #FFF8E1; /* Main Background */
+    --bg-card: #FFFFFF;
+    --bg-input: #FFFFFF;
+    
+    --success: #4CAF50;
+    --error: #F44336;
+    --warning: #FF9800;
+
+    /* Typography */
+    --font-primary: 'Outfit', 'Inter', sans-serif;
+    
+    /* Spacing & Layout */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 20px;
+
+    /* Shadows (Soft/Premium) */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+/* Dark Mode Support (Optional/Future-proof if user wants toggle, but default is Light) */
+[data-theme="dark"] {
+    --bg-body: #121212;
+    --bg-card: #1E1E1E;
+    --secondary-color: #121212;
+    --text-dark: #FFFFFF;
+    --text-medium: #E0E0E0;
+}

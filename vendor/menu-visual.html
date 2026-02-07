@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Menu - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css?v=2">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/auth-check.js"></script>
+    <style>
+        /* Specific Styles for Visual Menu */
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .banner-slide {
+            height: 100%;
+            width: 100%;
+            background-image: url('../images/hero.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .banner-title {
+            position: relative;
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #eee;
+            justify-content: center;
+            /* Centered tabs for visual appeal */
+        }
+
+        .tab-item {
+            padding: 8px 16px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            border-radius: 20px;
+            background: #f5f5f5;
+            transition: all 0.2s;
+        }
+
+        .tab-item.active {
+            background: var(--primary-color);
+            color: black;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: #333;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 12px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            /* Slightly larger cards */
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .menu-item-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+
+        .menu-item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            /* Taller image */
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            font-size: 1.1rem;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+
+            <!-- Logo -->
+            <a href="dashboard.html" class="nav-logo">
+                <span class="logo-icon">🍜</span>
+                <span class="logo-text">Digital<br />Hawker</span>
+            </a>
+
+            <!-- Nav Links -->
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="incoming-orders.html">Incoming Orders</a></li>
+                <li><a href="orders.html">All Orders</a></li>
+                <li><a href="menu-management.html">Menu</a></li>
+                <li><a href="earnings-overview.html">Earnings</a></li>
+            </ul>
+
+            <!-- User Section (Logged In State) -->
+            <div class="nav-user">
+                <!-- Notifications -->
+                <button class="btn-notification" aria-label="Notifications"
+                    onclick="location.href='notifications.html'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+
+                <!-- User Dropdown -->
+                <div class="user-dropdown">
+                    <button class="user-toggle" aria-label="User menu">
+                        <div class="user-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <span class="user-name">Vendor</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu">
+                        <a href="settings.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                            Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="../login.html" class="dropdown-item dropdown-logout">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Log Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- FULL LAYOUT NO SIDEBAR -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+
+        <header style="margin-bottom:24px;">
+            <button onclick="window.location.href='menu-management.html'"
+                style="background:none; border:none; color:#666; cursor:pointer; display:flex; align-items:center; gap:8px; margin-bottom:12px; font-size:1rem;">
+                <ion-icon name="arrow-back"></ion-icon> Back to Management
+            </button>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 style="font-family:'Outfit', sans-serif; font-size:2.5rem; margin:0;">Visual Menu Preview</h2>
+            </div>
+        </header>
+
+        <!-- Visual Menu Content -->
+        <div class="banner-container">
+            <div class="banner-slide">
+                <div class="banner-overlay"></div>
+                <h1 class="banner-title">Our Menu</h1>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div id="tabsContainer" class="tabs-container">
+            <!-- Tabs will be injected here -->
+        </div>
+
+        <!-- Menu Sections -->
+        <div id="menuContainer">
+            <div style="text-align:center; padding:40px;">Loading Menu...</div>
+        </div>
+
+    </div>
+
+
+    <!-- Menu Loading Logic -->
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+        const menuContainer = document.getElementById('menuContainer');
+        const tabsContainer = document.getElementById('tabsContainer');
+
+        async function loadMenu() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "menu_items"));
+                const items = [];
+                querySnapshot.forEach((doc) => {
+                    items.push({ id: doc.id, ...doc.data() });
+                });
+
+                if (items.length === 0) {
+                    menuContainer.innerHTML = '<div style="text-align:center; padding:40px;">No items found.</div>';
+                    return;
+                }
+
+                // Group by Category
+                const grouped = items.reduce((acc, item) => {
+                    const cat = item.category || 'Other';
+                    if (!acc[cat]) acc[cat] = [];
+                    acc[cat].push(item);
+                    return acc;
+                }, {});
+
+                // Render Content
+                menuContainer.innerHTML = '';
+                tabsContainer.innerHTML = '';
+
+                Object.keys(grouped).forEach((category, index) => {
+                    // Add Tab
+                    const tab = document.createElement('div');
+                    tab.className = `tab-item ${index === 0 ? 'active' : ''}`;
+                    tab.textContent = category;
+                    tab.onclick = () => {
+                        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        document.getElementById(`cat-${category}`).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    tabsContainer.appendChild(tab);
+
+                    // Add Section
+                    const section = document.createElement('div');
+                    section.id = `cat-${category}`;
+
+                    const title = document.createElement('h2');
+                    title.className = 'section-title';
+                    title.textContent = category;
+                    section.appendChild(title);
+
+                    const grid = document.createElement('div');
+                    grid.className = 'content-grid';
+
+                    grouped[category].forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'menu-item-card';
+                        card.onclick = () => {
+                            // Simple alert or modal for now as per preview
+                            alert(`Clicked on: ${item.name}`);
+                        };
+
+                        // Price Calculation
+                        let priceDisplay = `$ ${Number(item.price).toFixed(2)}`;
+
+                        let promoBadge = '';
+                        if (item.promotion) {
+                            const originalPrice = Number(item.price);
+                            const discount = Number(item.promotion.discount);
+                            const discountedPrice = originalPrice * (1 - discount / 100);
+
+                            priceDisplay = `
+                                <span style="text-decoration:line-through; color:#999; font-size:0.9rem;">$ ${originalPrice.toFixed(2)}</span>
+                                <span style="color:#d32f2f; font-weight:700;">$ ${discountedPrice.toFixed(2)}</span>
+                             `;
+
+                            promoBadge = `<div style="position:absolute; top:8px; left:8px; background:#d32f2f; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem; font-weight:700;">${item.promotion.name} (${discount}%)</div>`;
+                        }
+
+                        // Variants Override
+                        if (item.variants && item.variants.length > 0) {
+                            const minPrice = Math.min(...item.variants.map(v => Number(v.price)));
+                            let finalMin = minPrice;
+                            if (item.promotion) finalMin = minPrice * (1 - (Number(item.promotion.discount) || 0) / 100);
+
+                            priceDisplay = `<span style="font-size:0.8rem; color:#666;">From</span> $ ${finalMin.toFixed(2)}`;
+                        }
+
+                        card.innerHTML = `
+                            <div style="position:relative;">
+                                <img src="${item.imageUrl || '../images/placeholder.png'}" class="card-img" onerror="this.onerror=null; this.src='../images/main_logo.png'">
+                                ${promoBadge}
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">${item.name}</h3>
+                                <p class="card-desc" style="color:#d32f2f; font-weight:600; margin:4px 0;">${priceDisplay}</p>
+                                <p class="card-desc">${item.description ? item.description.substring(0, 60) + '...' : ''}</p>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+
+                    section.appendChild(grid);
+                    menuContainer.appendChild(section);
+                });
+
+            } catch (error) {
+                console.error("Error loading menu:", error);
+                menuContainer.innerHTML = '<div style="text-align:center; padding:40px; color:red;">Failed to load menu.</div>';
+            }
+        }
+
+        loadMenu();
+    </script>
+
+    <script src="../js/navbar.js"></script>
+</body>
+
+</html>

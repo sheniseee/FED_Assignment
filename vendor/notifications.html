@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        .alert-banner {
+            background: #FFEBEE;
+            border: 1px solid #FFCDD2;
+            color: #C62828;
+            padding: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .notif-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .notif-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Digital <span class="text-gold">Hawker</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>Dashboard</span>
+                </a>
+                <a href="orders.html" class="nav-item">
+                    <ion-icon name="receipt-outline"></ion-icon>
+                    <span>Orders</span>
+                </a>
+                <a href="menu.html" class="nav-item">
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    <span>Menu</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span>Analytics</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Notifications</h1>
+                <div class="actions">
+                    <button class="icon-btn"><ion-icon name="notifications-outline"></ion-icon></button>
+                </div>
+            </header>
+
+            <!-- Red Alert Banner -->
+            <div class="alert-banner">
+                <ion-icon name="warning" style="font-size:1.5rem;"></ion-icon>
+                <div>
+                    <strong>Stall Inspection in 2 days - Very 1</strong>
+                    <p style="font-size:0.9rem; margin:0;">Ensure hygiene and safety standards are met.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom:16px;">Recent Notifications</h3>
+            <div class="notif-list">
+                <!-- Item 1 -->
+                <div class="notif-card">
+                    <div>
+                        <h4>Stall rent due in 3 days</h4>
+                        <p class="text-light" style="margin-top:4px;">Rent Payment of SGD $2400 is due on 25 May 2026.
+                        </p>
+                        <span class="tag"
+                            style="background:#FFEBEE; color:#C62828; font-size:0.8rem; padding:4px 8px; border-radius:4px; margin-top:8px; display:inline-block;">Action
+                            Required</span>
+                    </div>
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="notif-card">
+                    <div>
+                        <h4>New order received</h4>
+                        <p class="text-light" style="margin-top:4px;">Order #12345 has been placed by John Tan.</p>
+                        <p style="font-size:0.8rem; color:#999; margin-top:4px;">Received 1 hour ago</p>
+                    </div>
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="notif-card">
+                    <div>
+                        <h4>Low stock alert</h4>
+                        <p class="text-light" style="margin-top:4px;">Inventory alert: Chicken wings are running low!
+                        </p>
+                        <span class="tag"
+                            style="background:#FFF8E1; color:var(--accent-color); font-size:0.8rem; padding:4px 8px; border-radius:4px; margin-top:8px; display:inline-block;">Inventory</span>
+                    </div>
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>
