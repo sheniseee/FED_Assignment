@@ -36,9 +36,6 @@
             allOrders = [];
             snapshot.forEach(doc => {
                 const data = doc.data();
-                // Limit to non-completed or include all? User wants to filter, so maybe all.
-                // But usually "tracking" implies active. However, user asked for filter, so likely wants to see history too?
-                // Let's keep all for now, DataTables handles large datasets well enough client-side for this scale.
                 if (data.status !== 'completed' && data.status !== 'cancelled') {
                     allOrders.push({ id: doc.id, ...data });
                 }
