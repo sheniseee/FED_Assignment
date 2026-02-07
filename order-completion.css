@@ -88,3 +88,17 @@ textarea{
     font-size:40px;
     margin:0 auto 20px;
 }
+
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+    .center-box {
+        width: 100%;
+        max-width: 360px;
+        padding: 28px 20px;
+    }
+    .stars {
+        font-size: 40px;
+    }
+}

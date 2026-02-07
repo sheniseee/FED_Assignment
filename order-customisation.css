@@ -540,3 +540,25 @@ body.popup-open {
         height: 220px;
     }
 }
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        padding: 12px;
+    }
+    .main-content {
+        flex-direction: column;
+        padding: 12px;
+    }
+    .cart {
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto;
+    }
+    .popup {
+        padding: 12px;
+    }
+    .popup-card {
+        max-height: 95vh;
+    }
+}

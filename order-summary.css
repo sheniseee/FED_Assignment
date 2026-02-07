@@ -61,6 +61,20 @@ h2{
     color:#000;
 }
 
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+    .center-box {
+        width: 100%;
+        max-width: 360px;
+        padding: 28px 20px;
+    }
+    .summary-item {
+        flex-wrap: wrap;
+    }
+}
+
 /* SUMMARY CARD */
 .summary-card{
     margin-top:25px;

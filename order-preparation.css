@@ -110,3 +110,17 @@ h2{
 .collected-btn:hover{
     background:#7abd77;
 }
+
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+    .center-box {
+        width: 100%;
+        max-width: 360px;
+        padding: 28px 20px;
+    }
+    .progress .line {
+        width: 40px;
+    }
+}

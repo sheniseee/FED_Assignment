@@ -532,3 +532,43 @@ body.popup-open {
         height: 220px;
     }
 }
+
+@media (max-width: 768px) {
+    #section {
+        height: auto;
+        min-height: 180px;
+        padding: 16px 12px 20px;
+    }
+    #section h1 {
+        font-size: 1.35rem;
+        padding: 12px 12px 0;
+    }
+    #section h4 {
+        padding: 8px 16px 20px;
+        margin-right: 0;
+        font-size: 0.9rem;
+    }
+    .categories {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px;
+    }
+    .categories button {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    .main-content {
+        flex-direction: column;
+        padding: 12px 16px;
+    }
+    .stalls {
+        grid-template-columns: 1fr;
+        order: 1;
+    }
+    .cart {
+        width: 100%;
+        max-width: 360px;
+        order: 2;
+        margin: 0 auto;
+    }
+}

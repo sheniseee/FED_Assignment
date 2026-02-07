@@ -135,3 +135,33 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        padding: 12px;
+    }
+    .filters {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 16px;
+    }
+    .stalls {
+        grid-template-columns: 1fr;
+    }
+    .search-bar input {
+        width: 90%;
+    }
+    #section {
+        height: auto;
+        min-height: 140px;
+        padding: 20px 16px;
+    }
+    #section h1 {
+        font-size: 1.4rem;
+        padding: 16px 16px 0;
+    }
+    main.container {
+        padding: 16px;
+    }
+}

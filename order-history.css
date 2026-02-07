@@ -99,3 +99,23 @@ body {
 .btn-reorder:hover {
   background: #f4b740;
 }
+
+@media (max-width: 768px) {
+  .order-history-page {
+    padding: 20px 16px 32px;
+  }
+  .page-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .order-card {
+    padding: 18px;
+  }
+  .order-stall-name,
+  .order-total {
+    font-size: 18px;
+  }
+  .btn-reorder {
+    width: 100%;
+  }
+}
