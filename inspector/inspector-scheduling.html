@@ -19,6 +19,148 @@
     <script src="../js/firebase-config.js"></script>
     <script src="../js/hawker-data.js"></script>           
     <script src="../js/sample-analytics-data.js"></script> 
+    
+    <style>
+        /* Fixed Calendar Styling */
+        .split-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .cal-container {
+            background: #FFF8E1;
+            padding: 32px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .cal-nav-btn {
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            user-select: none;
+            font-size: 1.2rem;
+        }
+        
+        .cal-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        
+        .cal-day-header {
+            font-weight: 600;
+            padding: 12px 8px;
+            color: #666;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        
+        .cal-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 0.95rem;
+            min-height: 50px;
+        }
+        
+        .cal-cell.empty {
+            cursor: default;
+            opacity: 0;
+        }
+        
+        .cal-cell.other-month {
+            color: #ccc;
+            cursor: default;
+        }
+        
+        .cal-cell.today {
+            background: #E3F2FD;
+            font-weight: 600;
+        }
+        
+        .cal-cell.selected {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 700;
+        }
+        
+        .cal-cell.has-inspection {
+            background: #FFC107;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .cal-cell.overdue {
+            background: #E53935;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .cal-cell:hover:not(.empty):not(.other-month) {
+            background: rgba(255, 193, 7, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .list-container {
+            background: #FFF8E1;
+            padding: 32px;
+            border-radius: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 1024px) {
+            .split-card {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .cal-container,
+            .list-container {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .cal-cell {
+                min-height: 40px;
+                font-size: 0.85rem;
+            }
+            
+            .cal-day-header {
+                padding: 8px 4px;
+                font-size: 0.75rem;
+            }
+            
+            .cal-grid {
+                gap: 4px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -177,10 +319,12 @@
                             <option value="Old Airport Road Food Centre">Old Airport Road Food Centre</option>
                         </select>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="stall">Stall *</label>
+                        <select id="stall" required>
                             <option value="">Select Hawker Centre First</option>
+                        </select>
                     </div>
                 </div>
 
@@ -384,6 +528,28 @@
             // Clear form
             document.getElementById('hawkerCentre').value = '';
             document.getElementById('stall').value = '';
+
+        // Update stall options based on hawker centre selection
+        function updateStallOptions() {
+            const hawkerCentre = document.getElementById('hawkerCentre').value;
+            const stallSelect = document.getElementById('stall');
+            
+            if (!hawkerCentre) {
+                stallSelect.innerHTML = '<option value="">Select Hawker Centre First</option>';
+                return;
+            }
+            
+            // Get stalls for selected hawker centre
+            const stalls = getStallsForHawkerCentre(hawkerCentre);
+            
+            let options = '<option value="">Select Stall</option>';
+            stalls.forEach(stall => {
+                options += `<option value="${stall.name}">${stall.name}</option>`;
+            });
+            
+            stallSelect.innerHTML = options;
+        }
+
         }
 
         // Update stall options based on hawker centre selection
