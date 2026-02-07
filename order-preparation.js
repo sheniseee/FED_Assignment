@@ -31,4 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
   setStep(0);
   setTimeout(function () { setStep(1); }, delayMs);
   setTimeout(function () { setStep(2); }, delayMs * 2);
+
+  // Collected button: go to order completion
+  var collectedBtn = document.querySelector('.collected-btn');
+  if (collectedBtn) {
+    collectedBtn.addEventListener('click', function () {
+      window.location.href = 'order-completion.html';
+    });
+  }
 });

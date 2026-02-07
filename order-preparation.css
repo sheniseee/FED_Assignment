@@ -93,3 +93,20 @@ h2{
 .status-text{
     font-size:14px;
 }
+
+.collected-btn{
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 28px;
+    font-size:16px;
+    font-weight:bold;
+    color:#fff;
+    background:#8bcf88;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.collected-btn:hover{
+    background:#7abd77;
+}
