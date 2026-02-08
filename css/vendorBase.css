@@ -1,0 +1,31 @@
+:root{
+  --bg: #F6F0DA;
+  --nav: #F7E7B8;
+  --accent: #FFC64A;
+  --accent-2:#F3B73D;
+  --card: #FFFFFF;
+  --shadow: 0 8px 16px rgba(0,0,0,0.18);
+  --shadow-soft: 0 6px 12px rgba(0,0,0,0.16);
+  --radius: 12px;
+  --text: #111;
+  --muted: #666;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  font-family: 'Inter', Arial, sans-serif;
+  color: var(--text);
+  background: #222;
+}
+
+.page{
+  width: min(1200px, 92vw);
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+}
