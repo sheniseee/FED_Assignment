@@ -1,0 +1,121 @@
+/* Navbar is in navbar.css */
+
+body {
+  background-color: #FFFAEC;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  color: #333;
+}
+
+.order-history-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 28px 0;
+}
+
+.order-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  list-style: none;
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.order-stall-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.order-total {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.order-meta {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 4px 0;
+}
+
+.order-id {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 12px 0;
+}
+
+.order-items {
+  margin: 0 0 16px 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  color: #333;
+}
+
+.order-items li {
+  margin-bottom: 4px;
+}
+
+.order-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-reorder {
+  padding: 10px 20px;
+  background: #FFC84D;
+  color: #333;
+  font-weight: bold;
+  font-size: 14px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.btn-reorder:hover {
+  background: #f4b740;
+}
+
+@media (max-width: 768px) {
+  .order-history-page {
+    padding: 20px 16px 32px;
+  }
+  .page-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .order-card {
+    padding: 18px;
+  }
+  .order-stall-name,
+  .order-total {
+    font-size: 18px;
+  }
+  .btn-reorder {
+    width: 100%;
+  }
+}

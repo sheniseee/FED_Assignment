@@ -1,0 +1,126 @@
+body {
+    background-color: #FFFAEC;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Navbar is styled in navbar.css */
+
+.page{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.center-box{
+    background:#fff;
+    width:420px;
+    padding:40px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+}
+
+
+.icon{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:40px;
+    margin:0 auto 20px;
+}
+
+.success{
+    border:2px solid #9ccc9c;
+    color:#9ccc9c;
+}
+
+.gold{
+    color:#f4b740;
+}
+
+/* TEXT */
+h2{
+    margin-bottom:10px;
+}
+
+.details p{
+    margin:4px 0;
+    font-size:14px;
+    color:#555;
+}
+
+.link{
+    display:inline-block;
+    margin-top:15px;
+    font-weight:bold;
+    color:#000;
+}
+
+
+.progress{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:25px 0;
+}
+
+.step{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#ccc;
+}
+
+.step.active{
+    background:#8bcf88;
+}
+
+.line{
+    width:80px;
+    height:3px;
+    background:#ccc;
+    transition: background 0.3s ease;
+}
+
+.line.active{
+    background:#8bcf88;
+}
+
+.status-text{
+    font-size:14px;
+}
+
+.collected-btn{
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 28px;
+    font-size:16px;
+    font-weight:bold;
+    color:#fff;
+    background:#8bcf88;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.collected-btn:hover{
+    background:#7abd77;
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+    .center-box {
+        width: 100%;
+        max-width: 360px;
+        padding: 28px 20px;
+    }
+    .progress .line {
+        width: 40px;
+    }
+}
