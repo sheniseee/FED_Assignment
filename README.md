@@ -492,6 +492,11 @@ FED_Assignment/
 │   └── vendor-html
 │   └── vendor-images
 │   └── vendor-js
+|
+├── account/
+|   └── forgot-password.html
+|   └── login.html
+|   └── singup.html
 │
 ├── assets/
 │   ├── images/               # Product images, icons
