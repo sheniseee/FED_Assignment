@@ -74,17 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <li><a href="order-history.html">Order History</a></li>
         <li><a href="contact.html">Contact Us</a></li>
       </ul>
-      ${!isLoggedIn ? `
-        <div class="mobile-auth">
-          <a href="login.html" class="btn-login">Log In</a>
-          <a href="signup.html" class="btn-signup">Sign Up</a>
-        </div>
-      ` : `
-        <div class="mobile-auth">
-          <a href="profile.html" class="btn-login">My Profile</a>
-          <a href="index.html" class="btn-signup">Log Out</a>
-        </div>
-      `}
     `;
     document.body.appendChild(menu);
     return menu;
