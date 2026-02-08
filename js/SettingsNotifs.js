@@ -57,11 +57,10 @@ function renderUrgent(notif) {
 function renderRecent(notifs) {
   if (!recentListEl) return;
 
-  // remove placeholder
+  
   const placeholder = recentListEl.querySelector(".recent-empty");
   if (placeholder) placeholder.remove();
 
-  // remove existing cards
   recentListEl.querySelectorAll(".ncard").forEach((el) => el.remove());
 
   // empty state
@@ -108,7 +107,7 @@ function renderRecent(notifs) {
       </div>
     `;
 
-    // checkbox -> mark as read/unread
+    // checkbox to mark as read/unread
     const cb = card.querySelector(".read-check");
     if (cb) {
       cb.addEventListener("click", (e) => {
@@ -123,7 +122,7 @@ function renderRecent(notifs) {
           card.classList.toggle("read", isRead);
         } catch (err) {
           console.error("Failed to update read status:", err);
-          e.target.checked = !isRead; // revert UI
+          e.target.checked = !isRead; 
         }
       });
     }
@@ -140,7 +139,6 @@ auth.onAuthStateChanged((user) => {
 
   const col = db.collection("notification");
 
-  // ✅ all notifications (unlimited)
   col.orderBy("dateTime", "desc").onSnapshot((snap) => {
     const notifs = snap.docs.map((d) => {
       const data = d.data();
@@ -157,14 +155,14 @@ auth.onAuthStateChanged((user) => {
     renderRecent(notifs);
   });
 
-  // ✅ badge = unread count
+  // my badges here show the unread notifs count
   col.where("read", "==", false).onSnapshot((snap) => {
     if (!badgeEl) return;
     badgeEl.textContent = String(snap.size);
     badgeEl.style.display = snap.size > 0 ? "inline-flex" : "none";
   });
 
-  // ✅ urgent banner = latest notification
+  // this urgent banner shows the latest high priority notifs
   col.orderBy("dateTime", "desc").limit(1).onSnapshot((snap) => {
     if (snap.empty) return renderUrgent(null);
 
