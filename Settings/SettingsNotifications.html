@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notification Settings</title>
+
+  <!-- SHARED -->
+  <link rel="stylesheet" href="../css/vendorBase.css">
+  <link rel="stylesheet" href="../css/VendorNav.css">
+  <link rel="stylesheet" href="../css/SettingsSideBar.css">
+
+  <!-- PAGE -->
+  <link rel="stylesheet" href="../css/SettingsNotifications.css">
+
+  <!-- FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+
+<body>
+<div class="page">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+
+      <a href="VendorHome.html" class="nav-logo">
+        <span class="logo-icon">🍜</span>
+        <span class="logo-text">Digital<br/>Hawker</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="VendorHome.html">Home</a></li>
+        <li><a href="VendorOrders.html">Order</a></li>
+        <li><a href="VendorOrderHistory.html">Order History</a></li>
+        <li><a href="VendorContact.html">Contact Us</a></li>
+      </ul>
+
+      <div class="nav-user">
+        <button class="btn-notification" aria-label="Notifications" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+
+        <div class="user-dropdown">
+          <button class="user-toggle" type="button" aria-label="User menu">
+            <div class="user-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span class="user-name">Username101</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <div class="dropdown-menu">
+            <a href="SettingsAccount.html" class="dropdown-item">My Profile</a>
+            <a href="VendorOrderHistory.html" class="dropdown-item">Order History</a>
+            <a href="SettingsAccount.html" class="dropdown-item">Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="VendorHome.html" class="dropdown-item dropdown-logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- SETTINGS LAYOUT -->
+  <div class="settings-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="settings-sidebar">
+      <a class="side-item" href="SettingsAccount.html">
+        <img class="side-icon" src="../images/profile.png" alt="profile">
+        <span>My Account</span>
+      </a>
+
+      <!-- ACTIVE LINK -->
+      <a class="side-item active" href="SettingsNotifications.html">
+        <img class="side-icon" src="../images/bell.png" alt="bell">
+        <span>Notifications</span>
+      </a>
+
+      <a class="side-item" href="SettingsDietary.html">
+        <img class="side-icon" src="../images/soup.png" alt="soup">
+        <span>Dietary<br>Restrictions</span>
+      </a>
+
+      <a class="side-item" href="SettingsPayment.html">
+        <img class="side-icon" src="../images/credit-card.png" alt="credit card">
+        <span>Payment</span>
+      </a>
+
+      <a class="side-item" href="SettingsLanguage.html">
+        <img class="side-icon" src="../images/globe.png" alt="globe">
+        <span>Language</span>
+      </a>
+
+      <a class="side-item" href="SettingsSecurity.html">
+        <img class="side-icon" src="../images/lock.png" alt="lock">
+        <span>Password<br>&amp; Security</span>
+      </a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="notif-main-content">
+      
+      <!-- Page Title -->
+      <h1 class="notif-page-title">Notification Settings</h1>
+
+      <!-- Notification Cards Container -->
+      <div class="notif-cards-container">
+        
+        <!-- Master Notification Card -->
+        <div class="notif-card">
+          <div class="notif-item">
+            <span class="notif-label">Notification</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="masterNotification" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Notification Types Card -->
+        <div class="notif-card">
+          <div class="notif-item">
+            <span class="notif-label">Promotions</span>
+            <label class="toggle-switch">
+              <input type="checkbox" class="sub-notification" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="notif-item">
+            <span class="notif-label">New Stalls</span>
+            <label class="toggle-switch">
+              <input type="checkbox" class="sub-notification" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="notif-item">
+            <span class="notif-label">Order Confirmation</span>
+            <label class="toggle-switch">
+              <input type="checkbox" class="sub-notification" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="../js/SettingsNotifications.js"></script>
+
+<!-- Navbar dropdown JS -->
+<script>
+  const dd = document.querySelector('.user-dropdown');
+  const toggle = document.querySelector('.user-toggle');
+
+  toggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dd.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
+    dd?.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>

@@ -33,10 +33,11 @@
 .main-content {
   flex: 1;
   padding: 40px 60px;
+  background-color: #F5F0E8;
 }
 
 .page-title {
-  font-size: 1.75rem;
+  font-size: 40px;
   font-weight: 700;
   color: var(--text-dark);
   text-align: center;
