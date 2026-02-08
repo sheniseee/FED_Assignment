@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hygiene Overview - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/inspector.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <!-- Config for Firebase -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/hawker-data.js"></script>           
+    <script src="../js/sample-analytics-data.js"></script>
+    <script src="../js/all-48-stalls-complete-data.js"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+    <div class="nav-container">
+        
+      <!-- Logo -->
+      <a href="inspector-dashboard.html" class="nav-logo">
+        <span class="logo-icon">🍜</span>
+        <span class="logo-text">Digital<br/>Hawker</span>
+      </a>
+
+      <!-- Nav Links -->
+      <ul class="nav-links">
+        <li><a href="inspector-dashboard.html">Home</a></li>
+        <li><a href="inspector-scheduling.html">Scheduling</a></li>
+        <li><a href="logging-form.html">Logging Form</a></li>
+        <li><a href="inspector-analytics.html">Analytics and Reporting</a></li>
+      </ul>
+
+      <!-- User Section (Logged In State) -->
+      <div class="nav-user">
+        <!-- Notifications -->
+        <button class="btn-notification" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+
+        <!-- User Dropdown -->
+        <div class="user-dropdown">
+          <button class="user-toggle" aria-label="User menu">
+            <div class="user-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span class="user-name">Inspector Brown</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              My Profile
+            </a>
+            <a href="order-history.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Order History
+            </a>
+            <a href="settings.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="index.html" class="dropdown-item dropdown-logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Log Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav> 
+    
+    <!-- Back Button -->
+    <div style="padding: 20px 40px; max-width: 1400px; margin: 0 auto;">
+        <a href="inspector-dashboard.html" style="display: inline-flex; align-items: center; gap: 8px; color: #666; text-decoration: none; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#666'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>Back to Dashboard</span>
+        </a>
+    </div>
+
+    <div class="main-content mobile-centered-container" style="padding-bottom:100px;">
+        <h2 style="text-align:center; margin: 30px 0; font-size:1.5rem;">Stall<br>Overview</h2>
+
+        <!-- Dropdowns -->
+        <div style="width:100%; max-width:320px; margin: 0 auto 24px auto;">
+            <select id="hawkerCentre" onchange="onHawkerCentreChange()"
+                style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom:12px; background:#fff;">
+                <option value="">Select Hawker Centre</option>
+                <option value="Maxwell Food Centre">Maxwell Food Centre</option>
+                <option value="Marsiling Mall Hawker Centre">Marsiling Mall Hawker Centre</option>
+                <option value="Kampung Admiralty Hawker Centre">Kampung Admiralty Hawker Centre</option>
+                <option value="Chomp Chomp Food Centre">Chomp Chomp Food Centre</option>
+                <option value="Tekka Centre">Tekka Centre</option>
+                <option value="Old Airport Road Food Centre">Old Airport Road Food Centre</option>
+            </select>
+            <select id="stall" onchange="onStallChange()"
+                style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom:12px; background:#fff;">
+                <option value="">Select Hawker Centre First</option>
+            </select>
+        </div>
+
+        <!-- Hygiene Grade Card -->
+        <div
+            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; margin-bottom:24px; text-align:center; margin: 0 auto 24px auto;">
+            <h3>Hygiene Grade<br>History</h3>
+            <p style="margin:12px 0;" id="currentGrade">Select a stall to view data</p>
+
+            <h4 style="margin: 20px 0;">Grade Timeline</h4>
+
+            <!-- Timeline -->
+            <div id="timelineContainer" style="display:none;">
+                <div style="display:flex; justify-content:space-between; position:relative; padding-top:20px;">
+                    <!-- Line -->
+                    <div style="position:absolute; top:29px; left:10px; right:10px; height:2px; background:#333; z-index:0;"></div>
+
+                    <!-- Points (will be populated by JavaScript) -->
+                    <div id="timelinePoints" style="display:flex; justify-content:space-between; width:100%; position:relative; z-index:1;"></div>
+                </div>
+            </div>
+            
+            <p id="noDataMessage" style="color:#999; margin-top:20px;">Please select a hawker centre and stall</p>
+        </div>
+
+        <!-- Inspection Trends Card -->
+        <div
+            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; text-align:center;  margin: 0 auto;">
+            <h3 style="margin-bottom:20px;">Inspection<br>Trends</h3>
+            <div id="trendsList" class="trends-list" style="text-align:left; font-size:0.9rem; color:#555;">
+                <p style="color:#999; text-align:center;">No data available</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="mobile-bottom-nav">
+        <a href="inspector-dashboard.html" class="mobile-nav-item">
+            <ion-icon name="grid-outline"></ion-icon>
+            <span>Home</span>
+        </a>
+        <a href="inspector-scheduling.html" class="mobile-nav-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Schedule</span>
+        </a>
+        <a href="inspector-analytics.html" class="mobile-nav-item active">
+            <ion-icon name="bar-chart-outline"></ion-icon>
+            <span>Stats</span>
+        </a>
+        <a href="../index.html" class="mobile-nav-item">
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <style>
+        .t-point {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 30px;
+            font-size: 0.7rem;
+        }
+
+        .t-point .grade {
+            position: absolute;
+            top: -24px;
+            font-weight: 700;
+        }
+
+        .t-point .year {
+            margin-top: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 50%;
+            margin: 4px 0;
+            position: relative;
+        }
+
+        .trends-list p {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 12px;
+        }
+    </style>
+
+    <script>
+
+        // STATE VARIABLES
+
+        let currentHawkerCentre = '';
+        let currentStall = '';
+        let inspectionData = null;
+
+
+        // CHECK AND POPULATE DATA ON LOAD
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            console.log('Checking for inspection history data...');
+            
+            try {
+                const snapshot = await db.collection('analytics_inspections').limit(1).get();
+                if (snapshot.empty) {
+                    console.log('No inspection history found. Run addCompleteInspectionHistory()');
+                    alert('No inspection data found. Open console and run: addCompleteInspectionHistory()');
+                } else {
+                    console.log('Inspection history data exists');
+                }
+            } catch (error) {
+                console.error('Error checking data:', error);
+            }
+        });
+
+
+        // DROPDOWN FUNCTIONS
+
+        function onHawkerCentreChange() {
+            const hawkerCentre = document.getElementById('hawkerCentre').value;
+            const stallSelect = document.getElementById('stall');
+            
+            currentHawkerCentre = hawkerCentre;
+            currentStall = '';
+            
+            if (!hawkerCentre) {
+                stallSelect.innerHTML = '<option value="">Select Hawker Centre First</option>';
+                clearDisplay();
+                return;
+            }
+            
+            // Get stalls for selected hawker centre
+            const stalls = getStallsForHawkerCentre(hawkerCentre);
+            
+            let options = '<option value="">Select a Stall</option>';
+            stalls.forEach(stall => {
+                options += `<option value="${stall.name}">${stall.name}</option>`;
+            });
+            
+            stallSelect.innerHTML = options;
+            clearDisplay();
+        }
+
+        function onStallChange() {
+            currentStall = document.getElementById('stall').value;
+            if (currentStall) {
+                loadInspectionHistory();
+            } else {
+                clearDisplay();
+            }
+        }
+
+
+        // LOAD INSPECTION HISTORY FROM FIREBASE
+
+        async function loadInspectionHistory() {
+            if (!currentHawkerCentre || !currentStall) return;
+
+            console.log(`Loading inspection history for ${currentStall} at ${currentHawkerCentre}`);
+
+            try {
+                const snapshot = await db.collection('analytics_inspections')
+                    .where('hawkerCentre', '==', currentHawkerCentre)
+                    .where('stall', '==', currentStall)
+                    .limit(1)
+                    .get();
+
+                if (!snapshot.empty) {
+                    inspectionData = snapshot.docs[0].data();
+                    displayInspectionHistory();
+                } else {
+                    console.log('No data found for this stall');
+                    showNoData();
+                }
+            } catch (error) {
+                console.error('Error loading inspection history:', error);
+                showNoData();
+            }
+        }
+
+
+        // DISPLAY FUNCTIONS
+
+        function displayInspectionHistory() {
+            if (!inspectionData) return;
+
+            // Display current grade
+            const currentGrade = inspectionData.grades[inspectionData.grades.length - 1].grade;
+            document.getElementById('currentGrade').innerHTML = `Hygiene grade : <strong>(${currentGrade})</strong>`;
+
+            // Display timeline
+            const timelineContainer = document.getElementById('timelineContainer');
+            const timelinePoints = document.getElementById('timelinePoints');
+            const noDataMessage = document.getElementById('noDataMessage');
+
+            timelineContainer.style.display = 'block';
+            noDataMessage.style.display = 'none';
+
+            timelinePoints.innerHTML = inspectionData.grades.map(item => `
+                <div class="t-point">
+                    <span class="grade">${item.grade}</span>
+                    <div class="dot"></div>
+                    <span class="year">${item.year}</span>
+                </div>
+            `).join('');
+
+            // Display trends
+            const trendsList = document.getElementById('trendsList');
+            if (inspectionData.trends && inspectionData.trends.length > 0) {
+                trendsList.innerHTML = inspectionData.trends.map(trend => `
+                    <p>${trend}</p>
+                `).join('');
+            } else {
+                trendsList.innerHTML = '<p style="color:#999; text-align:center;">No trends available</p>';
+            }
+        }
+
+        function showNoData() {
+            document.getElementById('currentGrade').textContent = 'No data available for this stall';
+            document.getElementById('timelineContainer').style.display = 'none';
+            document.getElementById('noDataMessage').style.display = 'block';
+            document.getElementById('trendsList').innerHTML = '<p style="color:#999; text-align:center;">No data available</p>';
+        }
+
+        function clearDisplay() {
+            document.getElementById('currentGrade').textContent = 'Select a stall to view data';
+            document.getElementById('timelineContainer').style.display = 'none';
+            document.getElementById('noDataMessage').style.display = 'block';
+            document.getElementById('noDataMessage').textContent = 'Please select a hawker centre and stall';
+            document.getElementById('trendsList').innerHTML = '<p style="color:#999; text-align:center;">No data available</p>';
+            inspectionData = null;
+        }
+    </script>
+</body>
+
+</html>

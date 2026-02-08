@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Analytics - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/inspector.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <!-- Config for Firebase -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/hawker-data.js"></script>           
+    <script src="../js/sample-analytics-data.js"></script>
+    <script src="../js/all-48-stalls-complete-data.js"></script>
+
+    <style>
+        .page-header {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .viz-card {
+            background: #FFF8E1;
+            padding: 40px;
+            border-radius: 20px;
+            min-height: 400px;
+        }
+
+        .viz-card h2 {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .list-rank {
+            width: 30px;
+            font-weight: 700;
+        }
+
+        .list-val {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+        }
+
+        .pop-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .pop-item:last-child {
+            border-bottom: none;
+        }
+
+        .score {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Peak hours bar chart */
+        .peak-chart {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 10px;
+            border: 1px solid #eee;
+            min-height: 200px;
+        }
+
+        .bar-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 140px;
+            gap: 6px;
+            padding: 0 5px;
+        }
+
+        .bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            max-width: 35px;
+        }
+
+        .bar {
+            width: 100%;
+            min-width: 20px;
+            background: linear-gradient(to top, #FFE082, #FFF9C4);
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid #FFD54F;
+        }
+
+        .bar.active {
+            background: linear-gradient(to top, #FF9800, #FFC107);
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.4);
+            border: 1px solid #FF9800;
+        }
+
+        .bar-label {
+            margin-top: 4px;
+            font-size: 0.7rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+    <div class="nav-container">
+        
+      <!-- Logo -->
+      <a href="inspector-dashboard.html" class="nav-logo">
+        <span class="logo-icon">🍜</span>
+        <span class="logo-text">Digital<br/>Hawker</span>
+      </a>
+
+      <!-- Nav Links -->
+      <ul class="nav-links">
+        <li><a href="inspector-dashboard.html">Home</a></li>
+        <li><a href="inspector-scheduling.html">Scheduling</a></li>
+        <li><a href="logging-form.html">Logging Form</a></li>
+        <li><a href="inspector-analytics.html">Analytics and Reporting</a></li>
+      </ul>
+
+      <!-- User Section (Logged In State) -->
+      <div class="nav-user">
+        <!-- Notifications -->
+        <button class="btn-notification" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+
+        <!-- User Dropdown -->
+        <div class="user-dropdown">
+          <button class="user-toggle" aria-label="User menu">
+            <div class="user-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span class="user-name">Inspector Brown</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              My Profile
+            </a>
+            <a href="order-history.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Order History
+            </a>
+            <a href="settings.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="index.html" class="dropdown-item dropdown-logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Log Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav> 
+    
+    <div class="main-content mobile-centered-container" style="padding-bottom:100px;">
+        <h2 style="text-align:center; margin: 30px 0; font-size:1.5rem;">Sales<br>Analytics</h2>
+
+        <!-- Dropdowns -->
+        <div style="width:100%; max-width:320px; margin: 0 auto 24px auto;">
+            <select id="hawkerCentre" onchange="onHawkerCentreChange()"
+                style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom:12px; background:#fff;">
+                <option value="">Select Hawker Centre</option>
+                <option value="Maxwell Food Centre">Maxwell Food Centre</option>
+                <option value="Marsiling Mall Hawker Centre">Marsiling Mall Hawker Centre</option>
+                <option value="Kampung Admiralty Hawker Centre">Kampung Admiralty Hawker Centre</option>
+                <option value="Chomp Chomp Food Centre">Chomp Chomp Food Centre</option>
+                <option value="Tekka Centre">Tekka Centre</option>
+                <option value="Old Airport Road Food Centre">Old Airport Road Food Centre</option>
+            </select>
+            <select id="stall" onchange="onStallChange()"
+                style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom:12px; background:#fff;">
+                <option value="">Select Hawker Centre First</option>
+            </select>
+        </div>
+
+        <!-- Popular Items Card -->
+        <div
+            style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; margin: 0 auto 24px auto;">
+            <h3 style="text-align:center; margin-bottom:20px;">Popular Items</h3>
+
+            <div class="popular-list" id="popularList">
+                <p style="text-align:center; color:#999;">Select a hawker centre to view data</p>
+            </div>
+        </div>
+
+        <!-- Peak Hours Card -->
+        <div style="background:#FFF8E1; border-radius:24px; padding:24px; width:100%; max-width:320px; margin: 0 auto;">
+            <h3 style="text-align:center; margin-bottom:20px;">Peak Hours</h3>
+            
+            <div class="peak-chart">
+                <div class="chart-title">Busiest times of day</div>
+                <div class="bar-container" id="peakHoursChart">
+                    <!-- Bars will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="mobile-bottom-nav">
+        <a href="inspector-dashboard.html" class="mobile-nav-item">
+            <ion-icon name="grid-outline"></ion-icon>
+            <span>Home</span>
+        </a>
+        <a href="inspector-scheduling.html" class="mobile-nav-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Schedule</span>
+        </a>
+        <a href="inspector-analytics.html" class="mobile-nav-item active">
+            <ion-icon name="bar-chart-outline"></ion-icon>
+            <span>Stats</span>
+        </a>
+        <a href="../index.html" class="mobile-nav-item">
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // STATE VARIABLES
+        let currentHawkerCentre = '';
+        let currentStall = '';
+        let salesData = null;
+
+        // DROPDOWN FUNCTIONS
+        function onHawkerCentreChange() {
+            const hawkerCentre = document.getElementById('hawkerCentre').value;
+            const stallSelect = document.getElementById('stall');
+            
+            currentHawkerCentre = hawkerCentre;
+            currentStall = '';
+            
+            if (!hawkerCentre) {
+                stallSelect.innerHTML = '<option value="">Select Hawker Centre First</option>';
+                clearDisplay();
+                return;
+            }
+            
+            // Get stalls for selected hawker centre
+            const stalls = getStallsForHawkerCentre(hawkerCentre);
+            
+            let options = '<option value="">Select a Stall</option>';
+            stalls.forEach(stall => {
+                options += `<option value="${stall.name}">${stall.name}</option>`;
+            });
+            
+            stallSelect.innerHTML = options;
+            clearDisplay();
+        }
+
+        function onStallChange() {
+            currentStall = document.getElementById('stall').value;
+            if (currentStall) {
+                loadSalesData();
+            } else {
+                clearDisplay();
+            }
+        }
+
+        // LOAD SALES DATA FROM FIREBASE
+        async function loadSalesData() {
+            if (!currentHawkerCentre || !currentStall) return;
+
+            console.log(`Loading sales data for ${currentStall} at ${currentHawkerCentre}`);
+
+            try {
+                const snapshot = await db.collection('analytics_sales')
+                    .where('hawkerCentre', '==', currentHawkerCentre)
+                    .where('stall', '==', currentStall)
+                    .limit(1)
+                    .get();
+
+                if (!snapshot.empty) {
+                    salesData = snapshot.docs[0].data();
+                    displaySalesData();
+                } else {
+                    console.log('No sales data found for this stall');
+                    displayNoData();
+                }
+            } catch (error) {
+                console.error('Error loading sales data:', error);
+                displayNoData();
+            }
+        }
+
+        // DISPLAY FUNCTIONS
+        function displaySalesData() {
+            if (!salesData) return;
+
+            // Display popular items
+            const popularList = document.getElementById('popularList');
+            if (salesData.popularItems && salesData.popularItems.length > 0) {
+                popularList.innerHTML = salesData.popularItems.map((item, index) => `
+                    <div class="pop-item">
+                        <span>${index + 1}. ${item.name}</span>
+                        <span class="score">${item.count} <ion-icon name="heart" style="color:red"></ion-icon></span>
+                    </div>
+                `).join('');
+            } else {
+                popularList.innerHTML = '<p style="text-align:center; color:#999;">No items data</p>';
+            }
+
+            // Display peak hours
+            if (salesData.peakHours && salesData.peakHours.length > 0) {
+                displayPeakHours(salesData.peakHours);
+            } else {
+                clearPeakHours();
+            }
+        }
+
+        function displayNoData() {
+            const popularList = document.getElementById('popularList');
+            popularList.innerHTML = '<p style="text-align:center; color:#999;">No data available for this selection</p>';
+            clearPeakHours();
+            salesData = null;
+        }
+
+        function clearDisplay() {
+            const popularList = document.getElementById('popularList');
+            popularList.innerHTML = '<p style="text-align:center; color:#999;">Select a hawker centre and stall</p>';
+            clearPeakHours();
+            salesData = null;
+        }
+
+        // PEAK HOURS VISUALIZATION
+        function displayPeakHours(peakHours) {
+            const chartContainer = document.getElementById('peakHoursChart');
+            
+            if (!peakHours || peakHours.length === 0) {
+                clearPeakHours();
+                return;
+            }
+            
+            console.log('Peak hours:', peakHours);
+            
+            // Create 24-hour array with order counts
+            const hourlyData = new Array(24).fill(0);
+            
+            // Mark peak hours with high values
+            peakHours.forEach(hour => {
+                hourlyData[hour] = 100;
+            });
+            
+            // Add some variation to non-peak hours
+            for (let i = 0; i < 24; i++) {
+                if (hourlyData[i] === 0) {
+                    // Business hours (7am-10pm) get some activity
+                    if (i >= 7 && i <= 22) {
+                        hourlyData[i] = Math.random() * 35 + 20; // 20-55
+                    } else {
+                        hourlyData[i] = Math.random() * 10 + 5; // 5-15 for closed hours
+                    }
+                }
+            }
+            
+            // Only show key hours (7am - 9pm)
+            const displayHours = [7, 9, 11, 12, 13, 15, 17, 18, 19, 21];
+            
+            chartContainer.innerHTML = displayHours.map(hour => {
+                const value = hourlyData[hour];
+                const isPeak = peakHours.includes(hour);
+                
+                // Calculate height - ensure peak hours are always tallest
+                const heightPercent = isPeak ? 90 : Math.max(value * 0.6, 25);
+                const heightPx = Math.round((heightPercent / 100) * 140); // 140px is container height
+                
+                return `
+                    <div class="bar-wrapper">
+                        <div class="bar ${isPeak ? 'active' : ''}" 
+                             style="height: ${heightPx}px;"
+                             title="${hour}:00 - ${isPeak ? 'Peak Hour ⭐' : 'Regular'}">
+                        </div>
+                        <div class="bar-label">${hour}h</div>
+                    </div>
+                `;
+            }).join('');
+            
+            console.log('Peak hours chart rendered');
+        }
+
+        function clearPeakHours() {
+            const chartContainer = document.getElementById('peakHoursChart');
+            chartContainer.innerHTML = '<p style="text-align:center; color:#999; width:100%; margin-top:50px;">No peak hours data</p>';
+        }
+
+        // POPULATE DATA ON FIRST LOAD (if needed)
+        window.addEventListener('DOMContentLoaded', async () => {
+            console.log('Sales page loaded, checking for data...');
+            
+            try {
+                const snapshot = await db.collection('analytics_sales').limit(1).get();
+                if (snapshot.empty) {
+                    console.log('No sales data found. Run addAllStallsData() to populate.');
+                    alert('No sales data found!\n\nOpen console and run:\naddAllStallsData()');
+                } else {
+                    console.log('Sales data exists');
+                }
+            } catch (error) {
+                console.error('Error checking data:', error);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

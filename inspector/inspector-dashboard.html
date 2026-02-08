@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspector Home - Digital Hawker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/inspector.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <!-- Config for Firebase -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/hawker-data.js"></script>           
+    <script src="../js/sample-analytics-data.js"></script> 
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+    <div class="nav-container">
+        
+      <!-- Logo -->
+      <a href="inspector-dashboard.html" class="nav-logo">
+        <span class="logo-icon">🍜</span>
+        <span class="logo-text">Digital<br/>Hawker</span>
+      </a>
+
+      <!-- Nav Links -->
+      <ul class="nav-links">
+        <li><a href="inspector-dashboard.html">Home</a></li>
+        <li><a href="inspector-scheduling.html">Scheduling</a></li>
+        <li><a href="logging-form.html">Logging Form</a></li>
+        <li><a href="inspector-analytics.html">Analytics and Reporting</a></li>
+      </ul>
+
+      <!-- User Section (Logged In State) -->
+      <div class="nav-user">
+        <!-- Notifications -->
+        <button class="btn-notification" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+
+        <!-- User Dropdown -->
+        <div class="user-dropdown">
+          <button class="user-toggle" aria-label="User menu">
+            <div class="user-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span class="user-name">Inspector Brown</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              My Profile
+            </a>
+            <a href="order-history.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Order History
+            </a>
+            <a href="settings.html" class="dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="index.html" class="dropdown-item dropdown-logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Log Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav> 
+
+    <div class="inspector-container">
+        <!-- Breadcrumb -->
+        <p style="color:#999; margin-bottom:24px; font-size:0.9rem;">Inspections</p>
+
+        <div class="layout-grid">
+            <div class="left-col">
+                <div class="profile-card">
+                    <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=200&q=80"
+                        class="profile-img">
+                    <div>
+                        <h2 style="line-height:1.1;">Inspector<br>Brown</h2>
+                        <hr style="width:40px; border:1px solid #ddd; margin: 8px 0;">
+                    </div>
+                </div>
+
+                <button class="action-btn" onclick="window.location.href='inspector-scheduling.html'">
+                    <div class="action-icon"><ion-icon name="calendar"></ion-icon></div>
+                    Scheduling
+                </button>
+
+                <button class="action-btn" onclick="window.location.href='logging-form.html'">
+                    <div class="action-icon"><ion-icon name="create"></ion-icon></div>
+                    Logging Form
+                </button>
+
+                <button class="action-btn" onclick="window.location.href='inspector-analytics.html'">
+                    <div class="action-icon"><ion-icon name="stats-chart"></ion-icon></div>
+                    Analytics & Reporting
+                </button>
+            </div>
+
+            <div class="right-col">
+                <div class="next-info">
+                    <h3 style="margin-bottom:16px;">Next Inspection:</h3>
+                    <h2 style="font-size:1.5rem; margin-bottom:8px;">Maxwell Food Centre</h2>
+                    <p class="text-light" style="margin-bottom:24px;">Stall 3</p>
+
+                    <div class="inspect-detail">
+                        <div><ion-icon name="calendar-outline" style="vertical-align:middle;"></ion-icon>
+                            <strong>Date:</strong> 13 Jan
+                        </div>
+                        <div><ion-icon name="location-outline" style="vertical-align:middle;"></ion-icon>
+                            <strong>Location:</strong> 1 Kadayanallur St, Singapore 069184
+                        </div>
+                        <div><ion-icon name="call-outline" style="vertical-align:middle;"></ion-icon>
+                            <strong>Contact:</strong> 6225 5632
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Mini Calendar -->
+                <div class="mini-calendar">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-weight:700; font-size:0.9rem;">
+                        <span class="cal-nav" onclick="previousMonth()">&lt;</span>
+                        <span id="dashboardMonthYear">January 2026</span>
+                        <span class="cal-nav" onclick="nextMonth()">&gt;</span>
+                    </div>
+                    <div class="cal-grid-mini" id="miniCalendar">
+                        <span class="cal-header-mini">S</span>
+                        <span class="cal-header-mini">M</span>
+                        <span class="cal-header-mini">T</span>
+                        <span class="cal-header-mini">W</span>
+                        <span class="cal-header-mini">T</span>
+                        <span class="cal-header-mini">F</span>
+                        <span class="cal-header-mini">S</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>Digital Hawker</h4>
+                <p style="font-size:0.9rem; opacity:0.8;">Empowering traditional stalls with modern tech.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="#">Home</a>
+                <a href="#">Order</a>
+                <a href="#">About Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="mobile-bottom-nav">
+        <a href="inspector-dashboard.html" class="mobile-nav-item active">
+            <ion-icon name="grid-outline"></ion-icon>
+            <span>Home</span>
+        </a>
+        <a href="inspector-scheduling.html" class="mobile-nav-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Schedule</span>
+        </a>
+        <a href="inspector-analytics.html" class="mobile-nav-item">
+            <ion-icon name="bar-chart-outline"></ion-icon>
+            <span>Stats</span>
+        </a>
+        <a href="../index.html" class="mobile-nav-item">
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Mini calendar functionality
+        let currentDate = new Date();
+        const STORAGE_KEY = 'inspections';
+
+        function getInspections() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function renderMiniCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('dashboardMonthYear').textContent = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const calendar = document.getElementById('miniCalendar');
+            const inspections = getInspections();
+
+            // Clear existing days (keep headers)
+            const existingDays = calendar.querySelectorAll('.cal-cell-mini');
+            existingDays.forEach(cell => cell.remove());
+
+            // Empty cells before first day
+            for (let i = 0; i < firstDay; i++) {
+                const cell = document.createElement('span');
+                cell.className = 'cal-cell-mini';
+                cell.style.opacity = '0';
+                calendar.appendChild(cell);
+            }
+
+            // Days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('span');
+                cell.className = 'cal-cell-mini';
+                cell.textContent = day;
+
+                const cellDate = new Date(year, month, day);
+                const cellDateStr = formatDate(cellDate);
+
+                // Check if has inspection
+                const inspection = inspections.find(i => i.date === cellDateStr);
+                if (inspection) {
+                    cell.classList.add('cal-highlight');
+                }
+
+                calendar.appendChild(cell);
+            }
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderMiniCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderMiniCalendar();
+        }
+
+        // Initialize with sample data if needed
+        const inspections = getInspections();
+        if (inspections.length === 0) {
+            const sampleInspections = [
+                { id: 1, date: '2026-01-08', hawkerCentre: 'Kampung Admiralty Hawker Centre', stall: 'Stall 5' },
+                { id: 2, date: '2026-01-13', hawkerCentre: 'Maxwell Food Centre', stall: 'Stall 3' },
+                { id: 3, date: '2026-01-15', hawkerCentre: 'Marsiling Mall Hawker Centre', stall: 'Stall 7' }
+            ];
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleInspections));
+        }
+
+        renderMiniCalendar();
+    </script>
+
+</body>
+
+</html>
