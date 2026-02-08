@@ -1511,6 +1511,151 @@
             }
         }
     </script>
+
+    <!-- ULTIMATE FIX - Override navbar.css hiding the dropdowns! -->
+    <style>
+        /* CRITICAL: Override navbar.css that hides dropdowns */
+        #filterDropdown, #bulkDropdown {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: none !important;
+            position: absolute !important;
+            background: white !important;
+            border: 3px solid #FF5722 !important;
+            border-radius: 8px !important;
+            padding: 12px !important;
+            min-width: 250px !important;
+            z-index: 999999 !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+            top: calc(100% + 5px) !important;
+            left: 0 !important;
+            transform: none !important;
+        }
+        
+        #filterDropdown.visible, #bulkDropdown.visible {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    </style>
+    
+    <script>
+        console.log('🔧 ULTIMATE FIX Loading...');
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            const filterDropdown = document.getElementById('filterDropdown');
+            const bulkDropdown = document.getElementById('bulkDropdown');
+            
+            console.log('filterDropdown:', filterDropdown);
+            console.log('bulkDropdown:', bulkDropdown);
+            
+            // Find buttons
+            const buttons = document.querySelectorAll('button.btn-tool');
+            console.log('Found buttons:', buttons.length);
+            
+            buttons.forEach(btn => {
+                const text = btn.textContent.trim();
+                console.log('Button text:', text);
+                
+                // FILTER BUTTON
+                if (text.includes('Filter')) {
+                    console.log('>>> Attaching to Filter button');
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        console.log('FILTER CLICKED!');
+                        
+                        // Close edit
+                        if (bulkDropdown) {
+                            bulkDropdown.classList.remove('visible');
+                            bulkDropdown.style.display = 'none';
+                            bulkDropdown.style.opacity = '0';
+                            bulkDropdown.style.visibility = 'hidden';
+                        }
+                        
+                        // Toggle filter
+                        if (filterDropdown) {
+                            const isVisible = filterDropdown.classList.contains('visible');
+                            
+                            if (isVisible) {
+                                console.log('Hiding filter dropdown');
+                                filterDropdown.classList.remove('visible');
+                                filterDropdown.style.display = 'none';
+                                filterDropdown.style.opacity = '0';
+                                filterDropdown.style.visibility = 'hidden';
+                            } else {
+                                console.log('Showing filter dropdown');
+                                filterDropdown.classList.add('visible');
+                                filterDropdown.style.display = 'block';
+                                filterDropdown.style.opacity = '1';
+                                filterDropdown.style.visibility = 'visible';
+                            }
+                        }
+                    });
+                }
+                
+                // EDIT BUTTON
+                if (text.includes('Edit')) {
+                    console.log('>>> Attaching to Edit button');
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        console.log('EDIT CLICKED!');
+                        
+                        // Close filter
+                        if (filterDropdown) {
+                            filterDropdown.classList.remove('visible');
+                            filterDropdown.style.display = 'none';
+                            filterDropdown.style.opacity = '0';
+                            filterDropdown.style.visibility = 'hidden';
+                        }
+                        
+                        // Toggle edit
+                        if (bulkDropdown) {
+                            const isVisible = bulkDropdown.classList.contains('visible');
+                            
+                            if (isVisible) {
+                                console.log('Hiding edit dropdown');
+                                bulkDropdown.classList.remove('visible');
+                                bulkDropdown.style.display = 'none';
+                                bulkDropdown.style.opacity = '0';
+                                bulkDropdown.style.visibility = 'hidden';
+                            } else {
+                                console.log('Showing edit dropdown');
+                                bulkDropdown.classList.add('visible');
+                                bulkDropdown.style.display = 'block';
+                                bulkDropdown.style.opacity = '1';
+                                bulkDropdown.style.visibility = 'visible';
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Close on outside click
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.btn-tool') && !e.target.closest('.dropdown-menu')) {
+                    if (filterDropdown) {
+                        filterDropdown.classList.remove('visible');
+                        filterDropdown.style.display = 'none';
+                        filterDropdown.style.opacity = '0';
+                        filterDropdown.style.visibility = 'hidden';
+                    }
+                    if (bulkDropdown) {
+                        bulkDropdown.classList.remove('visible');
+                        bulkDropdown.style.display = 'none';
+                        bulkDropdown.style.opacity = '0';
+                        bulkDropdown.style.visibility = 'hidden';
+                    }
+                }
+            });
+            
+            console.log('✅ ULTIMATE FIX Complete!');
+        });
+    </script>
+
 </body>
 
 </html>
