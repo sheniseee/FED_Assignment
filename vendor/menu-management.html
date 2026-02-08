@@ -18,6 +18,58 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="../js/auth-check.js"></script>
     <script src="../js/image-helper.js"></script>
+    
+    <!-- CRITICAL FIX: Define onclick functions before HTML elements -->
+    <script>
+        window.toggleDropdown = function(id, event) {
+            // Stop event propagation to prevent window.onclick from closing it
+            if (event) {
+                event.stopPropagation();
+            }
+            const el = document.getElementById(id);
+            if (!el) return;
+            const dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (let i = 0; i < dropdowns.length; i++) {
+                if (dropdowns[i].id !== id) dropdowns[i].style.display = "none";
+            }
+            el.style.display = (el.style.display === "block") ? "none" : "block";
+        };
+        
+        window.closeModal = function(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.style.display = "none";
+        };
+        
+        window.openAddModal = function() {
+            const addModal = document.getElementById("addModal");
+            const bulkDropdown = document.getElementById("bulkDropdown");
+            if (addModal) addModal.style.display = "flex";
+            if (bulkDropdown) bulkDropdown.style.display = "none";
+        };
+        
+        window.openGroupPopover = function(event) {
+            if (event) event.stopPropagation();
+            const popover = document.getElementById("groupPopover");
+            if (!popover) return;
+            if (popover.style.display === "block") {
+                popover.style.display = "none";
+            } else {
+                popover.style.display = "block";
+                const list = document.getElementById("groupList");
+                const form = document.getElementById("newGroupForm");
+                if (list) list.style.display = "block";
+                if (form) form.style.display = "none";
+            }
+        };
+        
+        window.showNewGroupForm = function(event) {
+            if (event) event.stopPropagation();
+            const list = document.getElementById("groupList");
+            const form = document.getElementById("newGroupForm");
+            if (list) list.style.display = "none";
+            if (form) form.style.display = "block";
+        };
+    </script>
     <script type="module">
         import { db } from '../js/firebase-config.js';
         import { collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc, setDoc, deleteField } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
@@ -116,13 +168,21 @@
             }
         };
 
-        // Real-time Search (Linked to DataTables)
+        // Real-time Search
         window.searchItems = () => {
-            const query = document.getElementById('searchInput').value;
-            // Use DataTables API to search and draw
-            if ($.fn.DataTable.isDataTable('#menuTable')) {
-                $('#menuTable').DataTable().search(query).draw();
-            }
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#menuTableBody tr');
+            rows.forEach(row => {
+                const id = row.getAttribute('data-id').toLowerCase();
+                const name = row.cells[2].innerText.toLowerCase(); // Name
+                const desc = row.cells[6].innerText.toLowerCase(); // Desc
+
+                if (id.includes(query) || name.includes(query) || desc.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         };
 
         // Sorting
@@ -156,37 +216,6 @@
             return Array.from(checkedBoxes).map(box => box.getAttribute('data-id'));
         }
 
-        // Helper to get variants from UI
-        function getVariantsFromUI(mode) {
-            const container = document.getElementById(`${mode}VariantsContainer`);
-            const rows = container.querySelectorAll('.variant-row');
-            const variants = [];
-            rows.forEach(row => {
-                const name = row.querySelector('.var-name').value;
-                const price = Number(row.querySelector('.var-price').value);
-                if (name && price) {
-                    variants.push({ name, price });
-                }
-            });
-            return variants;
-        }
-
-        // Helper to add variant row
-        window.addVariantRow = (mode, data = { name: '', price: '' }) => {
-            const container = document.getElementById(`${mode}VariantsContainer`);
-            const div = document.createElement('div');
-            div.className = 'variant-row';
-            div.style.display = 'flex';
-            div.style.gap = '8px';
-            div.style.marginBottom = '8px';
-            div.innerHTML = `
-                <input type="text" class="var-name" placeholder="Size/Type" value="${data.name}" style="flex:1;">
-                <input type="number" class="var-price" placeholder="Price" value="${data.price}" style="width:100px;">
-                <button class="btn-tool" onclick="this.parentElement.remove()" style="color:red; border-color:red;">X</button>
-            `;
-            container.appendChild(div);
-        };
-
         // Updated Add Item Logic (Includes Image)
         window.confirmAddItem = async () => {
             const name = document.getElementById('addName').value;
@@ -199,8 +228,6 @@
             const imageUrl = document.getElementById('addImage').value || '../images/default.jpg';
             const id = document.getElementById('addId').value;
 
-            const variants = getVariantsFromUI('add');
-
             if (!name || !price) {
                 alert("Name and Price are required!");
                 return;
@@ -211,8 +238,7 @@
                 const data = {
                     name, price, cost, category, ingredients, description, dietary, imageUrl,
                     available: true,
-                    stock: 50,
-                    variants: variants // Add variants to data
+                    stock: 50
                 };
 
                 if (id) {
@@ -224,7 +250,6 @@
                 window.showSuccessModal('Item Added Successfully!', 'New Item', name);
                 document.getElementById('addModal').style.display = 'none';
                 document.querySelectorAll('#addModal input').forEach(i => i.value = '');
-                document.getElementById('addVariantsContainer').innerHTML = ''; // Clear variants
             } catch (error) {
                 console.error("Error adding item:", error);
                 alert("Failed to add item: " + error.message);
@@ -233,8 +258,11 @@
 
         // Updated Edit Logic
         window.confirmEdit = async () => {
-            const variants = getVariantsFromUI('edit');
+            // Logic to capture updated values
             const id = document.getElementById('editId').value;
+            // Support Bulk Edit for Groups if multiple items selected?
+            // "Group Item (s)" context menu uses this modal.
+            // If currentAction is bulk-group, we might need special handling.
 
             const selectedIds = getSelectedIds();
             const targetIds = (selectedIds.length > 0 && currentAction !== 'edit-single') ? selectedIds : [id];
@@ -246,32 +274,32 @@
             const ingredients = document.getElementById('editIngredients').value;
             const description = document.getElementById('editDesc').value;
             const dietary = document.getElementById('editDiet').value;
-            const imageUrl = document.getElementById('editImage').value || '../images/default.jpg';
+            const imageUrl = document.getElementById('editImage').value;
 
             try {
-                // Bulk Edit Logic
-                if (targetIds.length > 1) {
-                    const updates = {};
-                    if (category) updates.category = category;
-
-                    const promises = targetIds.map(tid => updateDoc(doc(db, "menu_items", tid), updates));
-                    await Promise.all(promises);
-                    window.showSuccessModal('Items Updated!', 'Bulk Edit', `${targetIds.length} items updated.`);
-                }
-                else {
-                    // Single item logic
-                    if (!name || !price) { alert("Name and Price required"); return; }
-
-                    await updateDoc(doc(db, "menu_items", id), {
-                        name, price, cost, category, ingredients, description, dietary, imageUrl,
-                        variants: variants
-                    });
-                    window.showSuccessModal('Item Updated!', 'Edit Item', 'Changes saved successfully.');
+                const updates = {};
+                // Only update fields that are meaningful for bulk (mostly Group) or single
+                if (targetIds.length === 1) {
+                    updates.name = name;
+                    updates.price = price;
+                    updates.cost = cost;
+                    updates.ingredients = ingredients;
+                    updates.description = description;
+                    updates.dietary = dietary;
+                    updates.imageUrl = imageUrl;
                 }
 
+                // Group applies to all
+                if (category) updates.category = category;
+
+                const updatePromises = targetIds.map(tid => updateDoc(doc(db, "menu_items", tid), updates));
+                await Promise.all(updatePromises);
+
+                window.showSuccessModal('Item(s) Updated!', 'Success', `${targetIds.length} items updated.`);
                 document.getElementById('editModal').style.display = 'none';
-                document.querySelectorAll('.checkbox-sq.checked').forEach(c => c.classList.remove('checked'));
 
+                // Clear selection
+                document.querySelectorAll('.checkbox-sq.checked').forEach(c => c.classList.remove('checked'));
             } catch (error) {
                 console.error("Error updating item:", error);
                 alert("Failed to update item: " + error.message);
@@ -548,53 +576,34 @@
             grid-template-columns: 280px 1fr;
             gap: 40px;
         }
-
-        /* Hide default DataTables search box */
-        .dataTables_filter {
-            display: none;
-        }
-
-        @media screen and (max-width: 768px) {
-            .split-layout {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .nav-stack {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-        }
     </style>
 
-    <script>function toggleMobileNav() {
-            document.getElementById('navLinksContainer').classList.toggle('show');
-        }
-
-        // User Dropdown Toggle
-        document.addEventListener('DOMContentLoaded', () => {
-            const userDropdown = document.querySelector('.user-dropdown');
-            const userToggle = document.querySelector('.user-toggle');
-
-            if (userToggle) {
-                userToggle.addEventListener('click', (event) => {
-                    userDropdown.classList.toggle('active');
-                    event.stopPropagation(); // Prevent click from immediately closing
-                });
+    <script>
+    function toggleMobileNav() {
+        const navContainer = document.getElementById('navLinksContainer');
+        // SELECT THE SIDEBAR TOGGLE BUTTON, NOT THE MAIN NAVBAR ONE
+        const mobileToggle = document.querySelector('.nav-stack .mobile-nav-toggle');
+        
+        if (navContainer && mobileToggle) {
+            // Toggle the show class
+            navContainer.classList.toggle('show');
+            
+            // Get the chevron icon (the second ion-icon in the button)
+            const chevronIcon = mobileToggle.querySelector('ion-icon:last-child');
+            
+            // Toggle chevron icon direction
+            if (navContainer.classList.contains('show')) {
+                chevronIcon.name = 'chevron-up-outline';
+            } else {
+                chevronIcon.name = 'chevron-down-outline';
             }
-
-            // Close dropdown if clicked outside
-            window.addEventListener('click', (event) => {
-                if (userDropdown && !userDropdown.contains(event.target)) {
-                    userDropdown.classList.remove('active');
-                }
-            });
-        });
-    </script>
+        }
+    }
+</script>
 </head>
 
 <body>
-    <!-- NAVBAR -->
+   <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-container">
 
@@ -611,11 +620,6 @@
                 <li><a href="orders-history.html">Order History</a></li>
                 <li><a href="contact.html">Contact Us</a></li>
             </ul>
-
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-nav-toggle" aria-label="Mobile Menu">
-                <ion-icon name="menu"></ion-icon> Menu
-            </button>
 
             <!-- User Section -->
             <div class="nav-user">
@@ -672,34 +676,35 @@
         </div>
     </nav>
 
-
     <div style="max-width: 1400px; margin: 0 auto; padding: 40px 20px;">
-        <!-- Full Width Content -->
         <div class="split-layout">
-            <!-- Sidebar -->
-            <div class="nav-stack">
+            <!-- Left Stack (Sidebar) -->
+
+            <div class="nav-stack" style="position:relative;">
                 <button class="mobile-nav-toggle" onclick="toggleMobileNav()">
                     <div style="display:flex; align-items:center; gap:12px;">
-                        <ion-icon name="menu"></ion-icon> Menu
+                        <ion-icon name="restaurant"></ion-icon> Menu
                     </div>
                     <ion-icon name="chevron-down-outline"></ion-icon>
                 </button>
-                <div id="navLinksContainer" class="nav-links-container">
-                    <a href="VendorHomePage.html" class="menu-pill-btn">
+
+                <div class="nav-links-container" id="navLinksContainer">
+                    <a href="dashboard.html" class="menu-pill-btn">
                         <ion-icon name="grid"></ion-icon> Dashboard
+                    </a>
+                    <a href="orders.html" class="menu-pill-btn">
+                        <ion-icon name="cart"></ion-icon> Orders
                     </a>
                     <a href="menu.html" class="menu-pill-btn active">
                         <ion-icon name="restaurant"></ion-icon> Menu
                     </a>
-                    <a href="orders.html" class="menu-pill-btn">
-                        <ion-icon name="cart"></ion-icon> Order
-                    </a>
                     <a href="earnings-overview.html" class="menu-pill-btn">
                         <ion-icon name="cash"></ion-icon> Earnings
                     </a>
+
                 </div>
             </div>
-
+            <!-- Right Content -->
             <div class="dashboard-content">
                 <div style="text-align:left; margin-bottom:40px;">
                     <h1 style="font-family:'Outfit', sans-serif; font-size:3rem; margin-bottom:12px; margin-top:0;">
@@ -716,10 +721,9 @@
                         <div style="display:flex; gap:12px; align-items:center;">
                             <div class="search-box"><ion-icon name="search-outline"></ion-icon><input type="text"
                                     id="searchInput" onkeyup="searchItems()"
-                                    placeholder="Enter Item ID, Name, or Desc...">
-                            </div>
+                                    placeholder="Enter Item ID, Name, or Desc..."></div>
                             <div style="position:relative;"><button class="btn-tool"
-                                    onclick="toggleDropdown('filterDropdown')"><ion-icon
+                                    onclick="toggleDropdown('filterDropdown', event)"><ion-icon
                                         name="options-outline"></ion-icon>Filter </button>
                                 <div id="filterDropdown" class="dropdown-menu" style="width:250px; padding:12px;">
                                     <div style="margin-bottom:8px; font-weight:600; font-size:0.9rem;">
@@ -727,16 +731,6 @@
                                     <div class="dropdown-item" onclick="filterItems('all')">All
                                         Groups</div>
                                     <div id="dynamicFilterOptions"></div>
-                                    <hr style="border:0; border-top:1px solid #eee; margin:8px 0;">
-                                    <div style="margin-bottom:8px; font-weight:600; font-size:0.9rem;">
-                                        Filter by Variation </div>
-                                    <div class="dropdown-item" onclick="filterByVariation('')">All Variations</div>
-                                    <div class="dropdown-item" onclick="filterByVariation('size')">Has Size Variations
-                                    </div>
-                                    <div class="dropdown-item" onclick="filterByVariation('spice')">Has Spice Variations
-                                    </div>
-                                    <div class="dropdown-item" onclick="filterByVariation('custom')">Has Custom Options
-                                    </div>
                                     <hr style="border:0; border-top:1px solid #eee; margin:8px 0;">
                                     <div style="margin-bottom:8px; font-weight:600; font-size:0.9rem;">
                                         Filter by Price </div>
@@ -753,9 +747,8 @@
                                 style="color:red; border-color:red; margin-right:8px;"><ion-icon
                                     name="refresh-outline"></ion-icon>Reset Data </button> -->
                             <div style="position:relative;"><button class="btn-tool"
-                                    onclick="toggleDropdown('bulkDropdown')"><ion-icon
-                                        name="create-outline"></ion-icon>Edit
-                                </button>
+                                    onclick="toggleDropdown('bulkDropdown', event)"><ion-icon
+                                        name="create-outline"></ion-icon>Edit </button>
                                 <!-- Bulk Action Dropdown with Group Popover -->
                                 <div id="bulkDropdown" class="dropdown-menu">
                                     <div class="dropdown-item" onclick="openConfirmationModal('delete')"><ion-icon
@@ -797,10 +790,9 @@
                             </div>
                         </div>
                     </div>
-                    <div style="align-self: flex-end; display: flex; gap: 12px; align-items: center;">
-                        <button class="btn-tool" onclick="openAddModal()"><ion-icon name="add"></ion-icon>Add Item
-                        </button>
-                    </div>
+                    <div style="align-self: flex-end;"><button class="btn-tool" onclick="openAddModal()"><ion-icon
+                                name="add"></ion-icon>Add Item
+                        </button></div>
                 </div>
                 <!-- Main Content Table -->
                 <div style="overflow-x:auto;">
@@ -829,724 +821,696 @@
                     </table>
                 </div>
             </div>
-            <!-- End Content Area -->
         </div>
-        <!-- Add Item Modal (Yellow Theme) -->
-        <div id="addModal" class="modal-overlay">
-            <div class="modal-form-card" style="position:relative;"><span class="close-icon"
-                    onclick="closeModal('addModal')" style="top:20px; right:20px;">&times;
-                </span>
-                <h2 style="text-align:center; margin-bottom:24px; font-size:2rem; font-family:'Outfit',serif;">Add
-                    New Item </h2>
-                <div class="form-row"><label>New Item ID:</label><input type="text" id="addId"
-                        placeholder="Enter Item ID.."></div>
-                <div class="form-row"><label>Image Path:</label>
-                    <div style="flex:1; display:flex; gap:8px;"><input type="text" id="addImage"
-                            placeholder="../images/filename.jpg" style="flex:1;"><input type="file" id="addFileHelper"
-                            accept="image/*" style="display:none;" onchange="handleImageUpload('add', this)"><button
-                            class="btn-tool" onclick="document.getElementById('addFileHelper').click()">Select
-                            File</button>
-                    </div>
+    </div>
+    <!-- Add Item Modal (Yellow Theme) -->
+    <div id="addModal" class="modal-overlay">
+        <div class="modal-form-card" style="position:relative;"><span class="close-icon"
+                onclick="closeModal('addModal')" style="top:20px; right:20px;">&times;
+            </span>
+            <h2 style="text-align:center; margin-bottom:24px; font-size:2rem; font-family:'Outfit',serif;">Add
+                New Item </h2>
+            <div class="form-row"><label>New Item ID:</label><input type="text" id="addId"
+                    placeholder="Enter Item ID.."></div>
+            <div class="form-row"><label>Image Path:</label>
+                <div style="flex:1; display:flex; gap:8px;"><input type="text" id="addImage"
+                        placeholder="../images/filename.jpg" style="flex:1;"><input type="file" id="addFileHelper"
+                        accept="image/*" style="display:none;" onchange="handleImageUpload('add', this)"><button
+                        class="btn-tool" onclick="document.getElementById('addFileHelper').click()">Select File</button>
                 </div>
-                <div class="form-row"><label>New Item Name:</label><input type="text" id="addName"
-                        placeholder="Enter Name.."></div>
-                <div class="form-row"><label>New Item Price:</label><input type="number" id="addPrice"
-                        placeholder="Enter Price.."></div>
-                <div class="form-row"><label>New Item Cost:</label><input type="number" id="addCost"
-                        placeholder="Enter Cost (COGS).."></div>
-                <div class="form-row"><label>New Item Group:</label><select id="addGroup">
-                        <option value="">Select Group..</option>
-                    </select></div>
-                <div class="form-row"><label>New Item Ingredients:</label><input type="text" id="addIngredients"
-                        placeholder="Enter Ingredients.."></div>
-                <div class="form-row"><label>New Item Description:</label><input type="text" id="addDesc"
-                        placeholder="Enter Description.."></div>
-                <div class="form-row"><label>New Dietary Notes:</label><input type="text" id="addDiet"
-                        placeholder="Enter Dietary Notes.."></div>
-
-                <!-- Variants Section -->
-                <div class="form-row" style="display:block;">
-                    <label>Variants (Optional):</label>
-                    <div id="addVariantsContainer" style="margin-top:8px;">
-                        <!-- Variant rows will be added here -->
-                    </div>
-                    <button class="btn-tool" onclick="addVariantRow('add')" style="margin-top:8px; font-size:0.8rem;">+
-                        Add
-                        Variant</button>
-                </div>
-
-                <div style="text-align:right; margin-top:24px;"><button class="btn-gold"
-                        onclick="openConfirmationModal('add')">Add Item</button></div>
             </div>
+            <div class="form-row"><label>New Item Name:</label><input type="text" id="addName"
+                    placeholder="Enter Name.."></div>
+            <div class="form-row"><label>New Item Price:</label><input type="number" id="addPrice"
+                    placeholder="Enter Price.."></div>
+            <div class="form-row"><label>New Item Cost:</label><input type="number" id="addCost"
+                    placeholder="Enter Cost (COGS).."></div>
+            <div class="form-row"><label>New Item Group:</label><select id="addGroup">
+                    <option value="">Select Group..</option>
+                </select></div>
+            <div class="form-row"><label>New Item Ingredients:</label><input type="text" id="addIngredients"
+                    placeholder="Enter Ingredients.."></div>
+            <div class="form-row"><label>New Item Description:</label><input type="text" id="addDesc"
+                    placeholder="Enter Description.."></div>
+            <div class="form-row"><label>New Dietary Notes:</label><input type="text" id="addDiet"
+                    placeholder="Enter Dietary Notes.."></div>
+            <div style="text-align:right; margin-top:24px;"><button class="btn-gold"
+                    onclick="openConfirmationModal('add')">Add Item</button></div>
         </div>
-        <!-- Edit Item Modal (Yellow Theme) -->
-        <div id="editModal" class="modal-overlay">
-            <div class="modal-form-card" style="position:relative;"><span class="close-icon"
-                    onclick="closeModal('editModal')" style="top:20px; right:20px;">&times;
-                </span>
-                <h2 style="text-align:center; margin-bottom:24px; font-size:2rem; font-family:'Outfit',serif;">
-                    Edit Item </h2>
-                <div class="form-row"><label>Item ID:</label><input type="text" id="editId"
-                        placeholder="Enter Item ID.." disabled style="background:#f0f0f0;"></div>
-                <div class="form-row"><label>Image Path:</label>
-                    <div style="flex:1; display:flex; gap:8px;"><input type="text" id="editImage"
-                            placeholder="../images/filename.jpg" style="flex:1;"><input type="file" id="editFileHelper"
-                            accept="image/*" style="display:none;" onchange="handleImageUpload('edit', this)"><button
-                            class="btn-tool" onclick="document.getElementById('editFileHelper').click()">Select
-                            File</button>
-                    </div>
+    </div>
+    <!-- Edit Item Modal (Yellow Theme) -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-form-card" style="position:relative;"><span class="close-icon"
+                onclick="closeModal('editModal')" style="top:20px; right:20px;">&times;
+            </span>
+            <h2 style="text-align:center; margin-bottom:24px; font-size:2rem; font-family:'Outfit',serif;">
+                Edit Item </h2>
+            <div class="form-row"><label>Item ID:</label><input type="text" id="editId" placeholder="Enter Item ID.."
+                    disabled style="background:#f0f0f0;"></div>
+            <div class="form-row"><label>Image Path:</label>
+                <div style="flex:1; display:flex; gap:8px;"><input type="text" id="editImage"
+                        placeholder="../images/filename.jpg" style="flex:1;"><input type="file" id="editFileHelper"
+                        accept="image/*" style="display:none;" onchange="handleImageUpload('edit', this)"><button
+                        class="btn-tool" onclick="document.getElementById('editFileHelper').click()">Select
+                        File</button>
                 </div>
-                <div class="form-row"><label>New Item Name:</label><input type="text" id="editName"
-                        placeholder="Enter Name.."></div>
-                <div class="form-row"><label>New Item Price:</label><input type="number" id="editPrice"
-                        placeholder="Enter Price.."></div>
-                <div class="form-row"><label>New Item Cost:</label><input type="number" id="editCost"
-                        placeholder="Enter Cost (COGS).."></div>
-                <div class="form-row"><label>New Item Group:</label><select id="editGroup">
-                        <option value="">Select Group..</option>
-                    </select></div>
-                <div class="form-row"><label>New Item Ingredients:</label><input type="text" id="editIngredients"
-                        placeholder="Enter Ingredients.."></div>
-                <div class="form-row"><label>New Item Description:</label><input type="text" id="editDesc"
-                        placeholder="Enter Description.."></div>
-                <div class="form-row"><label>New Dietary Notes:</label><input type="text" id="editDiet"
-                        placeholder="Enter Dietary Notes.."></div>
-
-                <!-- Variants Section -->
-                <div class="form-row" style="display:block;">
-                    <label>Variants (Optional):</label>
-                    <div id="editVariantsContainer" style="margin-top:8px;">
-                        <!-- Variant rows will be added here -->
-                    </div>
-                    <button class="btn-tool" onclick="addVariantRow('edit')" style="margin-top:8px; font-size:0.8rem;">+
-                        Add
-                        Variant</button>
-                </div>
-
-                <div style="text-align:right; margin-top:24px;"><button class="btn-gold"
-                        onclick="openConfirmationModal('edit')">Update Item</button></div>
             </div>
+            <div class="form-row"><label>New Item Name:</label><input type="text" id="editName"
+                    placeholder="Enter Name.."></div>
+            <div class="form-row"><label>New Item Price:</label><input type="number" id="editPrice"
+                    placeholder="Enter Price.."></div>
+            <div class="form-row"><label>New Item Cost:</label><input type="number" id="editCost"
+                    placeholder="Enter Cost (COGS).."></div>
+            <div class="form-row"><label>New Item Group:</label><select id="editGroup">
+                    <option value="">Select Group..</option>
+                </select></div>
+            <div class="form-row"><label>New Item Ingredients:</label><input type="text" id="editIngredients"
+                    placeholder="Enter Ingredients.."></div>
+            <div class="form-row"><label>New Item Description:</label><input type="text" id="editDesc"
+                    placeholder="Enter Description.."></div>
+            <div class="form-row"><label>New Dietary Notes:</label><input type="text" id="editDiet"
+                    placeholder="Enter Dietary Notes.."></div>
+            <div style="text-align:right; margin-top:24px;"><button class="btn-gold"
+                    onclick="openConfirmationModal('edit')">Update Item</button></div>
         </div>
-        <!-- Confirmation Modal (White Theme) -->
-        <div id="confirmModal" class="modal-overlay">
-            <div class="modal-confirm-card"><span class="close-icon" onclick="closeModal('confirmModal')">&times;
-                </span>
-                <div style="text-align:center;">
-                    <h3 id="confirmTitle" style="font-size:1.5rem; margin-bottom:32px; font-family:'Outfit',serif;">Are
-                        you
-                        sure you want<br>to edit item?</h3>
-                    <div style="display:flex; justify-content:center; gap:16px;"><button class="btn-gold"
-                            onclick="handleConfirm()">Confirm</button><button class="btn-gold"
-                            style="background:#FFD54F;" onclick="closeModal('confirmModal')">Cancel</button>
-                    </div>
+    </div>
+    <!-- Confirmation Modal (White Theme) -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-confirm-card"><span class="close-icon" onclick="closeModal('confirmModal')">&times;
+            </span>
+            <div style="text-align:center;">
+                <h3 id="confirmTitle" style="font-size:1.5rem; margin-bottom:32px; font-family:'Outfit',serif;">Are you
+                    sure you want<br>to edit item?</h3>
+                <div style="display:flex; justify-content:center; gap:16px;"><button class="btn-gold"
+                        onclick="handleConfirm()">Confirm</button><button class="btn-gold" style="background:#FFD54F;"
+                        onclick="closeModal('confirmModal')">Cancel</button>
                 </div>
             </div>
         </div>
-        <style>
-            body {
-                background-color: #FFF8E1;
-                font-family: 'Outfit', sans-serif;
-                margin: 0;
-            }
+    </div>
+    <style>
+        body {
+            background-color: #FFF8E1;
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+        }
 
-            .toolbar h2 {
-                font-weight: 600;
-                font-size: 1.2rem;
-                margin-bottom: 8px;
-            }
+        .toolbar h2 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
 
-            .search-box {
-                position: relative;
-                background: #FFF8E1;
-            }
+        .search-box {
+            position: relative;
+            background: #FFF8E1;
+        }
 
-            .search-box input {
-                padding: 10px 10px 10px 36px;
-                border-radius: 8px;
-                border: 1px solid #ccc;
-                /* Visible border */
-                background: white;
-                width: 250px;
-            }
+        .search-box input {
+            padding: 10px 10px 10px 36px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            /* Visible border */
+            background: white;
+            width: 250px;
+        }
 
-            .search-box ion-icon {
-                position: absolute;
-                left: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #666;
-            }
+        .search-box ion-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
 
-            .btn-tool {
-                background: white;
-                border: 1px solid #ccc;
-                /* Visible border like reference */
-                padding: 10px 20px;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                cursor: pointer;
-                font-family: inherit;
-                font-weight: 500;
-            }
+        .btn-tool {
+            background: white;
+            border: 1px solid #ccc;
+            /* Visible border like reference */
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+        }
 
-            /* Dropdown */
-            .dropdown-menu {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                background: #FFF8E1;
-                border: 1px solid #FFC107;
-                border-radius: 12px;
-                padding: 8px;
-                width: 200px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                display: none;
-                z-index: 100;
-                margin-top: 8px;
-            }
+        /* Dropdown */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #FFF8E1;
+            border: 1px solid #FFC107;
+            border-radius: 12px;
+            padding: 8px;
+            width: 200px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 100;
+            margin-top: 8px;
+        }
 
-            .dropdown-item {
-                padding: 12px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                cursor: pointer;
-                border-radius: 8px;
-                font-size: 0.9rem;
-            }
+        .dropdown-item {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
 
-            .dropdown-item:hover {
-                background: rgba(255, 193, 7, 0.2);
-            }
+        .dropdown-item:hover {
+            background: rgba(255, 193, 7, 0.2);
+        }
 
-            /* Custom Table */
-            .custom-table {
-                width: 100%;
-                border-collapse: collapse;
-                background: white;
-                border: 1px solid #ccc;
-            }
+        /* Custom Table */
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 1px solid #ccc;
+        }
 
-            .custom-table th,
-            .custom-table td {
-                padding: 12px;
-                text-align: left;
-                border-bottom: 1px solid #eee;
-                vertical-align: middle;
-                border-right: 1px solid #eee;
-                /* Column dividers */
-                font-size: 0.9rem;
-            }
+        .custom-table th,
+        .custom-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+            border-right: 1px solid #eee;
+            /* Column dividers */
+            font-size: 0.9rem;
+        }
 
-            .custom-table th {
-                font-weight: 600;
-                color: #333;
-                background: white;
-                /* Header white as per reference */
-            }
+        .custom-table th {
+            font-weight: 600;
+            color: #333;
+            background: white;
+            /* Header white as per reference */
+        }
 
-            .checkbox-sq {
-                width: 20px;
-                height: 20px;
-                background: #FFF8E1;
-                /* Light yellow */
-                border: 1px solid #FFD54F;
-                border-radius: 4px;
-                cursor: pointer;
-            }
+        .checkbox-sq {
+            width: 20px;
+            height: 20px;
+            background: #FFF8E1;
+            /* Light yellow */
+            border: 1px solid #FFD54F;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-            .checkbox-sq.checked {
-                background: #FFC107;
-                position: relative;
-            }
+        .checkbox-sq.checked {
+            background: #FFC107;
+            position: relative;
+        }
 
-            .checkbox-sq.checked::after {
-                content: '✓';
-                color: black;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 14px;
-            }
+        .checkbox-sq.checked::after {
+            content: '✓';
+            color: black;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+        }
 
-            /* Modal Styles */
-            .modal-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                display: none;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
-            }
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
 
-            /* Edit Modal (Yellow) */
-            .modal-form-card {
-                background: #FFF8E1;
-                padding: 40px;
-                border-radius: 16px;
-                width: 600px;
-                max-width: 90%;
-                border: 1px solid #e0e0e0;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            }
+        /* Edit Modal (Yellow) */
+        .modal-form-card {
+            background: #FFF8E1;
+            padding: 40px;
+            border-radius: 16px;
+            width: 600px;
+            max-width: 90%;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
 
-            .form-row {
-                display: flex;
-                align-items: center;
-                margin-bottom: 16px;
-                background: #FFF8E1;
-            }
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            background: #FFF8E1;
+        }
 
-            .form-row label {
-                width: 180px;
-                font-weight: 700;
-                font-size: 1rem;
-            }
+        .form-row label {
+            width: 180px;
+            font-weight: 700;
+            font-size: 1rem;
+        }
 
-            .form-row input,
-            .form-row select {
-                flex: 1;
-                padding: 12px;
-                border-radius: 8px;
-                border: none;
-                background: white;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
+        .form-row input,
+        .form-row select {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
 
-            /* Confirm Modal (White) */
-            .modal-confirm-card {
-                background: white;
-                padding: 40px;
-                border-radius: 16px;
-                width: 450px;
-                position: relative;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-                border: 1px solid #eee;
-            }
+        /* Confirm Modal (White) */
+        .modal-confirm-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            width: 450px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid #eee;
+        }
 
-            .btn-gold {
-                background: #FFC107;
-                border: none;
-                padding: 12px 40px;
-                border-radius: 8px;
-                font-weight: 700;
-                cursor: pointer;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            }
+        .btn-gold {
+            background: #FFC107;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-            .close-icon {
-                position: absolute;
-                top: 16px;
-                right: 16px;
-                font-size: 2rem;
-                cursor: pointer;
-                color: #999;
-            }
+        .close-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
 
-            /* Group Popover */
-            .group-popover {
-                position: absolute;
-                top: 0;
-                left: 100%;
-                width: 200px;
-                background: #FFF8E1;
-                border: 1px solid #FFC107;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                margin-left: 8px;
-                display: none;
-                z-index: 101;
-            }
+        /* Group Popover */
+        .group-popover {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            width: 200px;
+            background: #FFF8E1;
+            border: 1px solid #FFC107;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-left: 8px;
+            display: none;
+            z-index: 101;
+        }
 
-            .group-item:hover {
-                background: #FFF3E0;
-            }
-        </style>
+        .group-item:hover {
+            background: #FFF3E0;
+        }
 
-        <!-- Custom Context Menu for Promotions -->
-        <div id="promotionCtxMenu" class="context-menu">
-            <ul id="promoList" style="list-style:none; padding:0; margin:0;">
-                <li class="ctx-item" onclick="openConfirmationModal('delete-single')">Delete Item (s)</li>
-                <li class="ctx-item" onclick="openGroupAssignmentCtx()">Group Item (s)</li>
-                <li class="ctx-item" onclick="openEditModal(true)">Edit Item (s)</li>
-                <li class="ctx-item" onclick="removePromotion()" style="font-weight:600; color:#E53935;">
-                    Remove Promotion
-                </li>
-                <li style="border-top:1px solid #FFD54F; margin: 4px 0;"></li>
-                <!-- Dynamic Promotions Inserted Here -->
-                <li class="ctx-item" onclick="showPromoForm(event)" style="font-weight:600; color:#B08D55;">
-                    Add New Promotion
-                </li>
-            </ul>
-            <!-- Add Promo Form (Inside Context Menu or replacing list) -->
-            <div id="addPromoForm" style="display:none; padding:8px;">
-                <h4 style="margin:0 0 8px 0; font-size:0.9rem;">Add New Promotion</h4>
-                <div style="margin-bottom:8px;">
-                    <label style="font-size:0.75rem; display:block;">Enter New Promotion Name</label>
-                    <input type="text" id="newPromoName" value="New Years Discount"
-                        style="width:100%; padding:4px; font-size:0.8rem; border:1px solid #ddd; border-radius:4px;">
+        /* Mobile sidebar styling */
+@media (max-width: 992px) {
+    .nav-links-container {
+        display: none !important;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 16px;
+        margin-top: 8px;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .nav-links-container.show {
+        display: block !important;
+    }
+    
+    .nav-stack .mobile-nav-toggle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        background: #FFC107;
+        color: white;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: 'Outfit', sans-serif;
+        font-size: 16px;
+    }
+}
+
+/* Hide the main navbar's mobile toggle on desktop */
+.navbar .mobile-nav-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .navbar .mobile-nav-toggle {
+        display: flex !important;
+        background: none;
+        color: #333;
+        padding: 8px;
+    }
+}
+    </style>
+
+    <!-- Custom Context Menu for Promotions -->
+    <div id="promotionCtxMenu" class="context-menu">
+        <ul id="promoList" style="list-style:none; padding:0; margin:0;">
+            <li class="ctx-item" onclick="openConfirmationModal('delete-single')">Delete Item (s)</li>
+            <li class="ctx-item" onclick="openGroupAssignmentCtx()">Group Item (s)</li>
+            <li class="ctx-item" onclick="openEditModal(true)">Edit Item (s)</li>
+            <li class="ctx-item" onclick="removePromotion()" style="font-weight:600; color:#E53935;">
+                Remove Promotion
+            </li>
+            <li style="border-top:1px solid #FFD54F; margin: 4px 0;"></li>
+            <!-- Dynamic Promotions Inserted Here -->
+            <li class="ctx-item" onclick="showPromoForm(event)" style="font-weight:600; color:#B08D55;">
+                Add New Promotion
+            </li>
+        </ul>
+        <!-- Add Promo Form (Inside Context Menu or replacing list) -->
+        <div id="addPromoForm" style="display:none; padding:8px;">
+            <h4 style="margin:0 0 8px 0; font-size:0.9rem;">Add New Promotion</h4>
+            <div style="margin-bottom:8px;">
+                <label style="font-size:0.75rem; display:block;">Enter New Promotion Name</label>
+                <input type="text" id="newPromoName" value="New Years Discount"
+                    style="width:100%; padding:4px; font-size:0.8rem; border:1px solid #ddd; border-radius:4px;">
+            </div>
+            <div style="margin-bottom:8px;">
+                <label style="font-size:0.75rem; display:block;">Enter Promotion Amount</label>
+                <div style="display:flex; align-items:center;">
+                    <input type="number" id="newPromoAmount" value="15"
+                        style="width:50px; padding:4px; font-size:0.8rem; border:1px solid #ddd; border-radius:4px;">
+                    <span style="margin-left:4px; font-weight:bold;">%</span>
                 </div>
-                <div style="margin-bottom:8px;">
-                    <label style="font-size:0.75rem; display:block;">Enter Promotion Amount</label>
-                    <div style="display:flex; align-items:center;">
-                        <input type="number" id="newPromoAmount" value="15"
-                            style="width:50px; padding:4px; font-size:0.8rem; border:1px solid #ddd; border-radius:4px;">
-                        <span style="margin-left:4px; font-weight:bold;">%</span>
-                    </div>
+            </div>
+            <button class="btn-gold" onclick="submitPromotion()"
+                style="width:100%; padding:6px; font-size:0.8rem;">Add</button>
+        </div>
+    </div>
+
+    <!-- Generic Success Modal -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-confirm-card" style="width:350px; padding:24px;">
+            <span class="close-icon" onclick="closeModal('successModal')">&times;</span>
+            <div style="text-align:center;">
+                <h3 id="successTitle"
+                    style="font-size:1.4rem; margin-top:16px; margin-bottom:16px; font-family:'Outfit',serif;">
+                    Success!
+                </h3>
+                <div id="successContent"
+                    style="background:#FFF8E1; padding:12px; border-radius:8px; margin-bottom:16px; display:none;">
+                    <div id="successSubtitle" style="font-weight:bold; color:#B08D55; font-size:0.9rem;"></div>
+                    <div id="successMessage" style="font-size:1.1rem; font-weight:700;"></div>
                 </div>
-                <button class="btn-gold" onclick="submitPromotion()"
-                    style="width:100%; padding:6px; font-size:0.8rem;">Add</button>
             </div>
         </div>
+    </div>
 
-        <!-- Generic Success Modal -->
-        <div id="successModal" class="modal-overlay">
-            <div class="modal-confirm-card" style="width:350px; padding:24px;">
-                <span class="close-icon" onclick="closeModal('successModal')">&times;</span>
-                <div style="text-align:center;">
-                    <h3 id="successTitle"
-                        style="font-size:1.4rem; margin-top:16px; margin-bottom:16px; font-family:'Outfit',serif;">
-                        Success!
-                    </h3>
-                    <div id="successContent"
-                        style="background:#FFF8E1; padding:12px; border-radius:8px; margin-bottom:16px; display:none;">
-                        <div id="successSubtitle" style="font-weight:bold; color:#B08D55; font-size:0.9rem;"></div>
-                        <div id="successMessage" style="font-size:1.1rem; font-weight:700;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <style>
+        /* Context Menu */
+        .context-menu {
+            position: absolute;
+            background: #FFF8E1;
+            border: 1px solid #FFC107;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 200px;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+            padding: 8px 0;
+        }
 
-        <style>
-            /* Context Menu */
-            .context-menu {
-                position: absolute;
-                background: #FFF8E1;
-                border: 1px solid #FFC107;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                width: 200px;
-                z-index: 1000;
-                display: none;
-                overflow: hidden;
-                padding: 8px 0;
+        .ctx-item {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .ctx-item:hover {
+            background: #FFF3E0;
+        }
+
+        .promo-badge {
+            background: #FFF3E0;
+            margin: 4px 8px;
+            border-radius: 4px;
+            text-align: center;
+            justify-content: center;
+            font-weight: 500;
+            color: #5d4037;
+        }
+    </style>
+
+    <script>
+        // State management
+        let currentAction = '';
+        let currentItem = '';
+
+        // --- Context Menu Logic ---
+        document.addEventListener('contextmenu', function (e) {
+            const row = e.target.closest('tbody tr');
+            if (row) {
+                e.preventDefault();
+                // Capture the ID from the row
+                currentItem = row.getAttribute('data-id');
+                showContextMenu(e.pageX, e.pageY);
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.context-menu')) {
+                hideContextMenu();
+            }
+        });
+
+        function showContextMenu(x, y) {
+            const menu = document.getElementById('promotionCtxMenu');
+            menu.style.display = 'block';
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+
+            document.getElementById('promoList').style.display = 'block';
+            document.getElementById('addPromoForm').style.display = 'none';
+        }
+
+        function hideContextMenu() {
+            document.getElementById('promotionCtxMenu').style.display = 'none';
+        }
+
+        // onSnapshot listeners moved to module script
+
+        window.openGroupPopover = function(event) {
+            const popover = document.getElementById('groupPopover');
+            if (popover.style.display === 'block') {
+                popover.style.display = 'none';
+            } else {
+                popover.style.display = 'block';
+                document.getElementById('groupList').style.display = 'block';
+                document.getElementById('newGroupForm').style.display = 'none';
+            }
+            event.stopPropagation();
+        }
+
+        window.showNewGroupForm = function(event) {
+            event.stopPropagation();
+            document.getElementById('groupList').style.display = 'none';
+            document.getElementById('newGroupForm').style.display = 'block';
+        }
+
+        function showPromoForm(e) {
+            e.stopPropagation();
+            document.getElementById('promoList').style.display = 'none';
+            document.getElementById('addPromoForm').style.display = 'block';
+        }
+
+        // ... Modals ...
+        window.openAddModal = function() {
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
+        window.openEditModal = function(isSingle = false) {
+            let targetId = '';
+            const checkedBoxes = document.querySelectorAll('.checkbox-sq.checked');
+
+            if (isSingle) {
+                hideContextMenu();
+                targetId = currentItem;
+            } else {
+                // If opened via toolbar Edit, use selection
+                if (checkedBoxes.length === 0) {
+                    alert("Please select an item to edit.");
+                    return;
+                }
+
+                // If Bulk Group Assignment, we allow multiple
+                // But if genuine Edit, we might restrict to one, OR allow bulk group edit.
+                // For now, if multiple, we only preload common data (like Group).
+
+                targetId = checkedBoxes[0].getAttribute('data-id');
+                const bulkDropdown = document.getElementById('bulkDropdown');
+                if (bulkDropdown) bulkDropdown.style.display = 'none';
+
+                // Close Filter Dropdown too if open
+                if (document.getElementById('filterDropdown')) document.getElementById('filterDropdown').style.display = 'none';
             }
 
-            .ctx-item {
-                padding: 8px 16px;
-                font-size: 0.85rem;
-                cursor: pointer;
-                color: #333;
-                display: flex;
-                align-items: center;
+            currentAction = isSingle ? 'edit-single' : (checkedBoxes.length > 1 ? 'bulk-edit' : 'edit-single');
+            currentItem = targetId;
+
+            // Populate Data (Only if single item is primary target)
+            if (targetId && window.menuItemsCache && window.menuItemsCache[targetId]) {
+                const data = window.menuItemsCache[targetId];
+                document.getElementById('editId').value = targetId;
+
+                // If multiple items, clear specific fields to avoid overwriting unique data with one item's data
+                if (checkedBoxes.length > 1) {
+                    document.getElementById('editName').value = '(Multiple Items Selected)';
+                    document.getElementById('editName').disabled = true;
+                    document.getElementById('editPrice').value = '';
+                    document.getElementById('editPrice').disabled = true;
+                    document.getElementById('editCost').value = '';
+                    document.getElementById('editCost').disabled = true;
+                    document.getElementById('editImage').value = '';
+                    document.getElementById('editIngredients').value = '';
+                    document.getElementById('editDesc').value = '';
+                    document.getElementById('editDiet').value = '';
+                    // Group remains editable
+                    document.getElementById('editGroup').value = data.category || '';
+                } else {
+                    document.getElementById('editName').disabled = false;
+                    document.getElementById('editPrice').disabled = false;
+                    document.getElementById('editCost').disabled = false;
+                    document.getElementById('editName').value = data.name || '';
+                    document.getElementById('editPrice').value = data.price || '';
+                    document.getElementById('editCost').value = data.cost || '';
+                    document.getElementById('editGroup').value = data.category || '';
+                    document.getElementById('editIngredients').value = data.ingredients || '';
+                    document.getElementById('editDesc').value = data.description || '';
+                    document.getElementById('editDiet').value = data.dietary || '';
+                    document.getElementById('editImage').value = data.imageUrl || '';
+                }
             }
 
-            .ctx-item:hover {
-                background: #FFF3E0;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        window.openConfirmationModal = function(action) {
+            // Check if validation passes for Add/Edit before verifying?
+            // For now, simple confirmation
+            currentAction = action;
+            const modal = document.getElementById('confirmModal');
+            const title = document.getElementById('confirmTitle');
+
+            if (action === 'add') {
+                title.innerHTML = 'Are you sure you want<br>to add item?';
+            } else if (action === 'edit' || action === 'edit-single') {
+                title.innerHTML = 'Are you sure you want<br>to update item?';
+            } else if (action === 'delete' || action === 'delete-single') {
+                title.innerHTML = 'Are you sure you want<br>to delete item?';
+            } else if (action === 'remove-promo') {
+                title.innerHTML = 'Do you want to remove<br>this promo from this menu?';
             }
 
-            .promo-badge {
-                background: #FFF3E0;
-                margin: 4px 8px;
-                border-radius: 4px;
-                text-align: center;
-                justify-content: center;
-                font-weight: 500;
-                color: #5d4037;
+            // Hide context menu if open
+            hideContextMenu();
+
+            modal.style.display = 'flex';
+            document.getElementById('bulkDropdown').style.display = 'none';
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        async function handleConfirm() {
+            closeModal('confirmModal');
+
+            if (currentAction === 'add') {
+                if (window.confirmAddItem) await window.confirmAddItem();
+            } else if (currentAction === 'delete' || currentAction === 'delete-single') {
+                // Both bulk and single delete use confirmDelete (logic inside handles distinction)
+                if (window.confirmDelete) await window.confirmDelete();
+            } else if (currentAction === 'edit' || currentAction === 'edit-single') {
+                if (window.confirmEdit) await window.confirmEdit();
+            } else if (currentAction === 'remove-promo') {
+                if (window.confirmRemovePromo) await window.confirmRemovePromo();
+            } else {
+                showSuccessModal('Action Confirmed!', 'Success', 'The operation was completed.');
             }
-        </style>
+        }
 
-        <script>
-            // State management
-            let currentAction = '';
-            let currentItem = '';
+        // Confirm Remove Promotion (Logic)
+        window.confirmRemovePromo = async () => {
+            const targetId = currentItem;
+            if (!targetId) return;
 
-            function toggleDropdown(id) {
-                const el = document.getElementById(id);
+            try {
+                const itemRef = doc(db, "menu_items", targetId);
+                await updateDoc(itemRef, {
+                    promotion: deleteField()
+                });
+
+                // if(typeof hideContextMenu === 'function') hideContextMenu();
+                window.showSuccessModal('Promotion Removed!', 'Promotion', 'The promotion from this item has been removed.');
+            } catch (error) {
+                console.error("Error removing promo:", error);
+                alert("Failed to remove promotion: " + error.message);
+            }
+        };
+
+        // Remove Promotion Trigger (UI)
+        window.removePromotion = () => {
+            const targetId = currentItem;
+            if (!targetId) {
+                alert("No item selected.");
+                return;
+            }
+            openConfirmationModal('remove-promo');
+        };
+
+        function showSuccessModal(title, subtitle = '', message = '') {
+            const modal = document.getElementById('successModal');
+            document.getElementById('successTitle').innerHTML = title;
+
+            const contentDiv = document.getElementById('successContent');
+            if (subtitle || message) {
+                contentDiv.style.display = 'block';
+                document.getElementById('successSubtitle').innerText = subtitle;
+                document.getElementById('successMessage').innerText = message;
+            } else {
+                contentDiv.style.display = 'none';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.closest('.btn-tool') && !event.target.closest('.dropdown-menu') && !event.target.closest('.group-popover-content')) {
                 const dropdowns = document.getElementsByClassName("dropdown-menu");
                 for (let i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].id !== id) dropdowns[i].style.display = 'none';
+                    dropdowns[i].style.display = 'none';
                 }
-                el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-            }
-
-            // --- Context Menu Logic ---
-            document.addEventListener('contextmenu', function (e) {
-                const row = e.target.closest('tbody tr');
-                if (row) {
-                    e.preventDefault();
-                    // Capture the ID from the row
-                    currentItem = row.getAttribute('data-id');
-                    showContextMenu(e.pageX, e.pageY);
-                }
-            });
-
-            document.addEventListener('click', function (e) {
-                if (!e.target.closest('.context-menu')) {
-                    hideContextMenu();
-                }
-            });
-
-            function showContextMenu(x, y) {
-                const menu = document.getElementById('promotionCtxMenu');
-                menu.style.display = 'block';
-                menu.style.left = x + 'px';
-                menu.style.top = y + 'px';
-
-                document.getElementById('promoList').style.display = 'block';
-                document.getElementById('addPromoForm').style.display = 'none';
-            }
-
-            function hideContextMenu() {
-                document.getElementById('promotionCtxMenu').style.display = 'none';
-            }
-
-            // onSnapshot listeners moved to module script
-
-            function openGroupPopover(event) {
-                const popover = document.getElementById('groupPopover');
-                if (popover.style.display === 'block') {
-                    popover.style.display = 'none';
-                } else {
-                    popover.style.display = 'block';
-                    document.getElementById('groupList').style.display = 'block';
-                    document.getElementById('newGroupForm').style.display = 'none';
-                }
-                event.stopPropagation();
-            }
-
-            function showNewGroupForm(event) {
-                event.stopPropagation();
-                document.getElementById('groupList').style.display = 'none';
-                document.getElementById('newGroupForm').style.display = 'block';
-            }
-
-            function showPromoForm(e) {
-                e.stopPropagation();
-                document.getElementById('promoList').style.display = 'none';
-                document.getElementById('addPromoForm').style.display = 'block';
-            }
-
-            // ... Modals ...
-            function openAddModal() {
-                document.getElementById('addModal').style.display = 'flex';
-            }
-
-            function openEditModal(isSingle = false) {
-                let targetId = '';
-                const checkedBoxes = document.querySelectorAll('.checkbox-sq.checked');
-
-                if (isSingle) {
-                    hideContextMenu();
-                    targetId = currentItem;
-                } else {
-                    // If opened via toolbar Edit, use selection
-                    if (checkedBoxes.length === 0) {
-                        alert("Please select an item to edit.");
-                        return;
-                    }
-
-                    // If Bulk Group Assignment, we allow multiple
-                    // But if genuine Edit, we might restrict to one, OR allow bulk group edit.
-                    // For now, if multiple, we only preload common data (like Group).
-
-                    targetId = checkedBoxes[0].getAttribute('data-id');
-                    const bulkDropdown = document.getElementById('bulkDropdown');
-                    if (bulkDropdown) bulkDropdown.style.display = 'none';
-
-                    // Close Filter Dropdown too if open
-                    if (document.getElementById('filterDropdown')) document.getElementById('filterDropdown').style.display = 'none';
-                }
-
-                currentAction = isSingle ? 'edit-single' : (checkedBoxes.length > 1 ? 'bulk-edit' : 'edit-single');
-                currentItem = targetId;
-
-                // Populate Data (Only if single item is primary target)
-                if (targetId && window.menuItemsCache && window.menuItemsCache[targetId]) {
-                    const data = window.menuItemsCache[targetId];
-                    document.getElementById('editId').value = targetId;
-
-                    // If multiple items, clear specific fields to avoid overwriting unique data with one item's data
-                    if (checkedBoxes.length > 1) {
-                        document.getElementById('editName').value = '(Multiple Items Selected)';
-                        document.getElementById('editName').disabled = true;
-                        document.getElementById('editPrice').value = '';
-                        document.getElementById('editPrice').disabled = true;
-                        document.getElementById('editCost').value = '';
-                        document.getElementById('editCost').disabled = true;
-                        document.getElementById('editImage').value = '';
-                        document.getElementById('editIngredients').value = '';
-                        document.getElementById('editDesc').value = '';
-                        document.getElementById('editDiet').value = '';
-                        // Group remains editable
-                        document.getElementById('editGroup').value = data.category || '';
-                    } else {
-                        document.getElementById('editName').disabled = false;
-                        document.getElementById('editPrice').disabled = false;
-                        document.getElementById('editCost').disabled = false;
-                        document.getElementById('editName').value = data.name || '';
-                        document.getElementById('editPrice').value = data.price || '';
-                        document.getElementById('editCost').value = data.cost || '';
-                        document.getElementById('editGroup').value = data.category || '';
-                        document.getElementById('editIngredients').value = data.ingredients || '';
-                        document.getElementById('editDesc').value = data.description || '';
-                        document.getElementById('editDiet').value = data.dietary || '';
-                        document.getElementById('editImage').value = data.imageUrl || '';
-
-                        // Populate Variants
-                        const variantContainer = document.getElementById('editVariantsContainer');
-                        variantContainer.innerHTML = ''; // Clear previous
-                        if (data.variants && Array.isArray(data.variants)) {
-                            data.variants.forEach(v => window.addVariantRow('edit', v));
-                        }
-                    }
-                }
-
-                document.getElementById('editModal').style.display = 'flex';
-            }
-
-            function openConfirmationModal(action) {
-                // Check if validation passes for Add/Edit before verifying?
-                // For now, simple confirmation
-                currentAction = action;
-                const modal = document.getElementById('confirmModal');
-                const title = document.getElementById('confirmTitle');
-
-                if (action === 'add') {
-                    title.innerHTML = 'Are you sure you want<br>to add item?';
-                } else if (action === 'edit' || action === 'edit-single') {
-                    title.innerHTML = 'Are you sure you want<br>to update item?';
-                } else if (action === 'delete' || action === 'delete-single') {
-                    title.innerHTML = 'Are you sure you want<br>to delete item?';
-                } else if (action === 'remove-promo') {
-                    title.innerHTML = 'Do you want to remove<br>this promo from this menu?';
-                }
-
-                // Hide context menu if open
-                hideContextMenu();
-
-                modal.style.display = 'flex';
-                document.getElementById('bulkDropdown').style.display = 'none';
-                document.getElementById('addModal').style.display = 'none';
-                document.getElementById('editModal').style.display = 'none';
-            }
-
-            async function handleConfirm() {
-                closeModal('confirmModal');
-
-                if (currentAction === 'add') {
-                    if (window.confirmAddItem) await window.confirmAddItem();
-                } else if (currentAction === 'delete' || currentAction === 'delete-single') {
-                    // Both bulk and single delete use confirmDelete (logic inside handles distinction)
-                    if (window.confirmDelete) await window.confirmDelete();
-                } else if (currentAction === 'edit' || currentAction === 'edit-single') {
-                    if (window.confirmEdit) await window.confirmEdit();
-                } else if (currentAction === 'remove-promo') {
-                    if (window.confirmRemovePromo) await window.confirmRemovePromo();
-                } else {
-                    showSuccessModal('Action Confirmed!', 'Success', 'The operation was completed.');
+                const popovers = document.getElementsByClassName("group-popover");
+                for (let j = 0; j < popovers.length; j++) {
+                    popovers[j].style.display = 'none';
                 }
             }
-
-            // Confirm Remove Promotion (Logic)
-            window.confirmRemovePromo = async () => {
-                const targetId = currentItem;
-                if (!targetId) return;
-
-                try {
-                    const itemRef = doc(db, "menu_items", targetId);
-                    await updateDoc(itemRef, {
-                        promotion: deleteField()
-                    });
-
-                    // if(typeof hideContextMenu === 'function') hideContextMenu();
-                    window.showSuccessModal('Promotion Removed!', 'Promotion', 'The promotion from this item has been removed.');
-                } catch (error) {
-                    console.error("Error removing promo:", error);
-                    alert("Failed to remove promotion: " + error.message);
-                }
-            };
-
-            // Remove Promotion Trigger (UI)
-            window.removePromotion = () => {
-                const targetId = currentItem;
-                if (!targetId) {
-                    alert("No item selected.");
-                    return;
-                }
-                openConfirmationModal('remove-promo');
-            };
-
-            function showSuccessModal(title, subtitle = '', message = '') {
-                const modal = document.getElementById('successModal');
-                document.getElementById('successTitle').innerHTML = title;
-
-                const contentDiv = document.getElementById('successContent');
-                if (subtitle || message) {
-                    contentDiv.style.display = 'block';
-                    document.getElementById('successSubtitle').innerText = subtitle;
-                    document.getElementById('successMessage').innerText = message;
-                } else {
-                    contentDiv.style.display = 'none';
-                }
-
-                modal.style.display = 'flex';
-            }
-
-            // ===== VARIATION FILTER =====
-            window.filterByVariation = () => {
-                const filterValue = document.getElementById('variationFilter').value;
-                const table = $('#menuTable').DataTable();
-
-                if (!filterValue) {
-                    table.search('').draw();
-                    return;
-                }
-
-                // Filter based on variation type
-                let searchTerm = '';
-                switch (filterValue) {
-                    case 'size':
-                        searchTerm = 'size|Size|SIZE';
-                        break;
-                    case 'spice':
-                        searchTerm = 'spice|Spice|SPICE|spicy|Spicy|SPICY';
-                        break;
-                    case 'custom':
-                        searchTerm = 'custom|Custom|CUSTOM|option|Option';
-                        break;
-                }
-
-                // Use DataTables regex search
-                table.search(searchTerm, true, false).draw();
-            };
-
-            function closeModal(id) {
-                document.getElementById(id).style.display = 'none';
-            }
-
-            window.onclick = function (event) {
-                if (!event.target.closest('.btn-tool') && !event.target.closest('.dropdown-menu') && !event.target.closest('.group-popover-content')) {
-                    const dropdowns = document.getElementsByClassName("dropdown-menu");
-                    for (let i = 0; i < dropdowns.length; i++) {
-                        dropdowns[i].style.display = 'none';
-                    }
-                    const popovers = document.getElementsByClassName("group-popover");
-                    for (let j = 0; j < popovers.length; j++) {
-                        popovers[j].style.display = 'none';
-                    }
-                }
-            }
-        </script>
-        <script src="../js/navbar.js"></script>
-        <script src="../js/responsive.js"></script>
+        }
+    </script>
 </body>
 
 </html>
