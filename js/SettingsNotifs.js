@@ -3,9 +3,11 @@ const urgentTitleEl = document.querySelector(".urgent-title");
 const urgentSubEl = document.querySelector(".urgent-sub");
 
 const recentListEl = document.querySelector(".recent-list");
-const viewAllBtn = document.getElementById("viewAllBtn");
+const viewAllBtn = document.getElementById("viewAllBtn"); // may not exist, handled safely
 
-const badgeEl = document.querySelector(".notification-badge");
+const badgeEl =
+  document.getElementById("notifBadge") ||
+  document.querySelector(".notification-badge");
 
 function timeAgo(ts) {
   if (!ts) return "";
@@ -23,13 +25,17 @@ function timeAgo(ts) {
 }
 
 function escapeHtml(str = "") {
-  return str.replace(/[&<>"']/g, (m) => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+  return String(str).replace(/[&<>"']/g, (m) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
   }[m]));
 }
 
 function badgeClassFromTag(tagText = "") {
-  const t = tagText.toLowerCase();
+  const t = String(tagText).toLowerCase();
   if (t.includes("expire") || t.includes("soon") || t.includes("due")) return "danger";
   if (t.includes("low") || t.includes("running")) return "warn";
   return "warn";
@@ -51,11 +57,14 @@ function renderUrgent(notif) {
 function renderRecent(notifs) {
   if (!recentListEl) return;
 
+  // remove placeholder
   const placeholder = recentListEl.querySelector(".recent-empty");
   if (placeholder) placeholder.remove();
 
-  recentListEl.querySelectorAll(".ncard").forEach(el => el.remove());
+  // remove existing cards
+  recentListEl.querySelectorAll(".ncard").forEach((el) => el.remove());
 
+  // empty state
   if (!notifs || notifs.length === 0) {
     const empty = document.createElement("div");
     empty.className = "recent-empty";
@@ -63,12 +72,12 @@ function renderRecent(notifs) {
     empty.style.color = "#444";
     empty.style.fontSize = "13px";
     empty.textContent = "No recent notifications.";
-    recentListEl.insertBefore(empty, viewAllBtn);
-    viewAllBtn.style.display = "none";
+    recentListEl.insertBefore(empty, viewAllBtn || null);
+    if (viewAllBtn) viewAllBtn.style.display = "none";
     return;
   }
 
-  notifs.forEach(n => {
+  notifs.forEach((n) => {
     const tagHtml = n.tagText ? `
       <div class="badge-row">
         <span class="badge ${badgeClassFromTag(n.tagText)}">${escapeHtml(n.tagText)}</span>
@@ -80,19 +89,50 @@ function renderRecent(notifs) {
     card.href = "#";
     card.dataset.id = n.id;
 
+    // make read cards look read
+    if (n.read) card.classList.add("read");
+
     card.innerHTML = `
       <div class="ncard-body">
-        <div class="ncard-title">${escapeHtml(n.title || "")}</div>
-        <div class="ncard-sub">${escapeHtml(n.message || "")}</div>
-        ${tagHtml}
-        <div class="ncard-time">${escapeHtml(timeAgo(n.createdAt))}</div>
+        <label class="ncheck">
+          <input type="checkbox" class="read-check" ${n.read ? "checked" : ""} />
+          <span class="check-ui"></span>
+        </label>
+
+        <div class="ncontent">
+          <div class="ncard-title">${escapeHtml(n.title || "")}</div>
+          <div class="ncard-sub">${escapeHtml(n.message || "")}</div>
+          ${tagHtml}
+          <div class="ncard-time">${escapeHtml(timeAgo(n.createdAt))}</div>
+        </div>
       </div>
     `;
 
-    recentListEl.insertBefore(card, viewAllBtn);
+    // checkbox -> mark as read/unread
+    const cb = card.querySelector(".read-check");
+    if (cb) {
+      cb.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+
+      cb.addEventListener("change", async (e) => {
+        const isRead = e.target.checked;
+
+        try {
+          await db.collection("notification").doc(n.id).update({ read: isRead });
+          card.classList.toggle("read", isRead);
+        } catch (err) {
+          console.error("Failed to update read status:", err);
+          e.target.checked = !isRead; // revert UI
+        }
+      });
+    }
+
+    recentListEl.insertBefore(card, viewAllBtn || null);
   });
 
-  viewAllBtn.style.display = "block";
+  // this page shows all, so viewAll button is optional
+  if (viewAllBtn) viewAllBtn.style.display = "none";
 }
 
 auth.onAuthStateChanged((user) => {
@@ -100,41 +140,40 @@ auth.onAuthStateChanged((user) => {
 
   const col = db.collection("notification");
 
+  // ✅ all notifications (unlimited)
   col.orderBy("dateTime", "desc").onSnapshot((snap) => {
-    const notifs = snap.docs.map(d => {
+    const notifs = snap.docs.map((d) => {
       const data = d.data();
       return {
         id: d.id,
         title: data.title,
         message: data.details,
-        createdAt: data.dateTime
+        createdAt: data.dateTime,
+        read: data.read === true,
+        tagText: data.tagText || "",
       };
     });
 
     renderRecent(notifs);
-
-    // shows total notifs
-    if (badgeEl) {
-      badgeEl.textContent = String(snap.size);
-      badgeEl.style.display = snap.size > 0 ? "inline-flex" : "none";
-    }
   });
 
-  // this is to show latest notification as urgent at the top of notifs
+  // ✅ badge = unread count
+  col.where("read", "==", false).onSnapshot((snap) => {
+    if (!badgeEl) return;
+    badgeEl.textContent = String(snap.size);
+    badgeEl.style.display = snap.size > 0 ? "inline-flex" : "none";
+  });
+
+  // ✅ urgent banner = latest notification
   col.orderBy("dateTime", "desc").limit(1).onSnapshot((snap) => {
-    if (snap.empty) {
-      renderUrgent(null);
-      return;
-    }
+    if (snap.empty) return renderUrgent(null);
 
     const data = snap.docs[0].data();
     renderUrgent({
       title: data.title,
-      message: data.details
+      message: data.details,
     });
   });
 });
-
- 
 
 
