@@ -4,14 +4,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management - Digital Hawker</title>
+    <title>Tracking Order - Digital Hawker</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="../css/navbar.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="../js/auth-check.js"></script>
+    <script src="../js/responsive.js"></script>
+    <!-- Firebase -->
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import { collection, onSnapshot, orderBy, query, doc, writeBatch, Timestamp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+        let table;
+        let allOrders = [];
+
+        // Real-time listener
+        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            allOrders = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                // Limit to non-completed or include all? User wants to filter, so maybe all.
+                // But usually "tracking" implies active. However, user asked for filter, so likely wants to see history too?
+                // Let's keep all for now, DataTables handles large datasets well enough client-side for this scale.
+                if (data.status !== 'completed' && data.status !== 'cancelled') {
+                    allOrders.push({ id: doc.id, ...data });
+                }
+            });
+            renderDataTable(allOrders);
+        });
+
+        // Initialize DataTable or Reload Data
+        function renderDataTable(orders) {
+            if ($.fn.DataTable.isDataTable('#trackingTable')) {
+                table.clear();
+                table.rows.add(orders.map(formatOrderForRow));
+                table.draw();
+            } else {
+                table = $('#trackingTable').DataTable({
+                    data: orders.map(formatOrderForRow),
+                    columns: [
+                        {
+                            data: null,
+                            render: function (data, type, row) {
+                                return `<input type="checkbox" class="order-checkbox" value="${row.id}">`;
+                            },
+                            orderable: false,
+                            width: "30px"
+                        },
+                        { data: 'orderId', render: (data) => `<span style="font-weight:600;">${data}</span>` },
+                        {
+                            data: 'status',
+                            render: function (data) {
+                                return `<span class="status-badge ${data.toLowerCase()}">${data}</span>`;
+                            }
+                        },
+                        { data: 'itemsStr' },
+                        { data: 'qtyStr', className: 'text-center' },
+                        { data: 'variantStr', className: 'text-center' },
+                        { data: 'timeStr' },
+                        { data: 'notes' }
+                    ],
+                    order: [[6, 'desc']], // Sort by time by default
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search Order ID, Item, etc."
+                    },
+                    dom: 't<"dt-footer"p>', // HIDDEN FILTER (f) as we use custom Apply
+                    pageLength: 10
+                });
+
+                // Style the default search input
+                $('.dataTables_filter').css({
+                    'text-align': 'left',
+                    'float': 'none', // Reset float
+                    'margin-bottom': '16px'
+                });
+
+                $('.dataTables_filter input').css({
+                    'padding': '12px 16px',
+                    'border-radius': '8px',
+                    'border': '1px solid #ddd',
+                    'width': '100%',
+                    'max-width': '400px',
+                    'margin-left': '0'
+                });
+            }
+        }
+
+        // Helper to format data object for DataTables
+        function formatOrderForRow(order) {
+            // Items
+            let itemsStr = '';
+            let qtyStr = '';
+            let variantStr = '';
+
+            if (Array.isArray(order.items)) {
+                itemsStr = order.items.map(i => `<div style="margin-bottom:4px;">${i.name}</div>`).join('');
+                qtyStr = order.items.map(i => `<div style="margin-bottom:4px;">${i.qty || 1}</div>`).join('');
+                variantStr = order.items.map(i => `<div style="margin-bottom:4px;">${i.variant || '-'}</div>`).join('');
+            } else { // Legacy fallbacks
+                itemsStr = order.items || '-';
+                qtyStr = '1';
+                variantStr = '-';
+            }
+
+            // Time
+            let timeStr = '-';
+            if (order.createdAt) {
+                const d = order.createdAt.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+                timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            return {
+                id: order.id,
+                orderId: order.orderId || order.id.substring(0, 6).toUpperCase(),
+                status: order.status || 'pending',
+                itemsStr: itemsStr,
+                qtyStr: qtyStr,
+                variantStr: variantStr,
+                timeStr: timeStr,
+                notes: order.notes || '-'
+            };
+        }
+
+        // Bulk Completion Logic
+        window.markAsCompleted = async () => {
+            const checkedBoxes = document.querySelectorAll('.order-checkbox:checked');
+            if (checkedBoxes.length === 0) {
+                alert("Please select at least one order.");
+                return;
+            }
+
+            if (!confirm(`Mark ${checkedBoxes.length} orders as Completed?`)) return;
+
+            const batch = writeBatch(db);
+            checkedBoxes.forEach(checkbox => {
+                const orderId = checkbox.value;
+                const ref = doc(db, 'orders', orderId);
+                batch.update(ref, {
+                    status: 'completed',
+                    completedAt: Timestamp.now()
+                });
+            });
+
+            try {
+                await batch.commit();
+                // Toast or alert handled by UI implicitly via reload
+            } catch (e) {
+                console.error("Error updating orders:", e);
+                alert("Failed to update orders.");
+            }
+        };
+
+        // Mobile Menu
+        window.toggleMobileMenu = function () {
+            const overlay = document.querySelector('.mobile-nav-overlay');
+            const menu = document.querySelector('.mobile-nav-menu');
+            if (overlay && menu) {
+                overlay.classList.toggle('active');
+                menu.classList.toggle('active');
+            }
+        }
+
+        window.applyTracking = function () {
+            const val = document.getElementById('trackingInput').value;
+            if (table) {
+                table.search(val).draw();
+            }
+        };
+    </script>
+
     <style>
         body {
             background-color: #FFF8E1;
@@ -20,243 +195,130 @@
             color: #333;
         }
 
-        .split-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 40px;
+        .main-container {
             max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px;
+            margin: 40px auto;
+            padding: 0 40px;
         }
 
-        .sidebar {
+        .header-section {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .menu-pill-btn {
-            background: #FFC107;
-            color: black;
-            font-weight: 600;
-            padding: 16px 24px;
-            border-radius: 50px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s;
-        }
-
-        .menu-pill-btn:hover {
-            background: #FFB300;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .menu-pill-btn.active {
-            background: #FFE082;
-            font-weight: 700;
-            border: 2px solid #FFC107;
-        }
-
-        .main-area {
-            padding: 48px;
-            border-radius: 16px;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0 0 16px 0;
-        }
-
-        .page-header p {
-            color: #666;
-            font-size: 1.1rem;
-            margin: 0;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .cards-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-        }
-
-        .management-card {
-            background: #FFF8E1;
-            border-radius: 24px;
-            padding: 48px 40px;
-            position: relative;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .management-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-icon {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            width: 64px;
-            height: 64px;
-        }
-
-        .management-card h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0 0 16px 0;
-            line-height: 1.2;
-        }
-
-        .management-card p {
-            color: #666;
-            font-size: 1rem;
-            line-height: 1.6;
-            margin: 0 0 32px 0;
-            max-width: 280px;
-        }
-
-        .button-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .card-button {
-            background: #FFC107;
-            color: black;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
-            font-family: 'Outfit', sans-serif;
-            text-decoration: none;
-            display: block;
-            text-align: center;
-        }
-
-        .card-button:hover {
-            background: #FFB300;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
-        }
-
-        .single-button {
-            grid-column: 1 / -1;
-        }
-
-        /* Mobile Nav Toggle */
-        .mobile-nav-toggle {
-            display: none;
-            /* Hidden on desktop */
-            width: 100%;
-            padding: 16px 24px;
-            background: #FFE082;
-            border: 2px solid #FFC107;
-            border-radius: 50px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            color: black;
-            cursor: pointer;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
         }
 
-        .nav-links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .header-section h1 {
+            font-size: 2.5rem;
+            margin: 0;
         }
 
-        .menu-pill-btn {
-            background: #FFC107;
-            color: black;
+        /* Tracking Table Container */
+        .tracking-table-container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Customize DataTables Elements */
+        .dataTables_wrapper .dataTables_filter {
+            float: none;
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        /* Pagination Styling */
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 20px;
+            float: right;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            background: white;
+            cursor: pointer;
+        }
+
+        table.dataTable thead th {
+            border-bottom: 2px solid #eee;
             font-weight: 600;
-            padding: 16px 24px;
+            color: #666;
+            padding: 16px;
+        }
+
+        table.dataTable td {
+            padding: 16px;
+            border-bottom: 1px solid #f9f9f9;
+            vertical-align: top;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 12px;
             border-radius: 50px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            display: inline-block;
         }
 
-        .menu-pill-btn.active {
-            background: #FFE082;
-            font-weight: 700;
-            border: 2px solid #FFC107;
-            box-shadow: var(--shadow-md);
+        .status-badge.pending {
+            background: #FFF3E0;
+            color: #E65100;
         }
 
-        @media (max-width: 768px) {
-            .mobile-nav-toggle {
-                display: flex;
+        .status-badge.preparing {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .status-badge.cooking {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .status-badge.ready {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .status-badge.completed {
+            background: #E0E0E0;
+            color: #333;
+        }
+
+        .status-badge.cancelled {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        @media screen and (max-width: 768px) {
+            .main-container {
+                padding: 0 20px;
             }
 
-            .nav-links-container {
-                display: none;
-                margin-top: 16px;
-                background: white;
-                padding: 16px;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                border: 1px solid #eee;
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
             }
 
-            .nav-links-container.show {
-                display: flex;
+            .dataTables_wrapper .dataTables_filter {
+                float: none;
+                width: 100%;
             }
 
-            .split-layout {
-                grid-template-columns: 1fr;
-                gap: 24px;
-                padding: 20px;
-            }
-
-            .sidebar {
-                order: -1;
-            }
-
-            .cards-container {
-                grid-template-columns: 1fr;
-            }
-
-            .main-area {
-                padding: 32px 24px;
-            }
-
-            .page-header h1 {
-                font-size: 2rem;
-            }
-
-            .management-card {
-                padding: 40px 32px;
-            }
-
-            .management-card h2 {
-                font-size: 1.75rem;
-            }
-
-            .button-group {
-                grid-template-columns: 1fr;
+            .dataTables_wrapper .dataTables_filter input {
+                width: 100% !important;
+                margin-left: 0;
             }
         }
     </style>
@@ -281,15 +343,11 @@
                 <li><a href="contact.html">Contact Us</a></li>
             </ul>
 
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-nav-toggle" aria-label="Mobile Menu">
-                <ion-icon name="menu"></ion-icon> Menu
-            </button>
-
-            <!-- User Section -->
+            <!-- User Section (Logged In State) -->
             <div class="nav-user">
+                <!-- Notifications -->
                 <button class="btn-notification" aria-label="Notifications"
-                    onclick="location.href='VendorNotification.html'">
+                    onclick="location.href='notifications.html'">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -314,6 +372,8 @@
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
+
+                    <!-- Dropdown Menu -->
                     <div class="dropdown-menu">
                         <a href="settings.html" class="dropdown-item">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -338,100 +398,70 @@
                     </div>
                 </div>
             </div>
-
-        </div>
         </div>
     </nav>
 
-    <!-- Full Width Content -->
-    <div class="split-layout">
-        <!-- Sidebar -->
-        <div class="nav-stack">
-            <button class="mobile-nav-toggle" onclick="toggleMobileNav()">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <ion-icon name="menu"></ion-icon> Menu
-                </div>
-                <ion-icon name="chevron-down-outline"></ion-icon>
-            </button>
-            <div id="navLinksContainer" class="nav-links-container">
-                <a href="VendorHomePage.html" class="menu-pill-btn">
-                    <ion-icon name="grid"></ion-icon> Dashboard
-                </a>
-                <a href="menu.html" class="menu-pill-btn">
-                    <ion-icon name="restaurant"></ion-icon> Menu
-                </a>
-                <a href="orders.html" class="menu-pill-btn active">
-                    <ion-icon name="cart"></ion-icon> Order
-                </a>
-                <a href="earnings-overview.html" class="menu-pill-btn">
-                    <ion-icon name="cash"></ion-icon> Earnings
-                </a>
-            </div>
+    <div class="main-container">
+
+        <!-- Header Title Row -->
+        <div style="margin-bottom: 24px; display:flex; align-items:center; gap:16px;">
+            <a href="orders.html"
+                style="text-decoration:none; color:#333; font-size:1.5rem; display:flex; align-items:center;">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+            </a>
+            <h1 style="font-family:'Outfit', sans-serif; margin:0;">Order Tracking by ID</h1>
         </div>
 
-        <div class="dashboard-content">
-            <div class="page-header">
-                <h1>Order Management</h1>
-                <p>Manage incoming and completed orders, track order status in real time, and ensure timely preparation
-                    and collection.</p>
+        <!-- Controls Row -->
+        <div
+            style="display: flex; justify-content: space-between; align-items: stretch; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
+
+            <!-- Left: Search & Apply -->
+            <div style="display:flex; gap:12px; align-items:center; flex:1; max-width: 500px;">
+                <input type="text" id="trackingInput" placeholder="Enter Order ID to track..."
+                    style="flex:1; padding:12px 16px; border:1px solid #ddd; border-radius:8px; font-size:1rem;">
+                <button onclick="applyTracking()"
+                    style="background:var(--primary-color); padding:12px 32px; border-radius:8px; border:none; font-weight:600; cursor:pointer; font-size:1rem; white-space: nowrap;">
+                    Apply
+                </button>
             </div>
 
-            <div class="cards-container">
-                <!-- Incoming Orders Card -->
-                <div class="management-card"
-                    style="padding:40px; display:flex; flex-direction:column; justify-content:space-between; height:auto; text-decoration:none; color:inherit; background:white; border-radius:12px; border:2px solid #eee; transition:all 0.2s;">
-                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15"
-                            stroke="#FFC107" stroke-width="2" />
-                        <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#FFC107"
-                            stroke-width="2" />
-                        <path d="M9 12H15" stroke="#FFC107" stroke-width="2" stroke-linecap="round" />
-                        <path d="M9 16H15" stroke="#FFC107" stroke-width="2" stroke-linecap="round" />
-                    </svg>
-                    <h2>Incoming<br>Orders</h2>
-                    <p>Manage incoming and completed orders, track order status in real time, and ensure timely
-                        preparation and collection.</p>
-                    <a href="incoming-orders.html" class="card-button single-button">View Orders</a>
-                </div>
-
-                <!-- Order Tracking Card -->
-                <div class="management-card"
-                    style="padding:40px; display:flex; flex-direction:column; justify-content:space-between; height:auto; text-decoration:none; color:inherit; background:white; border-radius:12px; border:2px solid #eee; transition:all 0.2s;">
-                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#FFC107" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path d="M2 17L12 22L22 17" stroke="#FFC107" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path d="M2 12L12 17L22 12" stroke="#FFC107" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                    <h2>Order<br>Tracking</h2>
-                    <p>Track food orders, monitor their progress from preparation to completion to ensure smooth service
-                    </p>
-                    <div class="button-group">
-                        <a href="track-table.html?mode=table" class="card-button">By Table</a>
-                        <a href="order-tracking.html" class="card-button">By Order ID</a>
-                    </div>
-                </div>
+            <!-- Right: Mark as Completed -->
+            <div>
+                <button onclick="markAsCompleted()"
+                    style="background:#2E7D32; color:white; padding:12px 24px; border-radius:8px; border:none; font-weight:600; cursor:pointer; font-size:1rem; box-shadow:0 4px 6px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px;">
+                    <ion-icon name="checkmark-done-circle" style="font-size:1.2rem;"></ion-icon> Mark as Completed
+                </button>
             </div>
+
         </div>
 
+        <div class="tracking-table-container">
+            <table id="trackingTable" class="tracking-table display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" disabled></th>
+                        <th>Order ID</th>
+                        <th>Status</th>
+                        <th>Items Ordered</th>
+                        <th>Qty</th>
+                        <th>Size</th>
+                        <th>Time</th>
+                        <th>Additional Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="trackingTableBody">
+                    <!-- Loaded by DataTables -->
+                </tbody>
+            </table>
+        </div>
     </div>
-    </div>
+
     <script src="../js/navbar.js"></script>
-    <script src="../js/responsive.js"></script>
     <script>
         function toggleNotifications() {
-            const dropdown = document.getElementById('notifDropdown');
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-        }
-
-        window.onclick = function (event) {
-            if (!event.target.closest('.icon-btn') && !event.target.closest('#notifDropdown')) {
-                const dropdown = document.getElementById('notifDropdown');
-                if (dropdown) dropdown.style.display = 'none';
-            }
+            const d = document.getElementById('notifDropdown');
+            if (d) d.style.display = d.style.display === 'none' ? 'block' : 'none';
         }
     </script>
 </body>
