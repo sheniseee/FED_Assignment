@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendors Rental Agreement</title>
+
+  <link rel="stylesheet" href="../css/vendorBase.css" />
+  <link rel="stylesheet" href="../css/VendorNav.css" />
+
+  <link rel="stylesheet" href="../css/VendorRA.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+
+<body>
+<div class="page">
+
+  <nav class="navbar">
+    <div class="nav-container">
+
+      <a href="VendorHome.html" class="nav-logo">
+        <span class="logo-icon">🍜</span>
+        <span class="logo-text">Digital<br/>Hawker</span> 
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="VendorHome.html">Home</a></li>
+        <li><a href="VendorOrders.html">Order</a></li>
+        <li><a href="VendorOrderHistory.html">Order History</a></li>
+        <li><a href="VendorContact.html">Contact Us</a></li>
+      </ul>
+
+      <!-- User Section -->
+      <div class="nav-user">
+
+        <!-- Notifs-->
+        <button class="btn-notification" aria-label="Notifications" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+
+        <!-- user Dropdown -->
+        <div class="user-dropdown">
+          <button class="user-toggle" type="button" aria-label="User menu">
+            <div class="user-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span class="user-name">Vendor</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <!-- dropdown menu -->
+          <div class="dropdown-menu">
+            <a href="SettingsAccount.html" class="dropdown-item">My Profile</a>
+            <a href="VendorOrderHistory.html" class="dropdown-item">Order History</a>
+            <a href="SettingsAccount.html" class="dropdown-item">Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="VendorHome.html" class="dropdown-item dropdown-logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <main class="main">
+    <section class="titlebar">
+      <div class="titlebar-inner">
+        <div class="title-text">Rental Agreement</div>
+      </div>
+    </section>
+
+    <section class="frame">
+      <div class="paper">
+        <h1 class="doc-title">
+          Hawker Stall<br>
+          Rental Agreement
+        </h1>
+
+        <div class="doc-rule"></div>
+
+        <div class="doc-body">
+            <p>
+              <strong>Landlord / Operator:</strong>
+              <span id="operatorName" class="fill" contenteditable="true">Operator Name</span><br>
+              <strong>Tenant:</strong>
+              <span id="tenantName" class="fill" contenteditable="true">Vendor Name</span>
+            </p>
+
+            <p>
+              <strong>Stall:</strong>
+              <span id="stallInfo" class="fill" contenteditable="true">Stall No. & Hawker Centre Name</span><br>
+              <strong>Trade Type:</strong>
+              <span id="tradeType" class="fill" contenteditable="true">Food Type</span>
+            </p>
+
+            <p>
+              <strong>Rental Period:</strong>
+              <span id="startDate" class="fill" contenteditable="true">Start Date</span> –
+              <span id="endDate" class="fill" contenteditable="true">End Date</span><br>
+
+              <br>
+              <strong>Renewal Status:</strong>
+              <span id="renewalStatus" class="fill" contenteditable="true">Pending Operator Decision</span><br>
+
+              <strong>Renewal Date:</strong>
+              <span id="renewalDate" class="fill" contenteditable="true">To be confirmed</span><br><br>
+
+              <strong>Monthly Rent:</strong> SGD $
+              <span id="monthlyRent" class="fill" contenteditable="true">Amount</span><br>
+
+              <strong>Deposit:</strong> SGD $
+              <span id="deposit" class="fill" contenteditable="true">Amount</span>
+            </p>
+
+
+            <p><strong>Tenant Responsibilities:</strong></p>
+            <ul>
+              <li>Follow NEA hygiene and safety regulations</li>
+              <li>Keep stall clean and well-maintained</li>
+              <li>No subletting without approval</li>
+            </ul>
+
+            <p><strong>Utilities & Fees:</strong><br>
+              Tenant is responsible for utilities and related charges.
+            </p>
+
+            <p><strong>Termination:</strong><br>
+              Either party may terminate with 30 day's notice.
+            </p>
+
+            <p>
+              <strong>Signatures:</strong><br>
+              Operator:
+              <span id="operatorSig" class="fill" contenteditable="true">________</span>
+              Date:
+              <span id="operatorSigDate" class="fill" contenteditable="true">____</span><br>
+
+              Tenant:
+              <span id="tenantSig" class="fill" contenteditable="true">________</span>
+              Date:
+              <span id="tenantSigDate" class="fill" contenteditable="true">____</span>
+            </p>
+
+            <!-- this is to save -->
+            <div class="ra-actions">
+              <button id="raSaveBtn" type="button">Save</button>
+              <span id="raStatus"></span>
+            </div>
+
+          </div>
+      </div>
+    </section>
+    <div class="back-home">
+    <a href="VendorHomepage.html" class="back-btn">← Back to Home</a>
+</div>
+
+  </main>
+
+</div>
+
+<!-- dropdown JS -->
+<script>
+  const dd = document.querySelector('.user-dropdown');
+  const toggle = document.querySelector('.user-toggle');
+
+  toggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dd.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
+    dd?.classList.remove('open');
+  });
+</script>
+
+<!-- Firebases js library -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- Existing firebase config -->
+<script src="../js/firebase.js"></script>
+
+<!-- Rental Agreement firestore logic -->
+<script src="../js/VendorRA.firebase.js"></script>
+
+
+</body>
+</html>

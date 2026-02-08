@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="../css/vendorBase.css" />
+  <link rel="stylesheet" href="../css/VendorNav.css" />
+
+  <link rel="stylesheet" href="../css/VendorHomePage.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+
+<body>
+<div class="page">
+
+  <nav class="navbar">
+    <div class="nav-container">
+
+      <a href="VendorHome.html" class="nav-logo">
+        <span class="logo-icon">🍜</span>
+        <span class="logo-text">Digital<br/>Hawker</span>
+      </a>
+
+
+      <ul class="nav-links">
+        <li><a href="VendorHome.html" class="active">Home</a></li>
+        <li><a href="VendorOrders.html">Order</a></li>
+        <li><a href="VendorOrderHistory.html">Order History</a></li>
+        <li><a href="VendorContact.html">Contact Us</a></li>
+      </ul>
+
+     
+      <div class="nav-user">
+        <!-- Notifs -->
+        <button class="btn-notification" aria-label="Notifications" type="button" onclick="location.href='VendorNotifs.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge" id="notifBadge" style="display:none;">0</span>
+        </button>
+
+        <!-- User Dropdown -->
+        <div class="user-dropdown">
+          <button class="user-toggle" type="button" aria-label="User menu">
+            <div class="user-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span class="user-name">Vendor</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <div class="dropdown-menu">
+            <a href="SettingsAccount.html" class="dropdown-item">My Profile</a>
+            <a href="VendorOrderHistory.html" class="dropdown-item">Order History</a>
+            <a href="SettingsAccount.html" class="dropdown-item">Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="VendorHome.html" class="dropdown-item dropdown-logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <section class="WelcDivided">
+    <h1 class="welcome">
+      Welcome back, [Vendor’s<br />Name]!
+    </h1>
+  </section>
+
+  <main class="main">
+    <section class="lower">
+      <aside class="side">
+        <a class="side-btn" href="#">Orders</a>
+        <a class="side-btn" href="#">Menu</a>
+        <a class="side-btn" href="#">Earnings</a>
+        <a class="side-btn" href="VendorNotifs.html">Notifications</a>
+        <a class="side-btn" href="VendorRA.html">Rental Agreement</a>
+      </aside>
+
+      <div class="content">
+        <div class="summary-wrap">
+          <div class="summary">
+            <div class="card small">
+              <div class="card-title">Earnings</div>
+              <div class="card-value">$ xx,xxx.xx</div>
+              <button class="pill">View Report</button>
+            </div>
+
+            <div class="card wide">
+              <div class="card-title">Orders</div>
+              <div class="card-value">12 new orders</div>
+              <button class="pill">See All</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="notif">
+          <div class="notif-title">Notifications</div>
+
+          <div class="notif-card">
+            <div id="homeNotifList">
+              <div class="notif-card" style="opacity:.7;">
+                <div class="notif-head">Loading...</div>
+                <div class="notif-sub">Fetching latest notifications</div>
+              </div>
+            </div>
+          </div>
+    </section>
+  </main>
+
+</div>
+
+<!-- dropdown JS -->
+<script>
+  const dd = document.querySelector('.user-dropdown');
+  const toggle = document.querySelector('.user-toggle');
+
+  toggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dd.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
+    dd?.classList.remove('open');
+  });
+</script>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<!-- Your Firebase connection -->
+<script src="../js/firebase.js"></script>
+
+<!-- Home page live notifs -->
+<script src="../js/VendorHomepageNotifs.js"></script>
+
+</body>
+</html>

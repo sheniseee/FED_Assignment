@@ -1,0 +1,165 @@
+  .WelcDivided{
+  background: var(--bg);
+  padding: 36px 0 44px;
+}
+
+.welcome{
+  margin: 0;
+  padding-left: 45px;
+  font-size: clamp(44px, 6vw, 78px);
+  line-height: 0.98;
+  letter-spacing: -1px;
+  font-weight: 400;
+}
+
+.main{
+  background: #fff;
+  padding: 28px 42px 44px;
+}
+
+/* lower layout */
+.lower{
+  display:grid;
+  grid-template-columns: 320px 1fr;
+  gap: 28px;
+}
+
+/* to control side buttons */
+.side{
+  padding-top: 8px;
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
+}
+
+.side-btn{
+  display:flex;
+  align-items:center;
+  gap: 16px;
+  width: 290px;
+  height: 56px;
+  border-radius: 10px;
+  background: var(--accent);
+  text-decoration:none;
+  color:#111;
+  font-weight: 500;
+  font-size: 22px;
+  padding: 0 22px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.16);
+}
+
+.side-ico{ width: 34px; display:flex; justify-content:center; }
+
+.content{
+  display:flex;
+  flex-direction:column;
+  gap: 18px;
+}
+
+.summary-wrap{
+  background: #F7E7B8;
+  padding: 18px;
+  border-radius: 10px;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+}
+
+.summary{
+  display:grid;
+  grid-template-columns: 240px 1fr;
+  gap: 18px;
+}
+
+.card{
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+  padding: 16px 18px;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.card.small{ height: 130px; }
+.card.wide{ 
+    height: 130px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.card-title{
+    font-weight: 700;
+    text-decoration: underline;
+    margin-bottom: 8px;
+}
+
+.card-value{
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+ 
+.pill{
+    border: none;
+    background: var(--accent);
+    color: #111;
+    font-weight: 600;
+    border-radius: 7px;
+    padding: 6px 16px;
+    font-size: 12px;
+    cursor:pointer;
+    width: fit-content;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.12);
+}
+
+.pill:hover{ background: var(--accent-2); }
+
+.notif{
+  background: transparent;
+  margin-top: 4px;
+}
+
+.notif-title{
+  font-weight: 800;
+  margin: 8px 0 10px;
+  font-size: 16px;
+}
+
+.notif-card{
+  background:#fff;
+  border-radius:10px;
+  padding:14px 18px;
+  margin-bottom:14px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(0,0,0,0,0.06);
+}
+
+.notif-head{
+  font-weight: 800;
+  text-align: center;     
+  margin-bottom: 6px;
+}
+
+.notif-sub{
+  color: #333;
+  text-align:center;     
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.badge-row{
+  display:flex;
+  justify-content:center; 
+  margin-bottom: 6px;
+}
+
+.badge{
+  font-size:10px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#F7C7C7;
+  color:#7a1e1e;
+}
+
+@media (max-width: 980px){
+  .lower{ grid-template-columns: 1fr; }
+  .side-btn{ width: 100%; }
+}
