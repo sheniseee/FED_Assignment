@@ -312,3 +312,8 @@ button {
 .dropdown-logout svg {
   color: #E53935;
 }
+
+/* ── Mobile Menu (hidden by default) ── */
+.mobile-menu {
+  display: none;
+}
