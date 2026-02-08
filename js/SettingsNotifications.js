@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         masterToggle.checked = false;
       }
 
-      // Save to localStorage (optional - for persistence)
+      // Save to localStorage
       saveNotificationSettings();
     });
   });
