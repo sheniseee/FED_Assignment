@@ -92,7 +92,7 @@ body{
 }
 
 .brand img{
-  width: 32;            /* slightly bigger */
+  width: 32px;            /* slightly bigger  */
   height: 22px;
   object-fit: contain;
 }
