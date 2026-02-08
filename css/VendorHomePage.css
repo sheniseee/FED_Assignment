@@ -45,7 +45,7 @@
   font-weight: 500;
   font-size: 22px;
   padding: 0 22px;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.16);
 }
 
 .side-ico{ width: 34px; display:flex; justify-content:center; }
@@ -60,6 +60,8 @@
   background: #F7E7B8;
   padding: 18px;
   border-radius: 10px;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
 }
 
 .summary{
