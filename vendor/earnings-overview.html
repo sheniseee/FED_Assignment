@@ -22,6 +22,12 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="../js/auth-check.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module">
+        import { updateDoc, doc, getFirestore } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+        window.updateDoc = updateDoc;
+        // Ensure doc is also available if needed, though it seems to be defined already. 
+        if (!window.doc) window.doc = doc;
+    </script>
     <style>
         /* Dashboard Styles Reuse */
         .dashboard-btn {
@@ -97,6 +103,14 @@
             transition: all 0.2s;
         }
 
+        body {
+            background-color: #FFF8E1;
+            /* Cream background */
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            color: #333;
+        }
+
         .btn-edit:hover {
             background: #FFB300;
             transform: translateY(-1px);
@@ -108,6 +122,18 @@
             display: flex;
             gap: 24px;
             flex-direction: column;
+        }
+
+        .split-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 
@@ -220,8 +246,7 @@
                 </div>
             </div>
 
-            <!-- Right Panel (Content) -->
-            <div class="content-area">
+            <div class="dashboard-content">
                 <div class="analytics-layout">
                     <!-- Main Analytics View -->
                     <div class="card" style="min-height: 600px;">
